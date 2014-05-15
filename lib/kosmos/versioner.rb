@@ -9,6 +9,28 @@ module Kosmos
         commit_everything(repo, "this is a test")
       end
 
+      def prepare_for_install(path, formula)
+        message = <<-EOS.undent
+          Saving state before installing #{formula.title}.
+        EOS
+
+        commit_everything(repo(path), message)
+      end
+
+      def save_after_install(path, formula)
+        message = <<-EOS.undent
+          Saving state after having installed #{formula.title}.
+        EOS
+
+        commit_everything(repo(path), message)
+      end
+
+      private
+
+      def repo(path)
+        Rugged::Repository.new(path)
+      end
+
       def commit_everything(repo, message)
         index = repo.index
 
