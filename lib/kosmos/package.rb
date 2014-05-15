@@ -4,22 +4,26 @@ require 'tmpdir'
 
 module Kosmos
   class Package
-    def homepage
-      @@homepage
+    [:title, :homepage, :url].each do |param|
+      define_singleton_method(param) do |value|
+        class_variable_set("@@#{param}", value)
+      end
+
+      define_method(param) do
+        self.class.class_variable_get("@@#{param}")
+      end
+    end
+
+    def aliases
+      @@aliases
+    end
+
+    def self.aliases(*aliases)
+      @@aliases = aliases
     end
 
     def uri
-      @@uri
-    end
-
-    class << self
-      def homepage(homepage)
-        @@homepage = homepage
-      end
-
-      def url(url)
-        @@uri = URI(url)
-      end
+      URI(url)
     end
 
     def unzip!
