@@ -2,13 +2,13 @@ require 'spec_helper'
 
 class ExamplePackage < Kosmos::Package
   homepage 'http://www.example.com/'
-  url 'http://www.example.com/releases/release-0-1.tar'
+  url 'http://www.example.com/releases/release-0-1.zip'
 end
 
 
 describe Kosmos::Package do
   let(:example_homepage) { 'http://www.example.com/' }
-  let(:example_url) { 'http://www.example.com/releases/release-0-1.tar' }
+  let(:example_url) { 'http://www.example.com/releases/release-0-1.zip' }
 
   subject { ExamplePackage.new }
 
@@ -21,13 +21,23 @@ describe Kosmos::Package do
   end
 
   describe 'downloading' do
+    let(:example_zip) { File.read('spec/fixtures/example.zip') }
+
     before do
-      stub_request(:get, example_url).to_return(body: 'example')
+      stub_request(:get, example_url).to_return(body: example_zip)
     end
 
     it 'downloads from the url' do
       download_file = subject.download!
-      expect(File.read(download_file)).to eq 'example'
+      expect(File.read(download_file)).to eq example_zip
+    end
+
+    it 'unzips the contents' do
+      unzipped_dir = subject.unzip!
+
+      expect(Dir.entries(unzipped_dir)).to include('tmp')
+      expect(File.read(File.join(unzipped_dir, 'tmp', 'example.txt'))).
+        to eq "Hello, world!\n"
     end
   end
 end
