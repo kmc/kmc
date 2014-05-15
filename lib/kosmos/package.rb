@@ -4,6 +4,21 @@ require 'tmpdir'
 
 module Kosmos
   class Package
+    class << self
+      def inherited(package)
+        (@@packages ||= []) << package
+      end
+
+      def find(name)
+        @@packages.find do |package|
+          instance = package.new
+          [instance.title, instance.aliases].flatten.any? do |candidate_name|
+            candidate_name.downcase == name.downcase
+          end
+        end
+      end
+    end
+
     [:title, :homepage, :url].each do |param|
       define_singleton_method(param) do |value|
         class_variable_set("@@#{param}", value)

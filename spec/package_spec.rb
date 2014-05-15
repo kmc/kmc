@@ -1,6 +1,9 @@
 require 'spec_helper'
 
 class ExamplePackage < Kosmos::Package
+  title 'Example'
+  aliases 'specimen', 'illustration'
+
   homepage 'http://www.example.com/'
   url 'http://www.example.com/releases/release-0-1.zip'
 end
@@ -18,6 +21,10 @@ describe Kosmos::Package do
 
   it 'resolves the url as a uri' do
     expect(subject.uri).to eq URI(example_url)
+  end
+
+  it 'has a full name' do
+    expect(subject.title).to eq 'Example'
   end
 
   describe 'downloading' do
@@ -43,6 +50,20 @@ describe Kosmos::Package do
       expect(Dir.entries(unzipped_dir)).to include('tmp')
       expect(File.read(File.join(unzipped_dir, 'tmp', 'example.txt'))).
         to eq "Hello, world!\n"
+    end
+  end
+
+  describe '#find' do
+    it 'finds a package by name' do
+      expect(Kosmos::Package.find('Example')).to eq ExamplePackage
+    end
+
+    it 'is not case-sensitive' do
+      expect(Kosmos::Package.find('eXaMpLe')).to eq ExamplePackage
+    end
+
+    it 'finds a package by alias' do
+      expect(Kosmos::Package.find('specimen')).to eq ExamplePackage
     end
   end
 end
