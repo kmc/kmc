@@ -28,7 +28,6 @@ module Kosmos
 
       Zip::File.open(download_file.path) do |zip_file|
         zip_file.each do |entry|
-          puts "Extracting #{entry}: #{entry.name}"
           entry.extract(File.join(output_path, entry.name))
         end
       end
