@@ -20,21 +20,21 @@ module Kosmos
     end
 
     [:title, :homepage, :url].each do |param|
-      define_singleton_method(param) do |value|
-        class_variable_set("@@#{param}", value)
+      define_singleton_method(param) do |value = nil|
+        if value
+          class_variable_set("@@#{param}", value)
+        else
+          class_variable_get("@@#{param}")
+        end
       end
-
-      define_method(param) do
-        self.class.class_variable_get("@@#{param}")
-      end
-    end
-
-    def aliases
-      @@aliases
     end
 
     def self.aliases(*aliases)
-      @@aliases = aliases
+      if aliases.any?
+        @@aliases = aliases
+      else
+        @@aliases
+      end
     end
 
     def uri
