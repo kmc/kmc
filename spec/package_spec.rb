@@ -22,9 +22,14 @@ describe Kosmos::Package do
 
   describe 'downloading' do
     let(:example_zip) { File.read('spec/fixtures/example.zip') }
+    let(:redirected_url) { 'http://example.com/latest' }
 
     before do
       stub_request(:get, example_url).to_return(body: example_zip)
+      stub_request(:get, redirected_url).
+        to_return(status: 301, headers: {'Location' => example_url})
+
+      ExamplePackage.url redirected_url
     end
 
     it 'downloads from the url' do

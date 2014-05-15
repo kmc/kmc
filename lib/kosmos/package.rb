@@ -36,7 +36,7 @@ module Kosmos
     end
 
     def download!
-      response = Net::HTTP.get_response(uri)
+      response = fetch(uri)
       tmpdir = Dir.mktmpdir
 
       download_file = File.new(File.join(tmpdir, 'download'), 'w+')
@@ -44,6 +44,21 @@ module Kosmos
       download_file.close
 
       download_file
+    end
+
+    private
+
+    def fetch(uri)
+      response = Net::HTTP.get_response(uri)
+
+      case response
+      when Net::HTTPSuccess
+        response
+      when Net::HTTPRedirection
+        fetch(URI(response['location']))
+      else
+        nil
+      end
     end
   end
 end
