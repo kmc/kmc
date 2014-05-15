@@ -1,5 +1,5 @@
-require "kosmos/version"
+require 'kosmos/package'
+require 'kosmos/version'
 
 module Kosmos
-  # Your code goes here...
 end
