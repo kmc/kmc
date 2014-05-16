@@ -40,12 +40,12 @@ describe Kosmos::Package do
     end
 
     it 'downloads from the url' do
-      download_file = subject.download!
+      download_file = subject.send(:download!)
       expect(File.read(download_file)).to eq example_zip
     end
 
     it 'unzips the contents' do
-      unzipped_dir = subject.unzip!
+      unzipped_dir = subject.send(:unzip!)
 
       expect(Dir.entries(unzipped_dir)).to include('tmp')
       expect(File.read(File.join(unzipped_dir, 'tmp', 'example.txt'))).

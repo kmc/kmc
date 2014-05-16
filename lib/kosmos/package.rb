@@ -41,6 +41,8 @@ module Kosmos
         URI(url)
       end
 
+      private
+
       def unzip!
         download_file = download!
         output_path = Pathname.new(download_file.path).parent.to_s
@@ -64,8 +66,6 @@ module Kosmos
 
         download_file
       end
-
-      private
 
       def fetch(uri)
         response = Net::HTTP.get_response(uri)
