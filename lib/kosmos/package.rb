@@ -36,7 +36,6 @@ module Kosmos
         end
       end
 
-
       def uri
         URI(url)
       end

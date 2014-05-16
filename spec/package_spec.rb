@@ -8,7 +8,6 @@ class ExamplePackage < Kosmos::Package
   url 'http://www.example.com/releases/release-0-1.zip'
 end
 
-
 describe Kosmos::Package do
   let(:example_homepage) { 'http://www.example.com/' }
   let(:example_url) { 'http://www.example.com/releases/release-0-1.zip' }
