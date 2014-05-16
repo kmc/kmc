@@ -7,7 +7,7 @@ module Kosmos
 
       def init_repo(path)
         GitAdapter.init_repo(path)
-        GitAdapter.commit_all(path, INIT_COMMIT_MESSAGE)
+        GitAdapter.commit_everything(path, INIT_COMMIT_MESSAGE)
       end
 
       def mark_preinstall(path, package)
