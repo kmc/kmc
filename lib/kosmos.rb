@@ -4,4 +4,6 @@ require 'kosmos/git_adapter'
 require 'kosmos/version'
 
 module Kosmos
+  class InvalidUninstallError < StandardError
+  end
 end

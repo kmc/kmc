@@ -22,6 +22,11 @@ module Kosmos
         make_commit(repo, modified_tree, commit_message)
       end
 
+      def reset_to_commit(repo_path, commit_oid)
+        repo = repo(repo_path)
+        repo.reset(repo.lookup(commit_oid), :hard)
+      end
+
       def list_commits(repo_path)
         def parent_commits(commit)
           if commit
