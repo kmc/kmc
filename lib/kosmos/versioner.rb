@@ -27,6 +27,11 @@ module Kosmos
       def post_install_message(package)
         "POST: #{package.title}"
       end
+
+      def commit_type(commit)
+        # "POST: Example" --> :post
+        commit.message.scan(/\A(\w+):/).first.first.downcase.to_sym
+      end
     end
   end
 end
