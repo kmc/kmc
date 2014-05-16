@@ -1,0 +1,18 @@
+#!/usr/bin/env ruby
+
+require 'kosmos'
+
+case ARGV.shift
+when 'init'
+  ksp_path = ARGV.shift
+
+  puts "Initializing Kosmos into #{ksp_path} (This will take a sec) ..."
+
+  Kosmos::Versioner.init_repo(ksp_path)
+
+  puts "Done! You're ready to begin installing mods."
+  puts
+  puts "Install your first mod by running the command:"
+  puts "  kosmos install [name-of-the-mod]"
+  puts
+end

@@ -14,6 +14,22 @@ module Kosmos
       end
     end
 
+    # Internal version of the `install` method, which saves before actually
+    # performing the installation.
+    def install!(ksp_path)
+      @ksp_path = ksp_path
+      @download_dir = self.class.unzip!
+
+      Versioner.mark_preinstall(ksp_path, self.class)
+      install
+      Versioner.mark_postinstall(ksp_path, self.class)
+    end
+
+    def merge_directory(from, opts)
+      FileUtils.cp_r(File.join(@download_dir, from),
+        File.join(@ksp_path, opts[:into]))
+    end
+
     class << self
       def aliases(*aliases)
         if aliases.any?
