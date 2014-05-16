@@ -11,8 +11,7 @@ module Kosmos
 
       def find(name)
         @@packages.find do |package|
-          instance = package.new
-          [instance.title, instance.aliases].flatten.any? do |candidate_name|
+          [package.title, package.aliases].flatten.any? do |candidate_name|
             candidate_name.downcase == name.downcase
           end
         end
@@ -29,54 +28,56 @@ module Kosmos
       end
     end
 
-    def self.aliases(*aliases)
-      if aliases.any?
-        @@aliases = aliases
-      else
-        @@aliases
-      end
-    end
-
-    def uri
-      URI(url)
-    end
-
-    def unzip!
-      download_file = download!
-      output_path = Pathname.new(download_file.path).parent.to_s
-
-      Zip::File.open(download_file.path) do |zip_file|
-        zip_file.each do |entry|
-          entry.extract(File.join(output_path, entry.name))
+    class << self
+      def aliases(*aliases)
+        if aliases.any?
+          @@aliases = aliases
+        else
+          @@aliases
         end
       end
 
-      output_path
-    end
+      def uri
+        URI(url)
+      end
 
-    def download!
-      response = fetch(uri)
-      tmpdir = Dir.mktmpdir
+      def unzip!
+        download_file = download!
+        output_path = Pathname.new(download_file.path).parent.to_s
 
-      download_file = File.new(File.join(tmpdir, 'download'), 'w+')
-      download_file.write(response.body)
-      download_file.close
+        Zip::File.open(download_file.path) do |zip_file|
+          zip_file.each do |entry|
+            entry.extract(File.join(output_path, entry.name))
+          end
+        end
 
-      download_file
-    end
+        output_path
+      end
 
-    private
+      def download!
+        response = fetch(uri)
+        tmpdir = Dir.mktmpdir
 
-    def fetch(uri)
-      response = Net::HTTP.get_response(uri)
+        download_file = File.new(File.join(tmpdir, 'download'), 'w+')
+        download_file.write(response.body)
+        download_file.close
 
-      case response
-      when Net::HTTPSuccess
-        response
-      when Net::HTTPRedirection
-        fetch(URI(response['location']))
-      else
-        nil
+        download_file
+      end
+
+      private
+
+      def fetch(uri)
+        response = Net::HTTP.get_response(uri)
+
+        case response
+        when Net::HTTPSuccess
+          response
+        when Net::HTTPRedirection
+          fetch(URI(response['location']))
+        else
+          nil
+        end
       end
     end
   end
