@@ -25,6 +25,24 @@ module Kosmos
         commit_everything(repo(path), message)
       end
 
+      def revert_to_preinstall(path, formula)
+        repo = repo(path)
+        index = repo.index
+
+        previous_commit = repo.lookup(repo.head.target).parents.first
+        previous_tree = previous_commit.tree
+
+        index.read_tree(previous_tree)
+        modified_tree = index.write_tree(repo)
+        index.write
+
+        message = <<-EOS.undent
+          Uninstalling #{formula.title}.
+        EOS
+
+        make_commit(repo, modified_tree, message)
+      end
+
       private
 
       def repo(path)
