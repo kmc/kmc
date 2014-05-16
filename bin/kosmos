@@ -9,10 +9,21 @@ when 'init'
   puts "Initializing Kosmos into #{ksp_path} (This will take a sec) ..."
 
   Kosmos::Versioner.init_repo(ksp_path)
+  Kosmos.save_ksp_path(ksp_path)
 
   puts "Done! You're ready to begin installing mods."
   puts
   puts "Install your first mod by running the command:"
   puts "  kosmos install [name-of-the-mod]"
   puts
+when 'install'
+  package_name = ARGV.shift
+  ksp_path = Kosmos.load_ksp_path
+
+  package = Kosmos::Package.find(package_name)
+  puts "Installing package #{package.title} ..."
+
+  package.new.install!(ksp_path)
+
+  puts "Done!"
 end
