@@ -5,7 +5,7 @@ module Kosmos
         Rugged::Repository.init_at(path)
       end
 
-      def commit_all(repo_path, commit_message)
+      def commit_everything(repo_path, commit_message)
         repo = repo(repo_path)
         index = repo.index
 
