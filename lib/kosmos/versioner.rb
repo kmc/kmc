@@ -18,6 +18,12 @@ module Kosmos
         GitAdapter.commit_everything(path, post_install_message(package))
       end
 
+      def installed_packages(path)
+        commits = GitAdapter.list_commits(path)
+        installs = commits.select { |c| commit_type(c) == :post }
+        installs.map { |c| commit_subject(c) }
+      end
+
       private
 
       def pre_install_message(package)
@@ -31,6 +37,11 @@ module Kosmos
       def commit_type(commit)
         # "POST: Example" --> :post
         commit.message.scan(/\A(\w+):/).first.first.downcase.to_sym
+      end
+
+      def commit_subject(commit)
+        # "POST: Example" --> "Example"
+        commit.message.split(' ')[1..-1].join(' ')
       end
     end
   end
