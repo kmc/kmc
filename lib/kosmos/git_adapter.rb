@@ -22,6 +22,20 @@ module Kosmos
         make_commit(repo, modified_tree, commit_message)
       end
 
+      def list_commits(repo_path)
+        def parent_commits(commit)
+          if commit
+            [commit] + parent_commits(commit.parents.first)
+          else
+            []
+          end
+        end
+
+        repo = repo(repo_path)
+        head = repo.lookup(repo.head.target)
+        parent_commits(head)
+      end
+
       private
 
       def repo(path)
