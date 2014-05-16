@@ -17,14 +17,6 @@ module Kosmos
         commit_everything(repo(path), message)
       end
 
-      def save_after_install(path, formula)
-        message = <<-EOS.undent
-          Saving state after having installed #{formula.title}.
-        EOS
-
-        commit_everything(repo(path), message)
-      end
-
       def revert_to_preinstall(path, formula)
         repo = repo(path)
         index = repo.index
