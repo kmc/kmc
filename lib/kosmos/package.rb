@@ -4,20 +4,6 @@ require 'tmpdir'
 
 module Kosmos
   class Package
-    class << self
-      def inherited(package)
-        (@@packages ||= []) << package
-      end
-
-      def find(name)
-        @@packages.find do |package|
-          [package.title, package.aliases].flatten.any? do |candidate_name|
-            candidate_name.downcase == name.downcase
-          end
-        end
-      end
-    end
-
     [:title, :homepage, :url].each do |param|
       define_singleton_method(param) do |value = nil|
         if value
@@ -36,6 +22,20 @@ module Kosmos
           @@aliases
         end
       end
+
+      # a callback for when a subclass of this class is created
+      def inherited(package)
+        (@@packages ||= []) << package
+      end
+
+      def find(name)
+        @@packages.find do |package|
+          [package.title, package.aliases].flatten.any? do |candidate_name|
+            candidate_name.downcase == name.downcase
+          end
+        end
+      end
+
 
       def uri
         URI(url)
