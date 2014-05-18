@@ -20,9 +20,15 @@ module Kosmos
       @ksp_path = ksp_path
       @download_dir = self.class.unzip!
 
+      puts "Saving your work before installing ..."
       Versioner.mark_preinstall(ksp_path, self.class)
+
+      puts "Installing #{self.class.title} ..."
       install
+      puts "Cleaning up ..."
       Versioner.mark_postinstall(ksp_path, self.class)
+
+      puts "Done!"
     end
 
     def merge_directory(from, opts)
@@ -58,6 +64,9 @@ module Kosmos
 
       def unzip!
         download_file = download!
+
+        puts "Unzipping ..."
+
         output_path = Pathname.new(download_file.path).parent.to_s
 
         Zip::File.open(download_file.path) do |zip_file|
@@ -70,6 +79,7 @@ module Kosmos
       end
 
       def download!
+        puts "Downloading from #{uri} ..."
         response = fetch(uri)
         tmpdir = Dir.mktmpdir
 
