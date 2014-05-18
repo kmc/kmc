@@ -12,7 +12,7 @@ module Kosmos
         Dir.chdir(repo.workdir) do
           Dir["**/*"].each do |path|
             unless File.directory?(path)
-              mode = File.new(path).stat.mode
+              mode = File::Stat.new(path).mode
               stage_file(repo, index, path, mode)
             end
           end
