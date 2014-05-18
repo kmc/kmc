@@ -34,4 +34,14 @@ when 'uninstall'
   puts "Preparing to uninstall the most recently-installed mod ..."
   package = Kosmos::Versioner.uninstall_last_package(ksp_path)
   puts "Done! Just uninstalled: #{package}."
+
+when 'list'
+  ksp_path = Kosmos.load_ksp_path
+
+  packages = Kosmos::Versioner.installed_packages(ksp_path)
+  puts "You have installed #{packages.length} mod(s) using Kosmos:"
+
+  packages.each do |package|
+    puts "  * #{package}"
+  end
 end
