@@ -3,6 +3,11 @@ module Kosmos
     class << self
       def init_repo(path)
         Rugged::Repository.init_at(path)
+
+        # make sure no files get ignored.
+        File.open(File.join(path, '.gitignore'), 'w+') do |file|
+          file.write("!*\n")
+        end
       end
 
       def commit_everything(repo_path, commit_message)
@@ -10,7 +15,7 @@ module Kosmos
         index = repo.index
 
         Dir.chdir(repo.workdir) do
-          Dir["**/*"].each do |path|
+          (Dir["**/*"] + ['.gitignore']).each do |path|
             unless File.directory?(path)
               mode = File::Stat.new(path).mode
               stage_file(repo, index, path, mode)
