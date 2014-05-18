@@ -33,6 +33,8 @@ module Kosmos
 
     class << self
       def aliases(*aliases)
+        @aliases ||= []
+
         if aliases.any?
           @aliases = aliases
         else
