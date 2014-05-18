@@ -4,19 +4,13 @@ class ExamplePackage < Kosmos::Package
   title 'Example'
   aliases 'specimen', 'illustration'
 
-  homepage 'http://www.example.com/'
   url 'http://www.example.com/releases/release-0-1.zip'
 end
 
 describe Kosmos::Package do
-  let(:example_homepage) { 'http://www.example.com/' }
   let(:example_url) { 'http://www.example.com/releases/release-0-1.zip' }
 
   subject { ExamplePackage }
-
-  it 'has a homepage' do
-    expect(subject.homepage).to eq example_homepage
-  end
 
   it 'resolves the url as a uri' do
     expect(subject.uri).to eq URI(example_url)

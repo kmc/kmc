@@ -6,7 +6,7 @@ module Kosmos
   class Package
     include PackageDsl
 
-    [:title, :homepage, :url].each do |param|
+    [:title, :url].each do |param|
       define_singleton_method(param) do |value = nil|
         if value
           class_variable_set("@@#{param}", value)
