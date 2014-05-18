@@ -11,11 +11,11 @@ module Kosmos
       end
 
       def mark_preinstall(path, package)
-        GitAdapter.commit_everything(path, pre_install_message(package))
+        GitAdapter.commit_changes(path, pre_install_message(package))
       end
 
       def mark_postinstall(path, package)
-        GitAdapter.commit_everything(path, post_install_message(package))
+        GitAdapter.commit_changes(path, post_install_message(package))
       end
 
       def installed_packages(path)
