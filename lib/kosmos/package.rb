@@ -22,12 +22,12 @@ module Kosmos
       @ksp_path = ksp_path
       @download_dir = self.class.unzip!
 
-      puts "Saving your work before installing ..."
+      puts "Saving your work before installing ..." if Kosmos.config.verbose
       Versioner.mark_preinstall(ksp_path, self.class)
 
-      puts "Installing #{self.class.title} ..."
+      puts "Installing #{self.class.title} ..." if Kosmos.config.verbose
       install
-      puts "Cleaning up ..."
+      puts "Cleaning up ..." if Kosmos.config.verbose
       Versioner.mark_postinstall(ksp_path, self.class)
     end
 
@@ -64,7 +64,7 @@ module Kosmos
       def unzip!
         download_file = download!
 
-        puts "Unzipping ..."
+        puts "Unzipping ..." if Kosmos.config.verbose
 
         output_path = Pathname.new(download_file.path).parent.to_s
 
@@ -78,7 +78,7 @@ module Kosmos
       end
 
       def download!
-        puts "Downloading from #{uri} ..."
+        puts "Downloading from #{uri} ..." if Kosmos.config.verbose
         response = fetch(uri)
         tmpdir = Dir.mktmpdir
 

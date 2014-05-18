@@ -8,19 +8,37 @@ module Kosmos
   class InvalidUninstallError < StandardError
   end
 
-  def self.save_ksp_path(path)
-    File.open(config_path, "w+") do |file|
-      file.write(path)
+  class << self
+    def config
+      @config ||= Configuration.new
+    end
+
+    def configure
+      yield(config)
+    end
+
+    def save_ksp_path(path)
+      File.open(config_path, "w+") do |file|
+        file.write(path)
+      end
+    end
+
+    def load_ksp_path
+      File.read(config_path)
+    end
+
+    private
+
+    def config_path
+      File.join(Dir.home, ".kosmos")
     end
   end
 
-  def self.load_ksp_path
-    File.read(config_path)
-  end
+  class Configuration
+    attr_accessor :verbose
 
-  private
-
-  def self.config_path
-    File.join(Dir.home, ".kosmos")
+    def initialize
+      @verbose = false
+    end
   end
 end

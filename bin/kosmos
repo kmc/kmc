@@ -2,6 +2,10 @@
 
 require 'kosmos'
 
+Kosmos.configure do |config|
+  config.verbose = true
+end
+
 case ARGV.shift
 when 'init'
   ksp_path = ARGV.shift
