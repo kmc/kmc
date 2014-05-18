@@ -9,9 +9,9 @@ module Kosmos
     [:title, :url].each do |param|
       define_singleton_method(param) do |value = nil|
         if value
-          class_variable_set("@@#{param}", value)
+          instance_variable_set("@#{param}", value)
         else
-          class_variable_get("@@#{param}")
+          instance_variable_get("@#{param}")
         end
       end
     end
@@ -34,9 +34,9 @@ module Kosmos
     class << self
       def aliases(*aliases)
         if aliases.any?
-          @@aliases = aliases
+          @aliases = aliases
         else
-          @@aliases
+          @aliases
         end
       end
 
