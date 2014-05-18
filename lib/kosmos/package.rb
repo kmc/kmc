@@ -4,6 +4,8 @@ require 'tmpdir'
 
 module Kosmos
   class Package
+    include PackageDsl
+
     [:title, :homepage, :url].each do |param|
       define_singleton_method(param) do |value = nil|
         if value
@@ -27,13 +29,6 @@ module Kosmos
       install
       puts "Cleaning up ..."
       Versioner.mark_postinstall(ksp_path, self.class)
-
-      puts "Done!"
-    end
-
-    def merge_directory(from, opts)
-      FileUtils.cp_r(File.join(@download_dir, from),
-        File.join(@ksp_path, opts[:into]))
     end
 
     class << self

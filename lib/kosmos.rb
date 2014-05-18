@@ -1,3 +1,4 @@
+require 'kosmos/package_dsl'
 require 'kosmos/package'
 require 'kosmos/versioner'
 require 'kosmos/git_adapter'
