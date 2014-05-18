@@ -26,16 +26,20 @@ when 'install'
   ksp_path = Kosmos.load_ksp_path
 
   package = Kosmos::Package.find(package_name)
-  puts "Installing package #{package.title} ..."
 
-  package.new.install!(ksp_path)
-
-  puts "Done!"
+  if package
+    puts "Installing package #{package.title} ..."
+    package.new.install!(ksp_path)
+    puts "Done!"
+  else
+    puts "Error: Kosmos couldn't find any packages with the name #{package_name.inspect}."
+  end
 
 when 'uninstall'
   ksp_path = Kosmos.load_ksp_path
 
-  puts "Preparing to uninstall the most recently-installed mod ..."
+  last_installed = Kosmos::Versioner.last_installed_package(ksp_path)
+  puts "Preparing to uninstall #{last_installed} ..."
   package = Kosmos::Versioner.uninstall_last_package(ksp_path)
   puts "Done! Just uninstalled: #{package}."
 

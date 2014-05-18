@@ -24,6 +24,10 @@ module Kosmos
         installs.map { |c| commit_subject(c) }
       end
 
+      def last_installed_package(path)
+        installed_packages(path).first
+      end
+
       def uninstall_last_package(path)
         # Exclude current commit because if we're currently on a preinstall
         # commit (because we just uninstalled something else), then we wouldn't
