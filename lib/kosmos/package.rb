@@ -45,10 +45,14 @@ module Kosmos
         (@@packages ||= []) << package
       end
 
+      def normalize_for_find(name)
+        name.downcase.gsub(' ', "-")
+      end
+
       def find(name)
         @@packages.find do |package|
           [package.title, package.aliases].flatten.any? do |candidate_name|
-            candidate_name.downcase == name.downcase
+            normalize_for_find(candidate_name) == normalize_for_find(name)
           end
         end
       end

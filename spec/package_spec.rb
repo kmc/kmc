@@ -46,13 +46,20 @@ describe Kosmos::Package do
     end
   end
 
+  describe '#normalize_for_find' do
+    it 'converts all to lowercase' do
+      expect(Kosmos::Package.normalize_for_find('eXaMpLe')).to eq 'example'
+    end
+
+    it 'converts spaces to dashes' do
+      expect(Kosmos::Package.normalize_for_find('many words')).
+        to eq 'many-words'
+    end
+  end
+
   describe '#find' do
     it 'finds a package by name' do
       expect(Kosmos::Package.find('Example')).to eq ExamplePackage
-    end
-
-    it 'is not case-sensitive' do
-      expect(Kosmos::Package.find('eXaMpLe')).to eq ExamplePackage
     end
 
     it 'finds a package by alias' do
