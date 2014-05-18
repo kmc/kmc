@@ -16,6 +16,7 @@ when 'init'
   puts "Install your first mod by running the command:"
   puts "  kosmos install [name-of-the-mod]"
   puts
+
 when 'install'
   package_name = ARGV.shift
   ksp_path = Kosmos.load_ksp_path
@@ -26,6 +27,7 @@ when 'install'
   package.new.install!(ksp_path)
 
   puts "Done!"
+
 when 'uninstall'
   ksp_path = Kosmos.load_ksp_path
 
