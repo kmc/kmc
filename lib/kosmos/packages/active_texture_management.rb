@@ -5,7 +5,7 @@ class ActiveTextureManagementBasic < Kosmos::Package
   url 'https://github.com/rbray89/ActiveTextureManagement/releases/download/3-1-basic/ActiveTextureManagement-Basic-3-1.zip'
 
   def install
-    merge_directory '.'
+    merge_directory 'GameData'
   end
 end
 
@@ -15,6 +15,6 @@ class ActiveTextureManagementAggressive < Kosmos::Package
   url 'https://github.com/rbray89/ActiveTextureManagement/releases/download/3-1-aggressive/ActiveTextureManagement-3-1.zip'
 
   def install
-    merge_directory '.'
+    merge_directory 'GameData'
   end
 end
