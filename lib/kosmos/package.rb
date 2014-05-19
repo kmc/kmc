@@ -96,6 +96,8 @@ module Kosmos
       private
 
       def fetch(uri)
+        return fetch(URI("http:#{uri}")) unless uri.scheme
+
         response = Net::HTTP.get_response(uri)
 
         case response

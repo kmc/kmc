@@ -23,6 +23,7 @@ describe Kosmos::Package do
   describe 'downloading' do
     let(:example_zip) { File.read('spec/fixtures/example.zip') }
     let(:redirected_url) { 'http://example.com/latest' }
+    let(:schemeless_url) { '//example.com/latest' }
 
     before do
       stub_request(:get, example_url).to_return(body: example_zip)
@@ -43,6 +44,13 @@ describe Kosmos::Package do
       expect(Dir.entries(unzipped_dir)).to include('tmp')
       expect(File.read(File.join(unzipped_dir, 'tmp', 'example.txt'))).
         to eq "Hello, world!\n"
+    end
+
+    it 'falls back to http if no scheme specified' do
+      ExamplePackage.url schemeless_url
+
+      download_file = subject.download!
+      expect(File.read(download_file)).to eq example_zip
     end
   end
 
