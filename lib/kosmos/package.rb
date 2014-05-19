@@ -6,6 +6,8 @@ module Kosmos
   class Package
     include PackageDsl
 
+    attr_reader :ksp_path, :download_dir
+
     [:title, :url].each do |param|
       define_singleton_method(param) do |value = nil|
         if value
