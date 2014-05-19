@@ -1,4 +1,5 @@
 require 'pathname'
+require 'httparty'
 require 'zip'
 require 'tmpdir'
 
@@ -61,10 +62,6 @@ module Kosmos
         end
       end
 
-      def uri
-        URI(url)
-      end
-
       def unzip!
         download_file = download!
 
@@ -82,32 +79,15 @@ module Kosmos
       end
 
       def download!
-        puts "Downloading from #{uri} ..." if Kosmos.config.verbose
-        response = fetch(uri)
+        puts "Downloading from #{url} ..." if Kosmos.config.verbose
+        downloaded_file = HTTParty.get(url)
         tmpdir = Dir.mktmpdir
 
         download_file = File.new(File.join(tmpdir, 'download'), 'w+')
-        download_file.write(response.body)
+        download_file.write(downloaded_file)
         download_file.close
 
         download_file
-      end
-
-      private
-
-      def fetch(uri)
-        return fetch(URI("http:#{uri}")) unless uri.scheme
-
-        response = Net::HTTP.get_response(uri)
-
-        case response
-        when Net::HTTPSuccess
-          response
-        when Net::HTTPRedirection
-          fetch(URI(response['location']))
-        else
-          nil
-        end
       end
     end
 

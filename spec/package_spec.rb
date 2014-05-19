@@ -12,10 +12,6 @@ describe Kosmos::Package do
 
   subject { ExamplePackage }
 
-  it 'resolves the url as a uri' do
-    expect(subject.uri).to eq URI(example_url)
-  end
-
   it 'has a full name' do
     expect(subject.title).to eq 'Example'
   end
