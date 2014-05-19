@@ -29,17 +29,12 @@ module Kosmos
       end
 
       def uninstall_last_package(path)
-        # Exclude current commit because if we're currently on a preinstall
-        # commit (because we just uninstalled something else), then we wouldn't
-        # actually do anything if we resetted to HEAD.
-        #
         # We want to rewind to the last precommit that *does* have a matching
         # post-commit, that is, we want to undo the last postcommit.
-        all_commits = GitAdapter.list_commits(path)
-        candidate_commits = all_commits[1..-1]
+        candidate_commits = GitAdapter.list_commits(path)
 
         next_commit = candidate_commits.find { |c| commit_type(c) == :post }
-        target = all_commits[all_commits.index(next_commit) - 1]
+        target = candidate_commits[candidate_commits.index(next_commit) + 1]
 
         verify_can_reset_to(target, next_commit)
 
