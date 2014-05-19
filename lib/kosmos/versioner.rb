@@ -38,8 +38,8 @@ module Kosmos
         all_commits = GitAdapter.list_commits(path)
         candidate_commits = all_commits[1..-1]
 
-        target = candidate_commits.find { |c| commit_type(c) == :pre }
-        next_commit = all_commits[all_commits.index(target) - 1]
+        next_commit = candidate_commits.find { |c| commit_type(c) == :post }
+        target = all_commits[all_commits.index(next_commit) - 1]
 
         verify_can_reset_to(target, next_commit)
 
@@ -69,7 +69,7 @@ module Kosmos
 
       def verify_can_reset_to(target, next_commit)
         unless target && next_commit &&
-            commit_type(next_commit) == :post &&
+            commit_type(target) == :pre &&
             commit_subject(target) == commit_subject(next_commit)
           raise InvalidUninstallError
         end
