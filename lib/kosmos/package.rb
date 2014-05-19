@@ -71,7 +71,14 @@ module Kosmos
 
         Zip::File.open(download_file.path) do |zip_file|
           zip_file.each do |entry|
-            entry.extract(File.join(output_path, entry.name))
+            destination = File.join(output_path, entry.name)
+            parent_dir = File.expand_path('..', destination)
+
+            unless File.exists?(parent_dir)
+              Dir.mkdir(parent_dir)
+            end
+
+            entry.extract(destination)
           end
         end
 
