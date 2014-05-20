@@ -32,6 +32,7 @@ module Kosmos
       install
       puts "Cleaning up ..." if Kosmos.config.verbose
       Versioner.mark_postinstall(ksp_path, self.class)
+      Kosmos.config.post_processors.each { |p| p.post_process(ksp_path) }
     end
 
     class << self
@@ -98,6 +99,11 @@ module Kosmos
 
     # Now, let's include all the known packages.
     Dir[File.join(File.dirname(__FILE__), 'packages', '*.rb')].each do |file|
+      require file
+    end
+
+    # ... and the post-processors too.
+    Dir[File.join(File.dirname(__FILE__), 'post_processors', '*.rb')].each do |file|
       require file
     end
   end

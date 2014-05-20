@@ -35,10 +35,11 @@ module Kosmos
   end
 
   class Configuration
-    attr_accessor :verbose
+    attr_accessor :verbose, :post_processors
 
     def initialize
       @verbose = false
+      @post_processors = [Kosmos::PostProcessors::ModuleManagerResolver]
     end
   end
 end
