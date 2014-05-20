@@ -74,9 +74,7 @@ module Kosmos
             destination = File.join(output_path, entry.name)
             parent_dir = File.expand_path('..', destination)
 
-            unless File.exists?(parent_dir)
-              Dir.mkdir(parent_dir)
-            end
+            Dir.mkdir(parent_dir) unless File.exists?(parent_dir)
 
             entry.extract(destination)
           end
