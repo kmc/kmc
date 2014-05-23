@@ -1,3 +1,0 @@
-        Dir["/**/*"].each do |path|
-          p path
-        end
