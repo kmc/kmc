@@ -81,6 +81,8 @@ module Kosmos
           end
         end
 
+        File.delete(File.absolute_path(download_file))
+
         output_path
       end
 
