@@ -17,7 +17,14 @@ describe Kosmos::Package do
   end
 
   describe 'downloading' do
-    let(:example_zip) { File.read('spec/fixtures/example.zip') }
+    before { FakeFS.activate! }
+    after { FakeFS.deactivate! }
+
+    let(:example_zip) do
+      Zip::File.open('example', Zip::File::CREATE) {}
+      File.read('example')
+    end
+
     let(:redirected_url) { 'http://example.com/latest' }
     let(:schemeless_url) { '//example.com/latest' }
 
@@ -35,11 +42,8 @@ describe Kosmos::Package do
     end
 
     it 'unzips the contents' do
-      unzipped_dir = subject.send(:unzip!)
-
-      expect(Dir.entries(unzipped_dir)).to include('tmp')
-      expect(File.read(File.join(unzipped_dir, 'tmp', 'example.txt'))).
-        to eq "Hello, world!\n"
+      Zip::File.should_receive(:open)
+      subject.unzip!
     end
 
     it 'falls back to http if no scheme specified' do

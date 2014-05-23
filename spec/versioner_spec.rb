@@ -1,11 +1,11 @@
 require 'spec_helper'
 
 describe Kosmos::Versioner do
-  let(:ksp_dir) { 'spec/fixtures/ksp' }
+  let(:sandbox_dir) { 'spec/sandbox' }
+  let(:ksp_dir) { File.join(sandbox_dir, 'ksp') }
 
-  after(:each) do
-    FileUtils.rm_rf(File.join(ksp_dir, '.git'))
-  end
+  before { FileUtils.mkdir_p(ksp_dir) }
+  after { FileUtils.rm_rf(sandbox_dir) }
 
   describe '#init_repo' do
     it 'creates a bare git repo and commits the tree' do

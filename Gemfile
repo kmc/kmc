@@ -8,3 +8,7 @@ group :development do
   gem 'rspec', '~> 2.14'
   gem 'webmock'
 end
+
+group :test do
+  gem 'fakefs', require: 'fakefs/safe'
+end

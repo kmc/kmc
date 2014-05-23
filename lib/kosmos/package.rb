@@ -89,6 +89,7 @@ module Kosmos
       def download!
         puts "Downloading from #{url} ..." if Kosmos.config.verbose
         downloaded_file = HTTParty.get(url)
+
         tmpdir = Dir.mktmpdir
 
         download_file = File.new(File.join(tmpdir, 'download'), 'w+')
