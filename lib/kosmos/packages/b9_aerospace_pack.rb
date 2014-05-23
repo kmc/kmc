@@ -2,7 +2,7 @@ class B9AerospacePack < Kosmos::Package
   title 'B9 Aerospace Pack'
   aliases 'b9', 'b9 aerospace'
 
-  url 'http://kerbalspaceport.com/wp/wp-content/themes/kerbal/inc/download.php?f=uploads/2013/10/B9-Aerospace-Pack-R4-0c.zip'
+  url 'http://download707.mediafire.com/wr58sefatkqg/o6cbe03iitggj1p/B9+Aerospace+Pack+R4.0c.zip'
 
   def install
     merge_directory 'GameData'
