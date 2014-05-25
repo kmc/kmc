@@ -5,6 +5,7 @@ require 'kosmos'
 
 require 'webmock/rspec'
 require 'fileutils'
+require 'ostruct'
 require 'fakefs/safe'
 
 module FakeFS

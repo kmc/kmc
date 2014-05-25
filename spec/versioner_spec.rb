@@ -2,10 +2,10 @@ require 'spec_helper'
 
 describe Kosmos::Versioner do
   let(:sandbox_dir) { 'spec/sandbox' }
-  let(:ksp_dir) { File.join(sandbox_dir, 'ksp') }
+  let(:ksp_dir) { File.absolute_path(File.join(sandbox_dir, 'ksp')) }
 
-  before { FileUtils.mkdir_p(ksp_dir) }
-  after { FileUtils.rm_rf(sandbox_dir) }
+  before(:each) { FileUtils.mkdir_p(ksp_dir) }
+  after(:each) { FileUtils.rm_rf(sandbox_dir) }
 
   describe '#init_repo' do
     it 'creates a bare git repo and commits the tree' do
@@ -13,6 +13,22 @@ describe Kosmos::Versioner do
 
       Dir.chdir(ksp_dir) do
         expect(`git ls-files --modified`).to be_empty
+      end
+    end
+  end
+
+  describe '#mark_preinstall' do
+    it 'adds everything and commits' do
+      Kosmos::Versioner.init_repo(ksp_dir)
+
+      Dir.chdir(ksp_dir) do
+        package = OpenStruct.new
+        package.title = "Example"
+
+        `touch hello.txt`
+        Kosmos::Versioner.mark_preinstall(ksp_dir, package)
+
+        expect(`git ls-files --others`).to be_empty
       end
     end
   end
