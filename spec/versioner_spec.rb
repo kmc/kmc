@@ -33,4 +33,21 @@ describe Kosmos::Versioner do
       end
     end
   end
+
+  describe '#mark-postinstall' do
+    it 'adds everything and commits' do
+      Kosmos::Versioner.init_repo(ksp_dir)
+
+      Dir.chdir(ksp_dir) do
+        package = OpenStruct.new
+        package.title = "Example"
+
+        `touch hello.txt`
+        Kosmos::Versioner.mark_postinstall(ksp_dir, package)
+
+        expect(`git ls-files --others`).to be_empty
+        expect(`git log -1 --pretty=%B`).to eq "POST: Example\n"
+      end
+    end
+  end
 end
