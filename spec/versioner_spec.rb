@@ -50,4 +50,23 @@ describe Kosmos::Versioner do
       end
     end
   end
+
+  describe '#installed-packages' do
+    it 'gets all those with a post-install, but ignores just pre-installs' do
+      Kosmos::Versioner.init_repo(ksp_dir)
+
+      package = OpenStruct.new
+
+      %w(a b c).each do |title|
+        package.title = title;
+        Kosmos::Versioner.mark_preinstall(ksp_dir, package)
+        Kosmos::Versioner.mark_postinstall(ksp_dir, package)
+      end
+
+      package.title = 'd'
+      Kosmos::Versioner.mark_preinstall(ksp_dir, package)
+
+      expect(Kosmos::Versioner.installed_packages(ksp_dir)).to eq %w(c b a)
+    end
+  end
 end
