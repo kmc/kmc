@@ -29,6 +29,7 @@ describe Kosmos::Versioner do
         Kosmos::Versioner.mark_preinstall(ksp_dir, package)
 
         expect(`git ls-files --others`).to be_empty
+        expect(`git log -1 --pretty=%B`).to eq "PRE: Example\n"
       end
     end
   end
