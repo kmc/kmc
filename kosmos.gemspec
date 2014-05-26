@@ -21,4 +21,5 @@ Gem::Specification.new do |spec|
   spec.add_dependency "rubyzip"
   spec.add_dependency "rugged"
   spec.add_dependency "httparty"
+  spec.add_dependency "nokogiri"
 end
