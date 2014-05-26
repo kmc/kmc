@@ -87,8 +87,17 @@ module Kosmos
       end
 
       def download!
-        puts "Downloading from #{url} ..." if Kosmos.config.verbose
-        downloaded_file = HTTParty.get(url)
+        if Kosmos.config.verbose
+          puts "The package is found at #{url}. Finding the download URL ..."
+        end
+
+        download_url = DownloadUrl.new(url).resolve_download_url
+
+        if Kosmos.config.verbose
+          puts "Found it. Downloading from #{download_url} ..."
+        end
+
+        downloaded_file = HTTParty.get(download_url)
 
         tmpdir = Dir.mktmpdir
 
