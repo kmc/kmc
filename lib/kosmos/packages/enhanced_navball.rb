@@ -1,6 +1,6 @@
 class EnhancedNavball < Kosmos::Package
   title 'Enhanced Navball'
-  url 'http://addons.cursecdn.com/files/2201/977/EnhancedNavBall_1_2.zip'
+  url 'http://kerbal.curseforge.com/plugins/220469-enhanced-navball-v1-2'
 
   def install
     merge_directory 'EnhancedNavBall/Plugins'
