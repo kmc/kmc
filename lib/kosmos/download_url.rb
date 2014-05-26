@@ -22,10 +22,6 @@ module Kosmos
       url =~ /mediafire/
     end
 
-    def box?
-      url =~ /box\.com/
-    end
-
     def dropbox?
       url =~ /dropbox/
     end

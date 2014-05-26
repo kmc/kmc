@@ -13,11 +13,6 @@ describe Kosmos::DownloadUrl do
     expect(Kosmos::DownloadUrl.new(url).resolve_download_url).to eq target_url
   end
 
-  it 'detects box links' do
-    url = 'https://app.box.com/s/some-random-stuff'
-    expect(Kosmos::DownloadUrl.new(url)).to be_box
-  end
-
   it 'detects dropbox links' do
     url = 'https://www.dropbox.com/s/some-random-stuff/whatever.zip'
     expect(Kosmos::DownloadUrl.new(url)).to be_dropbox
