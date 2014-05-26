@@ -19,7 +19,7 @@ describe Kosmos::DownloadUrl do
   end
 
   it 'detects dropbox links' do
-    url = 'https://dl.dropboxusercontent.com/s/some-random-stuff'
+    url = 'https://www.dropbox.com/s/some-random-stuff/whatever.zip'
     expect(Kosmos::DownloadUrl.new(url)).to be_dropbox
   end
 end
