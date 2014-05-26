@@ -7,6 +7,7 @@ require 'webmock/rspec'
 require 'fileutils'
 require 'ostruct'
 require 'fakefs/safe'
+require 'pry'
 
 module FakeFS
   class File
