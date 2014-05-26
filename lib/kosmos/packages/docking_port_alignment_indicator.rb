@@ -1,6 +1,6 @@
 class DockingPortAlignmentIndicator < Kosmos::Package
   title 'Docking Port Alignment Indicator'
-  url 'http://addons.cursecdn.com/files/2201/632/DockingPortAlignment_3.1.zip'
+  url 'http://kerbal.curseforge.com/plugins/220299-docking-port-alignment-indicator-version-3-1'
 
   def install
     merge_directory 'GameData'

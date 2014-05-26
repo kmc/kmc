@@ -1,7 +1,7 @@
 class HotRockets < Kosmos::Package
   title 'HotRockets'
   aliases 'hot rockets'
-  url 'http://addons.cursecdn.com/files/2201/918/HotRockets_7.1_Nazari.zip'
+  url 'http://kerbal.curseforge.com/plugins/220207-hotrockets-particle-fx-replacement'
 
   def install
     merge_directory 'ModuleManager.2.1.0.dll', into: 'GameData'

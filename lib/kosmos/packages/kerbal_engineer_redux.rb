@@ -1,6 +1,6 @@
 class KerbalEngineerRedux < Kosmos::Package
   title 'Kerbal Engineer Redux'
-  url 'http://addons.cursecdn.com/files/2201/929/Engineer%20Redux%20v0.6.2.4.zip'
+  url 'http://kerbal.curseforge.com/plugins/220285-kerbal-engineer-redux'
 
   def install
     merge_directory 'Engineer', into: 'GameData'
