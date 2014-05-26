@@ -3,6 +3,7 @@ require 'kosmos/package'
 require 'kosmos/versioner'
 require 'kosmos/git_adapter'
 require 'kosmos/download_url'
+require 'kosmos/util'
 require 'kosmos/version'
 
 module Kosmos

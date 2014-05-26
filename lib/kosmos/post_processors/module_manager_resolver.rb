@@ -22,9 +22,7 @@ module Kosmos
         end
 
         (module_managers - [most_recent_manager]).each do |file|
-          if Kosmos.config.verbose
-            puts "Detected and deleting outdated version of ModuleManager: #{file}"
-          end
+          Util.log "Detected and deleting outdated version of ModuleManager: #{file}"
 
           File.delete(file)
         end

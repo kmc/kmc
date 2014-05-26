@@ -25,13 +25,15 @@ module Kosmos
       @ksp_path = ksp_path
       @download_dir = self.class.unzip!
 
-      puts "Saving your work before installing ..." if Kosmos.config.verbose
+      Util.log "Saving your work before installing ..."
       Versioner.mark_preinstall(ksp_path, self.class)
 
-      puts "Installing #{self.class.title} ..." if Kosmos.config.verbose
+      Util.log "Installing #{self.class.title} ..."
       install
-      puts "Cleaning up ..." if Kosmos.config.verbose
+
+      Util.log "Cleaning up ..."
       Versioner.mark_postinstall(ksp_path, self.class)
+
       Kosmos.config.post_processors.each { |p| p.post_process(ksp_path) }
     end
 
@@ -66,7 +68,7 @@ module Kosmos
       def unzip!
         download_file = download!
 
-        puts "Unzipping ..." if Kosmos.config.verbose
+        Util.log "Unzipping ..."
 
         output_path = Pathname.new(download_file.path).parent.to_s
 
@@ -87,16 +89,11 @@ module Kosmos
       end
 
       def download!
-        if Kosmos.config.verbose
-          puts "The package is found at #{url}. Finding the download URL ..."
-        end
-
+        Util.log "The package is found at #{url}. Finding the download URL ..."
         download_url = DownloadUrl.new(url).resolve_download_url
 
-        if Kosmos.config.verbose
-          puts "Found it. Downloading from #{download_url} ..."
-        end
 
+        Util.log "Found it. Downloading from #{download_url} ..."
         downloaded_file = HTTParty.get(download_url)
 
         tmpdir = Dir.mktmpdir
