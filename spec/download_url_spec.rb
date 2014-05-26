@@ -40,4 +40,10 @@ describe Kosmos::DownloadUrl do
 
   #   expect(Kosmos::DownloadUrl.new(url).resolve_download_url).to eq target_url
   # end
+
+  it 'just returns the url if no built-in tool available' do
+    url = 'https://github.com/rbray89/ActiveTextureManagement/releases/download/3-1-basic/ActiveTextureManagement-Basic-3-1.zip'
+
+    expect(Kosmos::DownloadUrl.new(url).resolve_download_url).to eq url
+  end
 end

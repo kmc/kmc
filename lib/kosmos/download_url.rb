@@ -13,6 +13,8 @@ module Kosmos
     end
 
     def resolve_download_url
+      return url unless has_known_resolver?
+
       html = Nokogiri::HTML(rendered_html)
 
       if mediafire?
@@ -37,6 +39,10 @@ module Kosmos
     end
 
     private
+
+    def has_known_resolver?
+      mediafire? || dropbox? || curseforge?
+    end
 
     def rendered_html
       Dir.chdir(File.dirname(__FILE__)) do
