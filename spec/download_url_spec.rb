@@ -29,4 +29,15 @@ describe Kosmos::DownloadUrl do
     url = 'http://kerbal.curseforge.com/plugins/123123-whatever'
     expect(Kosmos::DownloadUrl.new(url)).to be_curseforge
   end
+
+  # This is commented out until I mock this out -- I don't want to send useless
+  # queries to Curseforge.
+  #
+  # it 'correctly resolves curseforge download urls' do
+  #   # TODO: Use VCR or something on this
+  #   url = 'http://kerbal.curseforge.com/plugins/220207-hotrockets-particle-fx-replacement'
+  #   target_url = 'http://addons.cursecdn.com/files/2201%5C918/HotRockets_7.1_Nazari.zip'
+
+  #   expect(Kosmos::DownloadUrl.new(url).resolve_download_url).to eq target_url
+  # end
 end

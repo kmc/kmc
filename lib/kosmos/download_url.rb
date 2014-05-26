@@ -6,6 +6,10 @@ module Kosmos
 
     def initialize(url)
       @url = url
+
+      if curseforge?
+        @url = "#{url}/files/latest"
+      end
     end
 
     def resolve_download_url
@@ -15,6 +19,8 @@ module Kosmos
         html.css('.download_link a').first['href']
       elsif dropbox?
         html.css('#default_content_download_button').first['href']
+      elsif curseforge?
+        html.text.strip
       end
     end
 
