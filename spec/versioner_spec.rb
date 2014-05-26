@@ -22,8 +22,7 @@ describe Kosmos::Versioner do
       Kosmos::Versioner.init_repo(ksp_dir)
 
       Dir.chdir(ksp_dir) do
-        package = OpenStruct.new
-        package.title = "Example"
+        package = OpenStruct.new(title: "Example")
 
         `touch hello.txt`
         Kosmos::Versioner.mark_preinstall(ksp_dir, package)
@@ -39,8 +38,7 @@ describe Kosmos::Versioner do
       Kosmos::Versioner.init_repo(ksp_dir)
 
       Dir.chdir(ksp_dir) do
-        package = OpenStruct.new
-        package.title = "Example"
+        package = OpenStruct.new(title: "Example")
 
         `touch hello.txt`
         Kosmos::Versioner.mark_postinstall(ksp_dir, package)
@@ -55,15 +53,13 @@ describe Kosmos::Versioner do
     it 'gets all those with a post-install, but ignores just pre-installs' do
       Kosmos::Versioner.init_repo(ksp_dir)
 
-      package = OpenStruct.new
-
       %w(a b c).each do |title|
-        package.title = title;
+        package = OpenStruct.new(title: title)
         Kosmos::Versioner.mark_preinstall(ksp_dir, package)
         Kosmos::Versioner.mark_postinstall(ksp_dir, package)
       end
 
-      package.title = 'd'
+      package = OpenStruct.new(title: 'd')
       Kosmos::Versioner.mark_preinstall(ksp_dir, package)
 
       expect(Kosmos::Versioner.installed_packages(ksp_dir)).to eq %w(c b a)
