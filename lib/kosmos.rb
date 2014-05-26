@@ -2,6 +2,7 @@ require 'kosmos/package_dsl'
 require 'kosmos/package'
 require 'kosmos/versioner'
 require 'kosmos/git_adapter'
+require 'kosmos/download_url'
 require 'kosmos/version'
 
 module Kosmos
