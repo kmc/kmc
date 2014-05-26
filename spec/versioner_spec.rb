@@ -69,4 +69,23 @@ describe Kosmos::Versioner do
       expect(Kosmos::Versioner.installed_packages(ksp_dir)).to eq %w(c b a)
     end
   end
+
+  describe '#uninstall-last-package' do
+    it 'resets to before last post-install' do
+      Kosmos::Versioner.init_repo(ksp_dir)
+
+      package = OpenStruct.new(title: 'Example')
+      Kosmos::Versioner.mark_preinstall(ksp_dir, package)
+
+      `touch #{File.join(ksp_dir, 'hello.txt')}`
+      Kosmos::Versioner.mark_postinstall(ksp_dir, package)
+
+      Kosmos::Versioner.uninstall_last_package(ksp_dir)
+
+      Dir.chdir(ksp_dir) do
+        expect(`git log -1 --pretty=%B`).to eq "PRE: Example\n"
+        expect(File.exist?('hello.txt')).to be_false
+      end
+    end
+  end
 end
