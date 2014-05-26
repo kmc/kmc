@@ -7,6 +7,7 @@ group :development do
   gem 'rake'
   gem 'rspec', '~> 2.14'
   gem 'webmock'
+  gem 'pry'
 end
 
 group :test do
