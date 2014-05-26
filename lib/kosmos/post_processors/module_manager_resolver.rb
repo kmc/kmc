@@ -9,16 +9,14 @@ module Kosmos
         end
 
         most_recent_manager = module_managers.max_by do |file|
-          # Rather than do some fancy parsing, we'll just find the module
-          # version number by removing any non-numerical symbols from the
-          # basename, and assume the rest is a version number.
+          # Converts a string like this:
           #
-          # Then, we just sort by those numbers.
+          #   ModuleManager.5.2.3
           #
-          # This technique will fail if a) the file name is weird, or b) the
-          # version number goes up to 10, because sorting is done
-          # alphabetically.
-          File.basename(file).gsub(/[^\d]/, '')
+          # Into this:
+          #
+          #   [5, 2, 3]
+          File.basename(file).scan(/\d+/).map(&:to_i)
         end
 
         (module_managers - [most_recent_manager]).each do |file|
