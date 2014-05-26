@@ -24,4 +24,9 @@ describe Kosmos::DownloadUrl do
 
     expect(Kosmos::DownloadUrl.new(url).resolve_download_url).to eq target_url
   end
+
+  it 'detects curseforge links' do
+    url = 'http://kerbal.curseforge.com/plugins/123123-whatever'
+    expect(Kosmos::DownloadUrl.new(url)).to be_curseforge
+  end
 end

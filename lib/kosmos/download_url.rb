@@ -26,6 +26,10 @@ module Kosmos
       url =~ /dropbox/
     end
 
+    def curseforge?
+      url =~ /curseforge/
+    end
+
     private
 
     def rendered_html
