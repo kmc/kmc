@@ -22,4 +22,11 @@ describe Kosmos::DownloadUrl do
     url = 'https://www.dropbox.com/s/some-random-stuff/whatever.zip'
     expect(Kosmos::DownloadUrl.new(url)).to be_dropbox
   end
+
+  it 'correctly resolves dropbox download urls' do
+    url = 'file://' + File.absolute_path('spec/fixtures/example_dropbox.html')
+    target_url = 'https://dl.dropboxusercontent.com/s/od4kickxt92jpo2/BetterAtmosphereV4%5BREL%5D.zip?dl=1&token_hash=AAFn5emxuVXLw_RfjDgQs0Hn7-YZ-vejn3m8zLgOj2tTFA&expiry=1401095304'
+
+    expect(Kosmos::DownloadUrl.new(url).resolve_download_url).to eq target_url
+  end
 end

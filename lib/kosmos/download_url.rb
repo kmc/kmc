@@ -13,6 +13,8 @@ module Kosmos
 
       if mediafire?
         html.css('.download_link a').first['href']
+      elsif dropbox?
+        html.css('#default_content_download_button').first['href']
       end
     end
 
