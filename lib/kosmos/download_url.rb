@@ -1,31 +1,18 @@
 require 'nokogiri'
 
 module Kosmos
-  class DownloadUrl
-    attr_reader :url
-
-    def initialize(url)
-      @url = url
-
-      if curseforge?
-        @url = "#{url}/files/latest"
-      end
-    end
-
+  class DownloadUrl < Struct.new(:url)
     def resolve_download_url
-      return extract_box_url if box?
-      return url unless has_known_resolver?
-
-      raw_html = rendered_html
-
-      page = Nokogiri::HTML(raw_html)
-
       if mediafire?
-        page.css('.download_link a').first['href']
+        extract_mediafire_url
+      elsif box?
+        extract_box_url
       elsif dropbox?
-        page.css('#default_content_download_button').first['href']
+        extract_dropbox_url
       elsif curseforge?
-        raw_html.strip
+        extract_curseforge_url
+      else
+        url
       end
     end
 
@@ -47,6 +34,18 @@ module Kosmos
 
     private
 
+    def extract_mediafire_url
+      rendered_page.css('.download_link a').first['href']
+    end
+
+    def extract_dropbox_url
+      rendered_page.css('#default_content_download_button').first['href']
+    end
+
+    def extract_curseforge_url
+      rendered_html("#{url}/files/latest").strip
+    end
+
     def extract_box_url
       raw_html = HTTParty.get(url)
 
@@ -64,11 +63,11 @@ module Kosmos
       base + shared_name_part + file_id_part
     end
 
-    def has_known_resolver?
-      mediafire? || dropbox? || curseforge?
+    def rendered_page(url = self.url)
+      Nokogiri::HTML(rendered_html(url))
     end
 
-    def rendered_html(url = self.url)
+    def rendered_html(url)
       Dir.chdir(File.dirname(__FILE__)) do
         `phantomjs page_fetcher.js #{url}`
       end
