@@ -27,6 +27,11 @@ when 'install'
   ARGV.each do |package_name|
     package = Kosmos::Package.find(package_name)
 
+    if Kosmos::Versioner.installed_packages(ksp_path).include?(package.title)
+      puts "Error: You have already installed #{package.title} with Kosmos."
+      exit
+    end
+
     if package
       puts "Installing package #{package.title} ..."
       package.new.install!(ksp_path)
