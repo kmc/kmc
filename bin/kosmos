@@ -22,17 +22,19 @@ when 'init'
   puts
 
 when 'install'
-  package_name = ARGV.shift
   ksp_path = Kosmos.load_ksp_path
 
-  package = Kosmos::Package.find(package_name)
+  ARGV.each do |package_name|
+    package = Kosmos::Package.find(package_name)
 
-  if package
-    puts "Installing package #{package.title} ..."
-    package.new.install!(ksp_path)
-    puts "Done!"
-  else
-    puts "Error: Kosmos couldn't find any packages with the name #{package_name.inspect}."
+    if package
+      puts "Installing package #{package.title} ..."
+      package.new.install!(ksp_path)
+      puts "Done!"
+    else
+      puts "Error: Kosmos couldn't find any packages with the name #{package_name.inspect}."
+      exit
+    end
   end
 
 when 'uninstall'
