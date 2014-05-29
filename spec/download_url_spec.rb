@@ -13,6 +13,21 @@ describe Kosmos::DownloadUrl do
     expect(Kosmos::DownloadUrl.new(url).resolve_download_url).to eq target_url
   end
 
+  it 'detects box links' do
+    url = 'https://app.box.com/s/89skim2e3simjwmuof4c'
+    expect(Kosmos::DownloadUrl.new(url)).to be_box
+  end
+
+  it 'correctly resolves box download urls' do
+    url = 'https://app.box.com/s/89skim2e3simjwmuof4c'
+    target_url = 'https://app.box.com/index.php?rm=box_download_shared_file&shared_name=89skim2e3simjwmuof4c&file_id=f_13860854981'
+
+    stub_request(:get, url).
+      to_return(body: File.read('spec/fixtures/example_box.html'))
+
+    expect(Kosmos::DownloadUrl.new(url).resolve_download_url).to eq target_url
+  end
+
   it 'detects dropbox links' do
     url = 'https://www.dropbox.com/s/some-random-stuff/whatever.zip'
     expect(Kosmos::DownloadUrl.new(url)).to be_dropbox
