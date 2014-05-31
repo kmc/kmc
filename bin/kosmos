@@ -45,14 +45,15 @@ when 'install'
 when 'uninstall'
   ksp_path = Kosmos.load_ksp_path
 
-  last_installed = Kosmos::Versioner.last_installed_package(ksp_path)
+  package_name = ARGV.shift
+  package = Kosmos::Package.find(package_name)
 
-  if last_installed
-    puts "Preparing to uninstall #{last_installed} ..."
-    package = Kosmos::Versioner.uninstall_last_package(ksp_path)
-    puts "Done! Just uninstalled: #{package}."
+  if package
+    puts "Preparing to uninstall #{package.title} ..."
+    Kosmos::Versioner.uninstall_package(ksp_path, package)
+    puts "Done! Just uninstalled: #{package.title}."
   else
-    puts "Error: Kosmos could not find any packages to uninstall."
+    puts "Error: Kosmos couldn't find any packages with the name #{package_name.inspect}."
   end
 
 when 'list'
