@@ -6,6 +6,8 @@ require 'kosmos/download_url'
 require 'kosmos/util'
 require 'kosmos/version'
 
+require 'json'
+
 module Kosmos
   class << self
     def config
@@ -17,16 +19,24 @@ module Kosmos
     end
 
     def save_ksp_path(path)
-      File.open(config_path, "w+") do |file|
-        file.write(path)
-      end
+      write_config(ksp_path: path)
     end
 
     def load_ksp_path
-      File.read(config_path)
+      read_config[:ksp_path]
     end
 
     private
+
+    def write_config(opts)
+      File.open(config_path, "rw+") do |file|
+        file.write JSON.pretty_generate(read_config.merge(opts))
+      end
+    end
+
+    def read_config
+      JSON.parse(File.read(config_path), symbolize_names: true)
+    end
 
     def config_path
       File.join(Dir.home, ".kosmos")
