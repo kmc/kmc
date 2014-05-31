@@ -21,19 +21,15 @@ module Kosmos
       def installed_packages(path)
         commits = GitAdapter.list_commits(path)
 
-        preinstalls, uninstalls = [:pre, :uninstall].map do |type|
-          commits.select { |c| commit_type(c) == type }.map do |commit|
-            commit_subject(commit)
-          end
-        end
+        preinstalls = commits.select(&:pre?).map(&:subject)
+        uninstalls = commits.select(&:uninstall?).map(&:subject)
 
         preinstalls - uninstalls
       end
 
       def uninstall_package(path, package)
         to_revert = GitAdapter.list_commits(path).find do |commit|
-          commit_type(commit) == :post &&
-            commit_subject(commit) == package.title
+          commit.post? && commit.subject == package.title
         end
 
         GitAdapter.revert_commit(path, to_revert, uninstall_message(package))
@@ -51,16 +47,6 @@ module Kosmos
 
       def uninstall_message(package)
         "UNINSTALL: #{package.title}"
-      end
-
-      def commit_type(commit)
-        # "POST: Example" --> :post
-        commit.message.scan(/\A(\w+):/).first.first.downcase.to_sym
-      end
-
-      def commit_subject(commit)
-        # "POST: Example" --> "Example"
-        commit.message.split(' ')[1..-1].join(' ')
       end
     end
   end

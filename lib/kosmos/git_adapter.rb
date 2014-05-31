@@ -35,6 +35,27 @@ module Kosmos
     end
 
     class Commit < Struct.new(:message, :sha)
+      def pre?
+        type == :pre
+      end
+
+      def post?
+        type == :post
+      end
+
+      def uninstall?
+        type == :uninstall
+      end
+
+      def type
+        # "POST: Example" --> :post
+        message.split(':').first.downcase.to_sym
+      end
+
+      def subject
+        # "POST: Example\n" --> "Example"
+        message.split(' ', 2).last.strip
+      end
     end
   end
 end
