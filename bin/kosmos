@@ -6,6 +6,10 @@ Kosmos.configure do |config|
   config.verbose = true
 end
 
+def pretty_print_list(list)
+  list.each { |value| puts "  * #{value}" }
+end
+
 def load_packages(package_names)
   packages = Hash[package_names.map do |name|
     [name, Kosmos::Package.find(name)]
@@ -15,10 +19,7 @@ def load_packages(package_names)
 
   if unknown_packages.any?
     puts "Error: Kosmos couldn't find any packages with the following names:"
-    unknown_packages.each do |package_name, _|
-      puts "  * #{package_name}"
-    end
-
+    pretty_print_list(unknown_packages.keys)
     exit
   end
 
@@ -34,10 +35,7 @@ def check_installed_packages(ksp_path, packages)
 
   if installed_packages.any?
     puts "Error: You have already installed the following packages using Kosmos:"
-    installed_packages.each do |package|
-      puts "  * #{package.title}"
-    end
-
+    pretty_print_list(installed_packages.map(&:title))
     exit
   end
 end
@@ -90,8 +88,5 @@ when 'list'
 
   packages = Kosmos::Versioner.installed_packages(ksp_path)
   puts "You have installed #{packages.length} mod(s) using Kosmos:"
-
-  packages.each do |package|
-    puts "  * #{package}"
-  end
+  pretty_print_list(packages)
 end
