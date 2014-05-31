@@ -61,7 +61,8 @@ when 'install'
   packages = load_packages(ARGV)
   check_installed_packages(ksp_path, packages)
 
-  puts "Kosmos is about to install #{packages.count} package(s)."
+  puts "Kosmos is about to install #{packages.count} package(s):"
+  pretty_print_list(packages.map(&:title))
 
   packages.each do |package|
     puts "Installing package #{package.title} ..."
