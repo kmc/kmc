@@ -16,10 +16,11 @@ module Kosmos
         end
       end
 
-      def reset_to_commit(repo_path, commit_oid)
+      def revert_commit(repo_path, commit, commit_message)
         Dir.chdir(repo_path) do
-          `git reset --hard #{commit_oid}`
-          `git clean -f -d`
+          `git revert --no-commit #{commit.sha}`
+          `git add -A -f`
+          `git commit --allow-empty -m #{commit_message.shellescape}`
         end
       end
 

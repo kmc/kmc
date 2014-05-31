@@ -20,26 +20,23 @@ module Kosmos
 
       def installed_packages(path)
         commits = GitAdapter.list_commits(path)
-        installs = commits.select { |c| commit_type(c) == :post }
-        installs.map { |c| commit_subject(c) }
+
+        preinstalls, uninstalls = [:pre, :uninstall].map do |type|
+          commits.select { |c| commit_type(c) == type }.map do |commit|
+            commit_subject(commit)
+          end
+        end
+
+        preinstalls - uninstalls
       end
 
-      def last_installed_package(path)
-        installed_packages(path).first
-      end
+      def uninstall_package(path, package)
+        to_revert = GitAdapter.list_commits(path).find do |commit|
+          commit_type(commit) == :post &&
+            commit_subject(commit) == package.title
+        end
 
-      def uninstall_last_package(path)
-        # We want to rewind to the last precommit that *does* have a matching
-        # post-commit, that is, we want to undo the last postcommit.
-        candidate_commits = GitAdapter.list_commits(path)
-
-        next_commit = candidate_commits.find { |c| commit_type(c) == :post }
-        target = candidate_commits[candidate_commits.index(next_commit) + 1]
-
-        verify_can_reset_to(target, next_commit)
-
-        GitAdapter.reset_to_commit(path, target.sha)
-        commit_subject(target)
+        GitAdapter.revert_commit(path, to_revert, uninstall_message(package))
       end
 
       private
@@ -52,6 +49,10 @@ module Kosmos
         "POST: #{package.title}"
       end
 
+      def uninstall_message(package)
+        "UNINSTALL: #{package.title}"
+      end
+
       def commit_type(commit)
         # "POST: Example" --> :post
         commit.message.scan(/\A(\w+):/).first.first.downcase.to_sym
@@ -60,14 +61,6 @@ module Kosmos
       def commit_subject(commit)
         # "POST: Example" --> "Example"
         commit.message.split(' ')[1..-1].join(' ')
-      end
-
-      def verify_can_reset_to(target, next_commit)
-        unless target && next_commit &&
-            commit_type(target) == :pre &&
-            commit_subject(target) == commit_subject(next_commit)
-          raise InvalidUninstallError
-        end
       end
     end
   end
