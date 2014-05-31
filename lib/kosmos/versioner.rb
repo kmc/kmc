@@ -21,10 +21,22 @@ module Kosmos
       def installed_packages(path)
         commits = GitAdapter.list_commits(path)
 
-        preinstalls = commits.select(&:pre?).map(&:subject)
+        postinstalls = commits.select(&:post?).map(&:subject)
         uninstalls = commits.select(&:uninstall?).map(&:subject)
 
-        preinstalls - uninstalls
+        # The packages that have actually been installed are those that have a
+        # 'post-install' without any corresponding 'uninstall'. We can find
+        # these packages by getting post-installs, and removing the first
+        # instance of each package also found in uninstall.
+        #
+        # Note that we can't use Array#delete because that method will delete
+        # *all* instances of a package, which won't work because it's possible
+        # for a user to install, uninstall, then re-install a package.
+        uninstalls.each do |package|
+          postinstalls.delete_at(postinstalls.index(package))
+        end
+
+        postinstalls
       end
 
       def uninstall_package(path, package)
