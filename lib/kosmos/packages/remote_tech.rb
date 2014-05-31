@@ -1,6 +1,6 @@
 class RemoteTech2 < Kosmos::Package
   title 'Remote Tech 2'
-  url 'http://kerbalspaceport.com/wp/wp-content/themes/kerbal/inc/download.php?f=uploads/2013/12/RemoteTech2_Release_1.3.3.zip'
+  url 'https://github.com/RemoteTechnologiesGroup/RemoteTech/releases/download/v1.3.3/RemoteTech-v1.3.3.zip'
 
   def install
     merge_directory 'GameData'
