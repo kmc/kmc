@@ -18,7 +18,6 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_dependency "rubyzip"
-  spec.add_dependency "rugged"
   spec.add_dependency "httparty"
   spec.add_dependency "nokogiri"
 end

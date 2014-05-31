@@ -1,5 +1,3 @@
-require 'rugged'
-
 module Kosmos
   class Versioner
     class << self
