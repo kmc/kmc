@@ -6,6 +6,42 @@ Kosmos.configure do |config|
   config.verbose = true
 end
 
+def load_packages(package_names)
+  packages = Hash[package_names.map do |name|
+    [name, Kosmos::Package.find(name)]
+  end]
+
+  unknown_packages = packages.select { |_, package| package.nil? }
+
+  if unknown_packages.any?
+    puts "Error: Kosmos couldn't find any packages with the following names:"
+    unknown_packages.each do |package_name, _|
+      puts "  * #{package_name}"
+    end
+
+    exit
+  end
+
+  packages.values
+end
+
+def check_installed_packages(ksp_path, packages)
+  installed_titles = Kosmos::Versioner.installed_packages(ksp_path)
+
+  installed_packages = packages.select do |package|
+    installed_titles.include?(package.title)
+  end
+
+  if installed_packages.any?
+    puts "Error: You have already installed the following packages using Kosmos:"
+    installed_packages.each do |package|
+      puts "  * #{package.title}"
+    end
+
+    exit
+  end
+end
+
 case ARGV.shift
 when 'init'
   ksp_path = ARGV.shift
@@ -24,22 +60,15 @@ when 'init'
 when 'install'
   ksp_path = Kosmos.load_ksp_path
 
-  ARGV.each do |package_name|
-    package = Kosmos::Package.find(package_name)
+  packages = load_packages(ARGV)
+  check_installed_packages(ksp_path, packages)
 
-    if Kosmos::Versioner.installed_packages(ksp_path).include?(package.title)
-      puts "Error: You have already installed #{package.title} with Kosmos."
-      exit
-    end
+  puts "Kosmos is about to install #{packages.count} package(s)."
 
-    if package
-      puts "Installing package #{package.title} ..."
-      package.new.install!(ksp_path)
-      puts "Done!"
-    else
-      puts "Error: Kosmos couldn't find any packages with the name #{package_name.inspect}."
-      exit
-    end
+  packages.each do |package|
+    puts "Installing package #{package.title} ..."
+    package.new.install!(ksp_path)
+    puts "Done!"
   end
 
 when 'uninstall'
