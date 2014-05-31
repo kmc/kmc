@@ -7,9 +7,6 @@ require 'kosmos/util'
 require 'kosmos/version'
 
 module Kosmos
-  class InvalidUninstallError < StandardError
-  end
-
   class << self
     def config
       @config ||= Configuration.new
