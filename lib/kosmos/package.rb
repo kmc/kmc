@@ -89,12 +89,17 @@ module Kosmos
       end
 
       def download!
-        Util.log "The package is found at #{url}. Finding the download URL ..."
-        download_url = DownloadUrl.new(url).resolve_download_url
+        cached_download = download_from_cache
+        downloaded_file = if cached_download
+          Util.log "Use a cached version of #{title} ..."
+          cached_download
+        else
+          Util.log "The package is found at #{url}. Finding the download URL ..."
+          download_url = DownloadUrl.new(url).resolve_download_url
 
-
-        Util.log "Found it. Downloading from #{download_url} ..."
-        downloaded_file = HTTParty.get(download_url)
+          Util.log "Found it. Downloading from #{download_url} ..."
+          HTTParty.get(download_url)
+        end
 
         tmpdir = Dir.mktmpdir
 
@@ -103,6 +108,17 @@ module Kosmos
         download_file.close
 
         download_file
+      end
+
+      private
+
+      def download_from_cache
+        cache_dir = Kosmos.cache_dir
+        if cache_dir
+          cached_download = File.join(cache_dir, "#{title}.zip")
+
+          File.read(cached_download) if File.file?(cached_download)
+        end
       end
     end
 

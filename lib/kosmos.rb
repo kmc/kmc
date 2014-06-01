@@ -26,6 +26,10 @@ module Kosmos
       read_config[:ksp_path]
     end
 
+    def cache_dir
+      read_config[:cache_dir]
+    end
+
     private
 
     def write_config(opts)
