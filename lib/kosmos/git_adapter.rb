@@ -6,6 +6,10 @@ module Kosmos
       def init_repo(path)
         Dir.chdir(path) do
           `git init`
+
+          File.open('.gitignore', 'w') do |file|
+            file.write "!*\n"
+          end
         end
       end
 
