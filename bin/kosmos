@@ -74,6 +74,12 @@ when 'uninstall'
   ksp_path = Kosmos.load_ksp_path
 
   package_name = ARGV.shift
+  unless package_name
+    puts "Error: You need to specify what package to uninstall. Example:"
+    puts "  kosmos uninstall name-of-the-mod"
+    exit
+  end
+
   package = Kosmos::Package.find(package_name)
 
   if package
