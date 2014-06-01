@@ -20,3 +20,13 @@ class B9Aerospace0235Fix < Kosmos::Package
     merge_directory 'B9 KSP 0.23.5/GameData'
   end
 end
+
+class B9AerospaceModZeroFix < Kosmos::Package
+  title 'ModZero B9 Aerospace Fixes'
+  aliases 'b9 modzero fixes', 'b9 modzero'
+  url 'https://www.dropbox.com/s/peq187l1ajc3mst/ModZeroB9Fixes.zip'
+
+  def install
+    merge_directory 'GameData'
+  end
+end
