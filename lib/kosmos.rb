@@ -33,7 +33,7 @@ module Kosmos
     private
 
     def write_config(opts)
-      File.open(config_path, "w+") do |file|
+      File.open(config_path, "r+") do |file|
         file.write JSON.pretty_generate(read_config.merge(opts))
       end
     end
