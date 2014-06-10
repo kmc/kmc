@@ -32,7 +32,7 @@ module Kosmos
       install
 
       Util.log "Cleaning up ..."
-      Kosmos.config.post_processors.each { |p| p.post_process(ksp_path) }
+      Util.run_post_processors!(ksp_path)
 
       Versioner.mark_postinstall(ksp_path, self.class)
     end

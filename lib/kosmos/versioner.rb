@@ -42,7 +42,9 @@ module Kosmos
           commit.post? && commit.subject == package.title
         end
 
-        GitAdapter.revert_commit(path, to_revert, uninstall_message(package))
+        GitAdapter.revert_commit(path, to_revert)
+        Util.run_post_processors!(path)
+        GitAdapter.commit_everything(path, uninstall_message(package))
       end
 
       private
