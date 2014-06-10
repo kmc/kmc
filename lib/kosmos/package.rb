@@ -11,8 +11,9 @@ module Kosmos
 
     attr_reader :ksp_path, :download_dir
 
-    # Internal version of the `install` method, which saves before actually
-    # performing the installation.
+    # Internal version of the `install` method, which handles procedures commong
+    # to all packages, such as saving work before and after installation, as
+    # well as downloading and unzipping packages and running post-processors.
     def install!(ksp_path)
       @ksp_path = ksp_path
       @download_dir = self.class.unzip!
