@@ -49,6 +49,10 @@ module Kosmos
         end
       end
 
+      def names
+        [title, aliases].flatten
+      end
+
       # a callback for when a subclass of this class is created
       def inherited(package)
         (@@packages ||= []) << package
@@ -60,7 +64,7 @@ module Kosmos
 
       def find(name)
         @@packages.find do |package|
-          [package.title, package.aliases].flatten.any? do |candidate_name|
+          package.names.any? do |candidate_name|
             normalize_for_find(candidate_name) == normalize_for_find(name)
           end
         end
@@ -68,7 +72,7 @@ module Kosmos
 
       def search(name)
         @@packages.min_by do |package|
-          [package.title, package.aliases].flatten.map do |candidate_name|
+          package.names.map do |candidate_name|
             DamerauLevenshtein.distance(name, candidate_name)
           end.min
         end
