@@ -20,11 +20,9 @@ module Kosmos
         end
       end
 
-      def revert_commit(repo_path, commit, commit_message)
+      def revert_commit(repo_path, commit)
         Dir.chdir(repo_path) do
           `git revert --no-commit #{commit.sha}`
-          `git add -A -f`
-          `git commit --allow-empty -m #{commit_message.shellescape}`
         end
       end
 
