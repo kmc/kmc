@@ -54,8 +54,8 @@ ruby -v
 * *Windows*: Install Git using [this installer][win-git]. Remember to check any
   box asking to add Git to your path.
 * *Linux*: Run the command:
-** `yum install git-core` on Fedora, or
-** `apt-get install git` on Debian / Ubuntu.
+  * `yum install git-core` on Fedora, or
+  * `apt-get install git` on Debian / Ubuntu.
 
 Verify that Git is installed properly by running:
 
