@@ -42,6 +42,10 @@ module Kosmos
         name.downcase.gsub(' ', "-")
       end
 
+      def normalized_title
+        normalize_for_find(title)
+      end
+
       def find(name)
         @@packages.find do |package|
           package.names.any? do |candidate_name|
