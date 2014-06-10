@@ -1,5 +1,8 @@
 module Kosmos
   module PackageDownloads
+    # Downloads and unzips a package. This will call #download! on its own, and
+    # will return the location where the package was downloaded to as a
+    # Pathname.
     def unzip!
       download_file = download!
 
@@ -23,6 +26,10 @@ module Kosmos
       output_path
     end
 
+    # Downloads the zipfile for a package using its URL, unless a cached version
+    # is found first. Uses DownloadUrl to intelligently resolve download URLs.
+    #
+    # Returns the file downloaded, which is created in a temp directory.
     def download!
       cached_download = download_from_cache
       downloaded_file = if cached_download
