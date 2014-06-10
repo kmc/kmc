@@ -33,10 +33,6 @@ module Kosmos
     class << self
       include PackageDownloads
 
-      def names
-        [title, aliases].flatten
-      end
-
       # a callback for when a subclass of this class is created
       def inherited(package)
         (@@packages ||= []) << package

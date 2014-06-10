@@ -12,6 +12,10 @@ module Kosmos
       self.class.aliases
     end
 
+    def names
+      self.class.names
+    end
+
     private
 
     def self.included(base)
@@ -43,6 +47,10 @@ module Kosmos
         else
           @aliases
         end
+      end
+
+      def names
+        [title, aliases].flatten
       end
     end
   end
