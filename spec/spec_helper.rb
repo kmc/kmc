@@ -15,6 +15,12 @@ module FakeFS
       RealFile.absolute_path(file_name, dir_name)
     end
   end
+
+  class Dir
+    def self.home
+      ""
+    end
+  end
 end
 
 RSpec.configure do |config|

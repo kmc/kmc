@@ -17,7 +17,13 @@ describe Kosmos::Package do
   end
 
   describe 'downloading' do
-    before { FakeFS.activate! }
+    before do
+      FakeFS.activate!
+
+      File.open(File.join(Dir.home, '.kosmos'), 'w') do |file|
+        file.write '{}'
+      end
+    end
     after { FakeFS.deactivate! }
 
     let(:example_zip) do
