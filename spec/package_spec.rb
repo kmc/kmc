@@ -80,4 +80,14 @@ describe Kosmos::Package do
       expect(Kosmos::Package.find('specimen')).to eq ExamplePackage
     end
   end
+
+  describe '#search' do
+    it 'finds packages with a similar name' do
+      class PackageA < Kosmos::Package; title 'Package A'; end
+      class PackageB < Kosmos::Package; title 'Package B'; aliases 'thing b'; end
+
+      expect(Kosmos::Package.search('pakcage a')).to eq PackageA
+      expect(Kosmos::Package.search('thign b')).to eq PackageB
+    end
+  end
 end

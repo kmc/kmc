@@ -2,6 +2,7 @@ require 'pathname'
 require 'httparty'
 require 'zip'
 require 'tmpdir'
+require 'damerau-levenshtein'
 
 module Kosmos
   class Package
@@ -62,6 +63,14 @@ module Kosmos
           [package.title, package.aliases].flatten.any? do |candidate_name|
             normalize_for_find(candidate_name) == normalize_for_find(name)
           end
+        end
+      end
+
+      def search(name)
+        @@packages.min_by do |package|
+          [package.title, package.aliases].flatten.map do |candidate_name|
+            DamerauLevenshtein.distance(name, candidate_name)
+          end.min
         end
       end
 
