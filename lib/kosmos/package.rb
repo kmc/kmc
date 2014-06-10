@@ -7,18 +7,9 @@ require 'damerau-levenshtein'
 module Kosmos
   class Package
     include PackageDsl
+    include PackageAttrs
 
     attr_reader :ksp_path, :download_dir
-
-    [:title, :url].each do |param|
-      define_singleton_method(param) do |value = nil|
-        if value
-          instance_variable_set("@#{param}", value)
-        else
-          instance_variable_get("@#{param}")
-        end
-      end
-    end
 
     # Internal version of the `install` method, which saves before actually
     # performing the installation.
@@ -39,16 +30,6 @@ module Kosmos
     end
 
     class << self
-      def aliases(*aliases)
-        @aliases ||= []
-
-        if aliases.any?
-          @aliases = aliases
-        else
-          @aliases
-        end
-      end
-
       def names
         [title, aliases].flatten
       end
