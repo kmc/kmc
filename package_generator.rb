@@ -61,6 +61,7 @@ require 'ostruct'
 require 'colorize'
 
 KOSMOS_GIT_REPO = 'ucarion/kosmos'
+SKIP = 3 # for testing
 
 def github_package_requests
   puts "Loading from GitHub ..."
@@ -68,7 +69,7 @@ def github_package_requests
   client = Octokit::Client.new(access_token: ENV['GITHUB_KEY'])
 
   client.list_issues(KOSMOS_GIT_REPO, labels: 'package-request',
-    direction: 'asc')
+    direction: 'asc')[SKIP..-1]
 end
 
 # To make the development process easier, this method will *yield* each
@@ -96,7 +97,10 @@ def extract_download_url_from_forum(forum_html)
     end
 
     if download_link
-      Kosmos::DownloadUrl.new(download_link['href']).resolve_download_url
+      {
+        pretty_url: download_link['href'],
+        url: Kosmos::DownloadUrl.new(download_link['href']).resolve_download_url
+      }
     end
   end
 
@@ -105,7 +109,7 @@ def extract_download_url_from_forum(forum_html)
       link.text.downcase.include?('download')
     end
 
-    download_link['href'] if download_link
+    {url: download_link['href']} if download_link
   end
 
   page = Nokogiri::HTML(forum_html)
@@ -151,6 +155,28 @@ def download_and_unzip_package(download_url)
   end
 end
 
+def generate_installer(package, download_dir, download_url)
+  class_name = package.name.gsub(' ', '')
+  url = download_url[:pretty_url] || download_url[:url]
+
+  Dir.chdir(download_dir) do
+    files = Dir["*"]
+
+    if files.include?('GameData')
+      puts <<-EOS.undent.yellow
+        class #{class_name} < Kosmos::Package
+          title '#{package.name}'
+          url '#{url}'
+
+          def install
+            merge_directory 'GameData'
+          end
+        end
+      EOS
+    end
+  end
+end
+
 def make_report(underscored_name, forum_url, download_url = nil)
   Dir.chdir('reports') do
     File.open("#{underscored_name}.txt", 'w') do |file|
@@ -170,12 +196,12 @@ package_request_pages do |package|
   download_url = extract_download_url_from_forum(package.forum_html)
 
   if download_url
-    puts "Found a download URL at: #{download_url}"
+    puts "Found a download URL at: #{download_url.inspect}"
 
-    download_dir = download_and_unzip_package(download_url)
+    download_dir = download_and_unzip_package(download_url[:url])
 
     if download_dir
-      puts "Woo hoo!"
+      generate_installer(package, download_dir, download_url)
     else
       make_report(underscored_name, package.forum_url, download_url)
     end
