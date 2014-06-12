@@ -10,6 +10,7 @@ group :development do
   gem 'pry'
   gem 'octokit'
   gem 'colorize'
+  gem 'activesupport'
 end
 
 group :test do
