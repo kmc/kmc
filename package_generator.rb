@@ -1,7 +1,14 @@
 # An automated script that attempts to generate a package description for a mod
 # requested on the GitHub issues for Kosmos.
 #
-# It has four major components to find a mod:
+# Initially this tool was going to generate entire package descriptions on its
+# own, but this proved to be difficult to implement (largely due to highly non-
+# standard install processes with many mods).
+#
+# This tool takes in GitHub issues, and churns out .rb template files with
+# useful information about the package written in the comments.
+#
+# This script has three major components:
 #
 #   1. Identifying the forum URL for a mod.
 #
@@ -15,38 +22,19 @@
 #      chooses the most likely download link based on the href and text of the
 #      link.
 #
-#      If no definitive link could be found, candidate ones are suggested to the
-#      user, who has the final say.
+#   3. Creating the template file.
 #
-#   3. Determining what directories to merge together.
+#      The appropriate name of the file is generated and placed into the
+#      'reports' directory for human review.
 #
-#      The tool looks at a directory tree, and attempts to find a directory that
-#      contains 'GameData'. If such a directory is found, then the installation
-#      process is assummed to be simply merging that directory.
+#      This generated template file will already contain a class name, a title,
+#      a url, and an empty `install` method.
 #
-#      If in addition to 'GameData' other KSP top-level directories (e.g.
-#      'Ships') are found, those are merged in as well.
+#      The tool will also provide a `tree` of the files in the mod and the forum
+#      URL of the mod.
 #
-#      If no 'GameData' is found, then it is assumed that the install process is
-#      to merge everything into the 'GameData' directory. The first directory to
-#      have multiple children is assumed to be the "top-level" directory, and is
-#      merged into 'GameData'.
-#
-#   4. Generating reports about the generated installs.
-#
-#      Each generated package file is outputted into the 'results' directory,
-#      and is created as an '.rb' file. Accompanying it is a '.txt' file
-#      containing the following information:
-#        - The GitHub issue for the package
-#        - The forum link for the package
-#        - The install link for the package
-#        - A directory tree for the package after it's been unzipped.
-#
-# Evidently, this tool relies on a lot of common patterns with mod install
-# processes. As such, any deviation from the norm will break this tool. Because
-# of this brittleness, it is important that mods be tested (or at the very
-# least, that reports be looked at) before committing them into the Kosmos git
-# repository.
+# The heuristics for finding the correct download link are pretty iffy and break
+# very often. In these cases, no `tree` can be provided.
 
 class String
   def undent
@@ -61,8 +49,12 @@ require 'ostruct'
 require 'colorize'
 require 'active_support/all'
 
+Kosmos.configure do |config|
+  config.verbose = true
+end
+
 KOSMOS_GIT_REPO = 'ucarion/kosmos'
-SKIP = 12 # for testing
+SKIP = 0 # for testing
 
 def github_package_requests
   puts "Loading from GitHub ..."
@@ -89,26 +81,27 @@ def package_request_pages
   end
 end
 
+# Given the forum page, it will generate a hash with one of two possible keys:
+#
+#   :url -> Download directly from here. No known download resolvers.
+#   :pretty_url -> Use a resolver on this link.
+#
+# Note the :pretty_url links might not always work because many common providers
+# employ rate-limiting techniques. Also, a :url link might not always work
+# because the link-text heuristic doesn't work well with indirection.
 def extract_download_url_from_forum(forum_html)
+  # Try to find download link using some heuristics for specific download
+  # providers.
   def extract_using_downloadurl(candidate_links)
     download_link = candidate_links.find do |link|
-      download_url = Kosmos::DownloadUrl.new(link['href'])
-
-      download_url.has_known_resolver?
+      Kosmos::DownloadUrl.new(link['href']).has_known_resolver?
     end
 
-    if download_link
-      begin
-        {
-          pretty_url: download_link['href'],
-          url: Kosmos::DownloadUrl.new(download_link['href']).resolve_download_url
-        }
-      rescue
-        {pretty_url: download_link['href']}
-      end
-    end
+    {pretty_url: download_link['href']} if download_link
   end
 
+  # Try to find download link by looking for links with the word 'download' in
+  # them (yes, it's pretty desperate).
   def extract_using_link_text(candidate_links)
     download_link = candidate_links.find do |link|
       link.text.downcase.include?('download')
@@ -117,167 +110,88 @@ def extract_download_url_from_forum(forum_html)
     {url: download_link['href']} if download_link
   end
 
+  def possibly_outdated?(candidate_links)
+    candidate_links.any? do |link|
+      link.text.downcase.include?('kerbalspaceport')
+    end
+  end
+
   page = Nokogiri::HTML(forum_html)
 
   first_post = page.css('.posts .content').first
   links = first_post.css('a')
 
-  extract_using_downloadurl(links) || extract_using_link_text(links)
+  (extract_using_downloadurl(links) || extract_using_link_text(links)).merge({
+    outdated: possibly_outdated?(links)
+  })
 end
 
-# This is very un-DRY (repeats a lot of Kosmos code), but I'll live with it.
-
-def download_from_cache(name)
-  cache_dir = Kosmos.cache_dir
-  if cache_dir
-    puts "looking for #{File.join(cache_dir, "#{name}.zip")}"
-    cached_download = File.join(cache_dir, "#{name}.zip")
-
-    File.read(cached_download) if File.file?(cached_download)
-  end
+def package_file_name(name)
+  name.gsub(' ', '').gsub(/\W/, '').underscore + '.rb'
 end
 
-def download_and_unzip_package(name, download_url)
-  begin
-    cache = download_from_cache(name)
-
-    downloaded_file = if cache
-      puts "Using cache."
-      cache
-    else
-      puts "Proceeding to download."
-      HTTParty.get(download_url)
-    end
-    tmpdir = Dir.mktmpdir
-
-    download_file = File.new(File.join(tmpdir, 'download'), 'w+')
-    download_file.write(downloaded_file)
-    download_file.close
-
-    output_path = Pathname.new(download_file.path).parent.to_s
-
-    Zip::File.open(download_file.path) do |zip_file|
-      zip_file.each do |entry|
-        destination = File.join(output_path, entry.name)
-        parent_dir = File.expand_path('..', destination)
-
-        FileUtils.mkdir_p(parent_dir) unless File.exists?(parent_dir)
-
-        entry.extract(destination)
-      end
-    end
-
-    File.delete(File.absolute_path(download_file))
-
-    # save to cache ...
-    File.open(File.join(Kosmos.cache_dir, "#{name}.zip"), 'w') do |file|
-      file.write downloaded_file
-    end
-
-    output_path
-  rescue => e
-    puts "There was an error when downloading.".red
-    puts "Error: #{e.inspect}".red
-    puts e.backtrace.join("\n").red
-
-    nil
-  end
+def package_class_name(name)
+  name = name.gsub(/\W/, '')
+  name[0].upcase + name[1..-1]
 end
 
-def generate_installer(package, download_dir, download_url)
-  def find_gamedata(download_dir)
-    Dir["**/*"].find { |file| File.basename(file) == 'GameData' }
-  end
-
-  class_name = package.name.gsub(' ', '')
-  url = download_url && (download_url[:pretty_url] || download_url[:url])
-
-  p download_dir
-  Dir.chdir(download_dir) do
-    puts `tree -L 4`
-
-    files = Dir["*"]
-    subdirs = Dir["*/"]
-
-    if gamedata = find_gamedata(download_dir)
-      <<-EOS.undent
-        class #{class_name} < Kosmos::Package
-          title '#{package.name}'
-          url '#{url}'
-
-          def install
-            merge_directory '#{gamedata}'
-          end
-        end
-      EOS
-    elsif subdirs.length == 1
-      to_merge = subdirs.first[0...-1]
-      <<-EOS.undent
-        class #{class_name} < Kosmos::Package
-          title '#{package.name}'
-          url '#{url}'
-
-          def install
-            merge_directory '#{to_merge}', into: 'GameData'
-          end
-        end
-      EOS
-    end
-  end
+def directory_tree(dir)
+  tree = Dir.chdir(dir) { `tree -L 3 --charset=ASCII` }
+  tree.split("\n").map { |l| "# " + l }.join("\n")
 end
 
-def make_report(underscored_name, forum_url, download_url = nil, dir_tree = nil)
-  Dir.chdir('reports') do
-    File.open("#{underscored_name}.txt", 'w') do |file|
-      file.write <<-EOS.undent + dir_tree
-        Forum url: #{forum_url}
-        Download url: #{download_url}
-
-        Tree:
-      EOS
-    end
-  end
-end
-
-def make_installer(underscored_name, installer)
-  Dir.chdir('reports') do
-    File.open("#{underscored_name}.rb", 'w') do |file|
-      file.write(installer)
-    end
-  end
-end
-
-index = SKIP
+count = SKIP
 package_request_pages do |package|
-  puts "[#{index}] Working on #{package.name} ..."
-  index += 1
+  puts "[#{count}] Working on #{package.name} ..."
+  count += 1
 
-  underscored_name = package.name.gsub(' ', '_').underscore.gsub(/\W/, '')
+  # The data to be generated in the template
+  package_title, package_file_name, package_class_name, package_download_link,
+    forum_url, tree, warning = nil
 
-  download_url = extract_download_url_from_forum(package.forum_html)
+  package_title = package.name
+  package_file_name = package_file_name(package.name)
+  package_class_name = package_class_name(package.name)
+  forum_url = package.forum_url
 
-  if download_url
-    puts "Found a download URL at: #{download_url.inspect}"
+  begin
+    download_link = extract_download_url_from_forum(package.forum_html)
+    package_download_link = download_link[:pretty_url] || download_link[:url]
 
-    download_dir = download_and_unzip_package(package.name, download_url[:url])
+    download_dir = Kosmos::PackageDownloads.download_and_unzip_package(
+      OpenStruct.new(title: package_title, url: package_download_link.strip),
+      cache_after_download: true)
 
-    if download_dir
-      installer = generate_installer(package, download_dir, download_url)
+    warning = "Possibly outdated!" if download_link[:outdated]
 
-      tree = Dir.chdir(download_dir) { `tree --charset=ASCII` }
+    tree = directory_tree(download_dir)
+  rescue => e
+    puts <<-EOS.undent.red
+      There was an error while processing #{package.name}.
 
-      if installer
-        puts "Got installer:"
-        puts installer.yellow
-        make_installer(underscored_name, installer)
+      #{e}
+
+      #{e.backtrace.join("\n" + " " * 16)}
+    EOS
+  end
+
+  package_file = <<-EOS.undent + (tree || "")
+    class #{package_class_name} < Kosmos::Package
+      title '#{package_title}'
+      url '#{package_download_link}'
+
+      def install
+
       end
-
-      make_report(underscored_name, package.forum_url, download_url, tree)
-    else
-      make_report(underscored_name, package.forum_url, download_url)
     end
-  else
-    puts "No download URL could be found."
-    make_report(underscored_name, package.forum_url)
+
+    # #{warning}
+    # #{forum_url}
+  EOS
+
+  puts package_file.yellow
+
+  File.open(File.join('reports', package_file_name), 'w') do |file|
+    file.write package_file
   end
 end
