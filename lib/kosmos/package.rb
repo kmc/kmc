@@ -31,7 +31,13 @@ module Kosmos
     end
 
     class << self
-      include PackageDownloads
+      def unzip!
+        PackageDownloads.download_and_unzip_package(self)
+      end
+
+      def download!
+        PackageDownloads.download_package(self)
+      end
 
       # a callback for when a subclass of this class is created
       def inherited(package)

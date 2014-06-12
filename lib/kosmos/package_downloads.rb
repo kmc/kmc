@@ -3,8 +3,8 @@ module Kosmos
     # Downloads and unzips a package. This will call #download! on its own, and
     # will return the location where the package was downloaded to as a
     # Pathname.
-    def unzip!
-      download_file = download!
+    def self.download_and_unzip_package(package)
+      download_file = download_package(package)
 
       Util.log "Unzipping ..."
 
@@ -30,14 +30,15 @@ module Kosmos
     # is found first. Uses DownloadUrl to intelligently resolve download URLs.
     #
     # Returns the file downloaded, which is created in a temp directory.
-    def download!
-      cached_download = download_from_cache
+    def self.download_package(package)
+      cached_download = download_from_cache(package)
       downloaded_file = if cached_download
-        Util.log "Use a cached version of #{title} ..."
+        Util.log "Use a cached version of #{package.title} ..."
         cached_download
       else
-        Util.log "The package is found at #{url}. Finding the download URL ..."
-        download_url = DownloadUrl.new(url).resolve_download_url
+        Util.log "The package is found at #{package.url}. \
+          Finding the download URL ..."
+        download_url = DownloadUrl.new(package.url).resolve_download_url
 
         Util.log "Found it. Downloading from #{download_url} ..."
         HTTParty.get(download_url)
@@ -54,10 +55,10 @@ module Kosmos
 
     private
 
-    def download_from_cache
+    def self.download_from_cache(package)
       cache_dir = Kosmos.cache_dir
       if cache_dir
-        cached_download = File.join(cache_dir, "#{title}.zip")
+        cached_download = File.join(cache_dir, "#{package.title}.zip")
 
         File.read(cached_download) if File.file?(cached_download)
       end
