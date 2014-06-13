@@ -54,7 +54,7 @@ Kosmos.configure do |config|
 end
 
 KOSMOS_GIT_REPO = 'ucarion/kosmos'
-SKIP = 0 # for testing
+SKIP = 3 # for testing
 
 def github_package_requests
   puts "Loading from GitHub ..."
@@ -136,7 +136,7 @@ def package_class_name(name)
 end
 
 def directory_tree(dir)
-  tree = Dir.chdir(dir) { `tree -L 3 --charset=ASCII` }
+  tree = Dir.chdir(File.dirname(dir)) { `unzip -l download` }
   tree.split("\n").map { |l| "# " + l }.join("\n")
 end
 
@@ -158,7 +158,7 @@ package_request_pages do |package|
     download_link = extract_download_url_from_forum(package.forum_html)
     package_download_link = download_link[:pretty_url] || download_link[:url]
 
-    download_dir = Kosmos::PackageDownloads.download_and_unzip_package(
+    download_dir = Kosmos::PackageDownloads.download_package(
       OpenStruct.new(title: package_title, url: package_download_link.strip),
       cache_after_download: true)
 
