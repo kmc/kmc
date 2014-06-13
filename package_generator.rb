@@ -54,7 +54,7 @@ Kosmos.configure do |config|
 end
 
 KOSMOS_GIT_REPO = 'ucarion/kosmos'
-SKIP = 3 # for testing
+SKIP = 4 # for testing
 
 def github_package_requests
   puts "Loading from GitHub ..."
