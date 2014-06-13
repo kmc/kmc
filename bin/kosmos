@@ -16,10 +16,14 @@ def load_packages(package_names)
   end]
 
   unknown_packages = packages.select { |_, package| package.nil? }
+  package_suggestions = unknown_packages.map do |name, _|
+    best_guess = Kosmos::Package.search(name).normalized_title
+    "#{name} (Maybe you meant: #{best_guess.inspect}?)"
+  end
 
   if unknown_packages.any?
     puts "Error: Kosmos couldn't find any packages with the following names:"
-    pretty_print_list(unknown_packages.keys)
+    pretty_print_list(package_suggestions)
     exit
   end
 

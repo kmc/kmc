@@ -8,6 +8,9 @@ group :development do
   gem 'rspec', '~> 2.14'
   gem 'webmock'
   gem 'pry'
+  gem 'octokit'
+  gem 'colorize'
+  gem 'activesupport'
 end
 
 group :test do

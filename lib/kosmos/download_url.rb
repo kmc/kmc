@@ -16,6 +16,10 @@ module Kosmos
       end
     end
 
+    def has_known_resolver?
+      mediafire? || box? || dropbox? || curseforge?
+    end
+
     def mediafire?
       url =~ /mediafire/
     end
