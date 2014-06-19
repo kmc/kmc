@@ -6,98 +6,13 @@ Kosmos.configure do |config|
   config.verbose = true
 end
 
-def pretty_print_list(list)
-  list.each { |value| puts "  * #{value}" }
-end
-
-def load_packages(package_names)
-  packages = Hash[package_names.map do |name|
-    [name, Kosmos::Package.find(name)]
-  end]
-
-  unknown_packages = packages.select { |_, package| package.nil? }
-  package_suggestions = unknown_packages.map do |name, _|
-    best_guess = Kosmos::Package.search(name).normalized_title
-    "#{name} (Maybe you meant: #{best_guess.inspect}?)"
-  end
-
-  if unknown_packages.any?
-    puts "Error: Kosmos couldn't find any packages with the following names:"
-    pretty_print_list(package_suggestions)
-    exit
-  end
-
-  packages.values
-end
-
-def check_installed_packages(ksp_path, packages)
-  installed_titles = Kosmos::Versioner.installed_packages(ksp_path)
-
-  installed_packages = packages.select do |package|
-    installed_titles.include?(package.title)
-  end
-
-  if installed_packages.any?
-    puts "Error: You have already installed the following packages using Kosmos:"
-    pretty_print_list(installed_packages.map(&:title))
-    exit
-  end
-end
-
 case ARGV.shift
 when 'init'
-  ksp_path = ARGV.shift
-
-  puts "Initializing Kosmos into #{ksp_path} (This will take a sec) ..."
-
-  Kosmos::Versioner.init_repo(ksp_path)
-  Kosmos.save_ksp_path(ksp_path)
-
-  puts "Done! You're ready to begin installing mods."
-  puts
-  puts "Install your first mod by running the command:"
-  puts "  kosmos install [name-of-the-mod]"
-  puts
-
+  Kosmos::UserInterface.init(ARGV)
 when 'install'
-  ksp_path = Kosmos.load_ksp_path
-
-  packages = load_packages(ARGV)
-  check_installed_packages(ksp_path, packages)
-
-  puts "Kosmos is about to install #{packages.count} package(s):"
-  pretty_print_list(packages.map(&:title))
-
-  packages.each do |package|
-    puts "Installing package #{package.title} ..."
-    package.new.install!(ksp_path)
-    puts "Done!"
-  end
-
+  Kosmos::UserInterface.install(ARGV)
 when 'uninstall'
-  ksp_path = Kosmos.load_ksp_path
-
-  package_name = ARGV.shift
-  unless package_name
-    puts "Error: You need to specify what package to uninstall. Example:"
-    puts "  kosmos uninstall name-of-the-mod"
-    exit
-  end
-
-  package = Kosmos::Package.find(package_name)
-
-  if package
-    puts "Preparing to uninstall #{package.title} ..."
-    Kosmos::Versioner.uninstall_package(ksp_path, package)
-    puts "Done! Just uninstalled: #{package.title}."
-  else
-    puts "Error: Kosmos couldn't find any packages with the name #{package_name.inspect}."
-  end
-
+  Kosmos::UserInterface.uninstall(ARGV)
 when 'list'
-  ksp_path = Kosmos.load_ksp_path
-
-  packages = Kosmos::Versioner.installed_packages(ksp_path)
-  puts "You have installed #{packages.length} mod(s) using Kosmos:"
-  pretty_print_list(packages)
+  Kosmos::UserInterface.list(ARGV)
 end
