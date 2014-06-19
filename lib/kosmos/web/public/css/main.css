@@ -35,7 +35,7 @@
 }
 
 #cli-explain {
-  font-size: 20px;
+  font-size: 17px;
   font-style: italic;
 }
 
@@ -57,4 +57,13 @@
 
 #cli #cli-input #cli-args-input {
   font-size: 30px;
+}
+
+#output-row {
+  margin-top: 20px;
+}
+
+#output {
+  text-align: left;
+  font-size: 15px;
 }
