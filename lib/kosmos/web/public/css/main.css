@@ -1,0 +1,31 @@
+.main-container {
+  text-align: center;
+}
+
+.big-brand h1 {
+  font-size: 63px;
+  margin-bottom: 0px;
+}
+
+.big-brand h2 {
+  margin-top: 5px;
+}
+
+.underline {
+  text-decoration: underline;
+}
+
+.options-row {
+  margin-top: 10px;
+}
+
+.kosmos-option .btn {
+  width: 100%;
+
+  font-size: 20px;
+  font-family: 'Ubuntu Mono';
+}
+
+.kosmos-option p {
+  font-size: 18px;
+}
