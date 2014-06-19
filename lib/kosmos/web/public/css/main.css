@@ -54,3 +54,7 @@
 #cli #cli-input #awaiting-user-input {
   font-style: italic;
 }
+
+#cli #cli-input #cli-args-input {
+  font-size: 30px;
+}

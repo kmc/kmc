@@ -16,7 +16,6 @@
   <link rel="stylesheet" href="css/main.css">
   <script src="js/vendor/modernizr-2.6.2.min.js"></script>
   <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
-  <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
 
   <link href='http://fonts.googleapis.com/css?family=Ubuntu+Mono' rel='stylesheet' type='text/css'>
 </head>
@@ -50,22 +49,22 @@
 
     <div class="row options-row">
       <div class="col-md-3 kosmos-option">
-        <a class="btn btn-default">init</a>
+        <a class="btn btn-default" id="kosmos-init">init</a>
         <p>"Initialize Kosmos in my KSP folder."</p>
       </div>
 
       <div class="col-md-3 kosmos-option">
-        <a class="btn btn-default">install</a>
+        <a class="btn btn-default" id="kosmos-install">install</a>
         <p>"I want to install a mod."</p>
       </div>
 
       <div class="col-md-3 kosmos-option">
-        <a class="btn btn-default">uninstall</a>
+        <a class="btn btn-default" id="kosmos-uninstall">uninstall</a>
         <p>"I want to uninstall a mod."</p>
       </div>
 
       <div class="col-md-3 kosmos-option">
-        <a class="btn btn-default">list</a>
+        <a class="btn btn-default" id="kosmos-list">list</a>
         <p>"What mods have I installed with Kosmos?"</p>
       </div>
     </div>
@@ -74,12 +73,18 @@
 
     <div class="row" id="cli-row">
       <div class="col-md-10 col-md-offset-1">
-        <p id="cli-explain">Click a button above to tell Kosmos what to do.</p>
+        <p id="cli-explain"></p>
         <div id="cli">
           <div id="cli-input">
             <span id="prompt">$</span>
             kosmos
+            <span id="command"></span>
             <span id="awaiting-user-input">...</span>
+            <input id="cli-args-input">
+
+            <a class="btn btn-primary btn-lg pull-right" id="cli-submit">
+              Go &raquo;
+            </a>
           </div>
         </div>
       </div>
@@ -88,6 +93,8 @@
 
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
   <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.10.2.min.js"><\/script>')</script>
+  <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+  <script src="js/vendor/underscore.js"></script>
   <script src="js/plugins.js"></script>
   <script src="js/main.js"></script>
 </body>
