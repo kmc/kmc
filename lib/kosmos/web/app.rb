@@ -4,7 +4,7 @@ module Kosmos
   module Web
     class App < Sinatra::Application
       get '/' do
-        "Hello there! :)"
+        send_file(File.join(settings.public_folder, 'index.html'))
       end
     end
   end
