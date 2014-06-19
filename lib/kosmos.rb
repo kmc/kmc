@@ -57,11 +57,12 @@ module Kosmos
   end
 
   class Configuration
-    attr_accessor :verbose, :post_processors
+    attr_accessor :verbose, :post_processors, :output_method
 
     def initialize
       @verbose = false
       @post_processors = [Kosmos::PostProcessors::ModuleManagerResolver]
+      @output_method = Proc.new { |str| puts str }
     end
   end
 end

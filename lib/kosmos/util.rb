@@ -1,7 +1,7 @@
 module Kosmos
   module Util
     def self.log(msg)
-      puts msg if Kosmos.config.verbose
+      Kosmos.config.output_method.call(msg) if Kosmos.config.verbose
     end
 
     def self.run_post_processors!(ksp_path)
