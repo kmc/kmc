@@ -72,6 +72,10 @@ module Kosmos
         pretty_print_list(packages)
       end
 
+      def server(args)
+        Web::App.start!
+      end
+
       private
 
       def pretty_print_list(list)

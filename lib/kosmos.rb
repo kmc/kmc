@@ -6,6 +6,7 @@ require 'kosmos/versioner'
 require 'kosmos/git_adapter'
 require 'kosmos/download_url'
 require 'kosmos/user_interface'
+require 'kosmos/web/app'
 require 'kosmos/util'
 require 'kosmos/version'
 

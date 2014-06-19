@@ -15,4 +15,6 @@ when 'uninstall'
   Kosmos::UserInterface.uninstall(ARGV)
 when 'list'
   Kosmos::UserInterface.list(ARGV)
+when 'server'
+  Kosmos::UserInterface.server(ARGV)
 end
