@@ -1,6 +1,7 @@
 class B9AerospacePack < Kosmos::Package
   title 'B9 Aerospace Pack'
   aliases 'b9', 'b9 aerospace'
+  postrequisites 'b9 fix', 'b9 modzero'
 
   url 'http://www.mediafire.com/download/o6cbe03iitggj1p/B9+Aerospace+Pack+R4.0c.zip'
 
