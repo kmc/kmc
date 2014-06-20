@@ -15,23 +15,24 @@ module Kosmos
     # to all packages, such as saving work before and after installation, as
     # well as downloading and unzipping packages and running post-processors.
     def install!(ksp_path)
-      install_prerequisites!(ksp_path)
-
       @ksp_path = ksp_path
+
+      install_prerequisites!
+
       @download_dir = self.class.unzip!
 
       Util.log "Saving your work before installing ..."
-      Versioner.mark_preinstall(ksp_path, self.class)
+      Versioner.mark_preinstall(ksp_path, self)
 
-      Util.log "Installing #{self.class.title} ..."
+      Util.log "Installing #{title} ..."
       install
 
       Util.log "Cleaning up ..."
       Util.run_post_processors!(ksp_path)
 
-      Versioner.mark_postinstall(ksp_path, self.class)
+      Versioner.mark_postinstall(ksp_path, self)
 
-      install_postrequisites!(ksp_path)
+      install_postrequisites!
     end
 
     class << self
@@ -75,14 +76,14 @@ module Kosmos
 
     private
 
-    def install_prerequisites!(ksp_path)
+    def install_prerequisites!
       resolve_prerequisites.each do |package|
         Util.log "#{title} has prerequisite #{package.title}."
         package.new.install!(ksp_path)
       end
     end
 
-    def install_postrequisites!(ksp_path)
+    def install_postrequisites!
       resolve_postrequisites.each do |package|
         Util.log "#{title} has postrequisite #{package.title}."
         package.new.install!(ksp_path)
