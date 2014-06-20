@@ -48,6 +48,10 @@ module Kosmos
         end
       end
 
+      alias_method :prerequiste, :prerequisites
+      alias_method :pre_requisite, :prerequisites
+      alias_method :pre_requisites, :prerequisites
+
       def postrequisites(*postrequisites)
         @postrequisites ||= []
 
@@ -57,6 +61,10 @@ module Kosmos
           @postrequisites
         end
       end
+
+      alias_method :postrequiste, :postrequisites
+      alias_method :post_requisite, :postrequisites
+      alias_method :post_requisites, :postrequisites
 
       def resolve_prerequisites
         prerequisites.map { |package_name| find(package_name) }
