@@ -71,27 +71,19 @@ module Kosmos
           end.min
         end
       end
-
-      def resolve_prerequisites
-        prerequisites.map { |package_name| find(package_name) }
-      end
-
-      def resolve_postrequisites
-        postrequisites.map { |package_name| find(package_name) }
-      end
     end
 
     private
 
     def install_prerequisites!(ksp_path)
-      self.class.resolve_prerequisites.each do |package|
+      resolve_prerequisites.each do |package|
         Util.log "#{title} has prerequisite #{package.title}."
         package.new.install!(ksp_path)
       end
     end
 
     def install_postrequisites!(ksp_path)
-      self.class.resolve_postrequisites.each do |package|
+      resolve_postrequisites.each do |package|
         Util.log "#{title} has postrequisite #{package.title}."
         package.new.install!(ksp_path)
       end

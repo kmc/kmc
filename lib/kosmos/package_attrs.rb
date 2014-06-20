@@ -1,18 +1,13 @@
 module Kosmos
   module PackageAttrs
-    %i(title url aliases names prerequisites postrequisites).each do |property|
-      define_method(property) do
-        self.class.send(property)
-      end
-    end
-
     private
 
     def self.included(base)
-      base.extend(ClassMethods)
+      base.extend(Methods)
+      base.send(:include, Methods)
     end
 
-    module ClassMethods
+    module Methods
       def title(title = nil)
         if title
           @title = title
@@ -62,6 +57,15 @@ module Kosmos
           @postrequisites
         end
       end
+
+      def resolve_prerequisites
+        prerequisites.map { |package_name| find(package_name) }
+      end
+
+      def resolve_postrequisites
+        postrequisites.map { |package_name| find(package_name) }
+      end
+
     end
   end
 end
