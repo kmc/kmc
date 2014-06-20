@@ -7,6 +7,16 @@ class ExamplePackage < Kosmos::Package
   url 'http://www.example.com/releases/release-0-1.zip'
 end
 
+class AnotherExample < Kosmos::Package
+  title 'Another Example'
+  prerequisites 'example'
+  postrequisites 'yet another'
+end
+
+class YetAnotherExample < Kosmos::Package
+  title 'Yet Another'
+end
+
 describe Kosmos::Package do
   let(:example_url) { 'http://www.example.com/releases/release-0-1.zip' }
 
@@ -14,6 +24,11 @@ describe Kosmos::Package do
 
   it 'has a full name' do
     expect(subject.title).to eq 'Example'
+  end
+
+  it 'resolves requisites' do
+    expect(AnotherExample.resolve_prerequisites).to eq [ExamplePackage]
+    expect(AnotherExample.resolve_postrequisites).to eq [YetAnotherExample]
   end
 
   describe 'downloading' do

@@ -1,28 +1,13 @@
 module Kosmos
   module PackageAttrs
-    def title
-      self.class.title
-    end
-
-    def url
-      self.class.url
-    end
-
-    def aliases
-      self.class.aliases
-    end
-
-    def names
-      self.class.names
-    end
-
     private
 
     def self.included(base)
-      base.extend(ClassMethods)
+      base.extend(Methods)
+      base.send(:include, Methods)
     end
 
-    module ClassMethods
+    module Methods
       def title(title = nil)
         if title
           @title = title
@@ -52,6 +37,43 @@ module Kosmos
       def names
         [title, aliases].flatten
       end
+
+      def prerequisites(*prerequisites)
+        @prerequisites ||= []
+
+        if prerequisites.any?
+          @prerequisites = prerequisites
+        else
+          @prerequisites
+        end
+      end
+
+      alias_method :prerequiste, :prerequisites
+      alias_method :pre_requisite, :prerequisites
+      alias_method :pre_requisites, :prerequisites
+
+      def postrequisites(*postrequisites)
+        @postrequisites ||= []
+
+        if postrequisites.any?
+          @postrequisites = postrequisites
+        else
+          @postrequisites
+        end
+      end
+
+      alias_method :postrequiste, :postrequisites
+      alias_method :post_requisite, :postrequisites
+      alias_method :post_requisites, :postrequisites
+
+      def resolve_prerequisites
+        prerequisites.map { |package_name| find(package_name) }
+      end
+
+      def resolve_postrequisites
+        postrequisites.map { |package_name| find(package_name) }
+      end
+
     end
   end
 end
