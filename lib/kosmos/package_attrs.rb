@@ -1,27 +1,9 @@
 module Kosmos
   module PackageAttrs
-    def title
-      self.class.title
-    end
-
-    def url
-      self.class.url
-    end
-
-    def aliases
-      self.class.aliases
-    end
-
-    def names
-      self.class.names
-    end
-
-    def prerequisites
-      self.class.prerequisites
-    end
-
-    def postrequisites
-      self.class.postrequisites
+    %i(title url aliases names prerequisites postrequisites).each do |property|
+      define_method(property) do
+        self.class.send(property)
+      end
     end
 
     private
