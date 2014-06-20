@@ -36,7 +36,7 @@ module Kosmos
         Util.log "Use a cached version of #{package.title} ..."
         cached_download
       else
-        Util.log "The package is found at #{package.url}."\
+        Util.log "The package is found at #{package.url}. "\
           "Finding the download URL ..."
         download_url = DownloadUrl.new(package.url).resolve_download_url
 
