@@ -16,6 +16,14 @@ module Kosmos
       self.class.names
     end
 
+    def prerequisites
+      self.class.prerequisites
+    end
+
+    def postrequisites
+      self.class.postrequisites
+    end
+
     private
 
     def self.included(base)
@@ -51,6 +59,26 @@ module Kosmos
 
       def names
         [title, aliases].flatten
+      end
+
+      def prerequisites(*prerequisites)
+        @prerequisites ||= []
+
+        if prerequisites.any?
+          @prerequisites = prerequisites
+        else
+          @prerequisites
+        end
+      end
+
+      def postrequisites(*postrequisites)
+        @postrequisites ||= []
+
+        if postrequisites.any?
+          @postrequisites = postrequisites
+        else
+          @postrequisites
+        end
       end
     end
   end

@@ -67,6 +67,14 @@ module Kosmos
           end.min
         end
       end
+
+      def resolve_prerequisites
+        prerequisites.map { |package_name| find(package_name) }
+      end
+
+      def resolve_postrequisites
+        postrequisites.map { |package_name| find(package_name) }
+      end
     end
 
     # Now, let's include all the known packages.
