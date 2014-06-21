@@ -28,7 +28,9 @@ module Kosmos
         ksp_path = Kosmos.load_ksp_path
 
         packages = load_packages(args)
-        check_installed_packages(ksp_path, packages)
+        return unless packages
+
+        return unless check_installed_packages(ksp_path, packages)
 
         Util.log "Kosmos is about to install #{packages.count} package(s):"
         pretty_print_list(packages.map(&:title))
@@ -50,7 +52,7 @@ module Kosmos
                 kosmos uninstall name-of-the-mod"
           EOS
 
-          exit
+          return
         end
 
         package = Kosmos::Package.find(package_name)
@@ -96,7 +98,8 @@ module Kosmos
         if unknown_packages.any?
           Util.log "Error: Kosmos couldn't find any packages with the following names:"
           pretty_print_list(package_suggestions)
-          exit
+
+          return false
         end
 
         packages.values
@@ -112,7 +115,8 @@ module Kosmos
         if installed_packages.any?
           Util.log "Error: You have already installed the following packages using Kosmos:"
           pretty_print_list(installed_packages.map(&:title))
-          exit
+
+          return false
         end
       end
     end
