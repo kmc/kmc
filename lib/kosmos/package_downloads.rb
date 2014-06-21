@@ -48,7 +48,7 @@ module Kosmos
 
       tmpdir = Dir.mktmpdir
 
-      download_file = File.new(File.join(tmpdir, 'download'), 'w+')
+      download_file = File.new(File.join(tmpdir, 'download'), 'wb+')
       download_file.write(downloaded_file)
       download_file.close
 
@@ -71,7 +71,7 @@ module Kosmos
 
       cache_dir = Kosmos.cache_dir
       if cache_dir
-        File.open(File.join(cache_dir, "#{package.title}.zip"), 'w') do |file|
+        File.open(File.join(cache_dir, "#{package.title}.zip"), 'wb+') do |file|
           file.write(downloaded_file)
         end
       end
