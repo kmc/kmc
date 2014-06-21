@@ -37,12 +37,16 @@ module Kosmos
     private
 
     def write_config(opts)
+      FileUtils.touch(config_path)
+
       File.open(config_path, "r+") do |file|
         file.write JSON.pretty_generate(read_config.merge(opts))
       end
     end
 
     def read_config
+      FileUtils.touch(config_path)
+
       config = File.read(config_path)
       if config.empty?
         {}
