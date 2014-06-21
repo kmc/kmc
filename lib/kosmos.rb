@@ -10,7 +10,7 @@ require 'kosmos/web/app'
 require 'kosmos/util'
 require 'kosmos/version'
 
-require 'json/pure'
+require 'json'
 
 module Kosmos
   class << self
