@@ -1,3 +1,3 @@
 module Kosmos
-  VERSION = "0.0.2-test4"
+  VERSION = "0.0.3"
 end
