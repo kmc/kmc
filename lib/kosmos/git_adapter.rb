@@ -22,7 +22,14 @@ module Kosmos
 
       def revert_commit(repo_path, commit)
         Dir.chdir(repo_path) do
-          `git revert --no-commit #{commit.sha}`
+          # Favor "ours" (which is always HEAD for our purposes) when git-revert
+          # can handle that on its own.
+          `git revert --no-commit --strategy=merge --strategy-option=ours #{commit.sha}`
+
+          # When files are being created or deleted, git will not do anything.
+          # In this case, keep all files alive; better to accidentally pollute
+          # than accidentally delete something important.
+          `git add *`
         end
       end
 
