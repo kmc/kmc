@@ -6,6 +6,8 @@ module Kosmos
       def init_repo(path)
         Dir.chdir(path) do
           `git init`
+          `git config user.name Kosmos`
+          `git config user.email kosmos@kosmos.kosmos`
 
           File.open('.gitignore', 'w') do |file|
             file.write "!*\n"
