@@ -25,6 +25,8 @@ module Kosmos
       end
 
       def install(args)
+        return unless check_initialized!
+
         ksp_path = Kosmos.load_ksp_path
 
         packages = load_packages(args)
@@ -43,6 +45,8 @@ module Kosmos
       end
 
       def uninstall(args)
+        return unless check_initialized!
+
         ksp_path = Kosmos.load_ksp_path
 
         package_name = args.shift
@@ -67,6 +71,8 @@ module Kosmos
       end
 
       def list(args)
+        return unless check_initialized!
+
         ksp_path = Kosmos.load_ksp_path
 
         packages = Kosmos::Versioner.installed_packages(ksp_path)
@@ -79,6 +85,22 @@ module Kosmos
       end
 
       private
+
+      def check_initialized!
+        if Kosmos.load_ksp_path
+          true
+        else
+          Util.log <<-EOS.undent
+            Error: You have not yet initialized Kosmos.
+
+            Before doing anything else, please execute the command:
+
+              kosmos init ksp-folder
+
+            Where "ksp-folder" is the name of the folder where you keep KSP.
+          EOS
+        end
+      end
 
       def pretty_print_list(list)
         list.each { |value| Util.log "  * #{value}" }
