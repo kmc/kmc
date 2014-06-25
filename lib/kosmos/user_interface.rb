@@ -137,9 +137,9 @@ module Kosmos
         if installed_packages.any?
           Util.log "Error: You have already installed the following packages using Kosmos:"
           pretty_print_list(installed_packages.map(&:title))
-
-          return false
         end
+
+        installed_packages.empty?
       end
     end
   end
