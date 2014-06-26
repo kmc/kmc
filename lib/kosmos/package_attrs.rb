@@ -4,7 +4,12 @@ module Kosmos
 
     def self.included(base)
       base.extend(Methods)
-      base.send(:include, Methods)
+
+      Methods.public_instance_methods.each do |method_name|
+        base.send(:define_method, method_name, Proc.new do |*args|
+          self.class.send(method_name, *args)
+        end)
+      end
     end
 
     module Methods

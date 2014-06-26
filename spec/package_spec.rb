@@ -24,6 +24,7 @@ describe Kosmos::Package do
 
   it 'has a full name' do
     expect(subject.title).to eq 'Example'
+    expect(subject.new.title).to eq 'Example'
   end
 
   it 'resolves requisites' do
