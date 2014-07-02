@@ -114,7 +114,7 @@ Almost all of the mods Scott Manley uses in Interstellar Quest are available
 through Kosmos. You can install them all by running:
 
 ```
-kosmos install active-texture-management b9 kerbal-alarm-clock kw-rocketry ksp-interstellar ferram deadly-reentry kethane infernal-robotics distant-object-enhancement better-atmospheres remote-tech-2 remote-tech-2-fixpack tac-life-support enhanced-navball kerbal-joint-reinforcement docking-port-alignment-indicator safe-chute kerbal-attachment-system real-chute tac-fuel-balancer
+kosmos install active-texture-management b9 kerbal-alarm-clock kw-rocketry ksp-interstellar ferram deadly-reentry kethane infernal-robotics distant-object-enhancement better-atmospheres remote-tech-2 tac-life-support enhanced-navball kerbal-joint-reinforcement docking-port-alignment-indicator safe-chute kerbal-attachment-system real-chute tac-fuel-balancer
 ```
 
 [mac-git]: http://sourceforge.net/projects/git-osx-installer/
