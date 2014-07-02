@@ -10,6 +10,20 @@ module Kosmos
       def init(args)
         ksp_path = args.shift
 
+        unless ksp_path
+          Util.log <<-EOS.undent
+            Error: You did not specify what folder you keep KSP in.
+
+            Before doing anything else, please execute the command:
+
+              kosmos init ksp-folder
+
+            Where "ksp-folder" is the name of the folder where you keep KSP.
+          EOS
+
+          return
+        end
+
         Util.log "Initializing Kosmos into #{ksp_path} (This will take a sec) ..."
 
         Kosmos::Versioner.init_repo(ksp_path)
