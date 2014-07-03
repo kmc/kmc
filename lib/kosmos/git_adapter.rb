@@ -8,6 +8,7 @@ module Kosmos
           `git init`
           `git config user.name Kosmos`
           `git config user.email kosmos@kosmos.kosmos`
+          `git config core.autocrlf false`
 
           File.open('.gitignore', 'w') do |file|
             file.write "!*\n"
