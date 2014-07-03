@@ -84,6 +84,23 @@ And it'll be ready to go.
 
 ## Usage
 
+### First run
+
+First, you have to point Kosmos to your Kerbal Space Program installation directory:
+
+```
+kosmos init "$KSP_PATH"
+```
+`$KSP_PATH` varies with the operating system and game installation.
+For a Steam-installed game on OS X it should be:
+```
+kosmos init "~/Library/Application Support/Steam/SteamApps/common/Kerbal Space Program/"
+```
+
+Then, Kosmos will be ready to use.
+
+### Mod management
+
 Install any command by running:
 
 ```
