@@ -78,15 +78,19 @@ module Kosmos
 
     def install_prerequisites!
       resolve_prerequisites.each do |package|
-        Util.log "#{title} has prerequisite #{package.title}."
-        package.new.install!(ksp_path)
+        unless Versioner.installed_packages(ksp_path).include?(package.title)
+          Util.log "#{title} has prerequisite #{package.title}."
+          package.new.install!(ksp_path)
+        end
       end
     end
 
     def install_postrequisites!
       resolve_postrequisites.each do |package|
-        Util.log "#{title} has postrequisite #{package.title}."
-        package.new.install!(ksp_path)
+        unless Versioner.installed_packages(ksp_path).include?(package.title)
+          Util.log "#{title} has postrequisite #{package.title}."
+          package.new.install!(ksp_path)
+        end
       end
     end
 
