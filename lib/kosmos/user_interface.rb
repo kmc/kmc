@@ -8,7 +8,7 @@ module Kosmos
   module UserInterface
     class << self
       def init(args)
-        ksp_path = args.shift
+        ksp_path = extract_ksp_path_from_args(args)
 
         unless ksp_path
           Util.log <<-EOS.undent
@@ -99,6 +99,29 @@ module Kosmos
       end
 
       private
+
+      # Extracts the path to init to from the user-supplied arguments. If the
+      # user passed arguments via the commandline, then spaces in paths are
+      # auto-handled beacuse they come from ARGV.
+      #
+      # If, however, the user passed arguments from the server, then these
+      # arguments will still be separated by spaces. This method will then re-
+      # join them.
+      def extract_ksp_path_from_args(args)
+        if args
+          path = args.join(' ')
+
+          # Trim leading quotation mark if any
+          path = path[1..-1] if path.start_with?('"')
+          path = path[0..-2] if path.end_with?('"')
+
+          if path.empty?
+            nil
+          else
+            path
+          end
+        end
+      end
 
       def check_initialized!
         if Kosmos.load_ksp_path
