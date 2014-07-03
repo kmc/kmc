@@ -74,13 +74,24 @@ module Kosmos
         end
 
         package = Kosmos::Package.find(package_name)
+        installed_packages = Kosmos::Versioner.installed_packages(ksp_path)
 
-        if package
+        if !package
+          Util.log "Error: Kosmos couldn't find any packages with the name #{package_name.inspect}."
+        elsif !installed_packages.include?(package.title)
+          Util.log <<-EOS.undent
+            Error: #{package.title} is not currently installed.
+
+            There are three reasons you may get this error:
+
+              1. You have already uninstalled #{package.title}.
+              2. You have never previously installed #{package.title}.
+              3. You did not use Kosmos to install #{package.title}.
+          EOS
+        else
           Util.log "Preparing to uninstall #{package.title} ..."
           Kosmos::Versioner.uninstall_package(ksp_path, package)
           Util.log "Done! Just uninstalled: #{package.title}."
-        else
-          Util.log "Error: Kosmos couldn't find any packages with the name #{package_name.inspect}."
         end
       end
 
