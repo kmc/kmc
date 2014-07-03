@@ -5,16 +5,11 @@ class BetterAtmospheresLowDef < Kosmos::Package
   prerequisites 'environmental-visual-enhancements', 'texture-replacer', 'custom-asteroids'
 
   def install
-    merge_directory 'BoulderCo',
-      into: 'GameData'
-    merge_directory 'CustomAsteroids',
-      into: 'GameData'
-    merge_directory 'KittopiaSpace',
-      into: 'GameData'
-    merge_directory 'RealSolarSystem',
-      into: 'GameData'
-    merge_directory 'TextureReplacer',
-      into: 'GameData'
+    merge_directory 'BoulderCo',  into: 'GameData'
+    merge_directory 'CustomAsteroids', into: 'GameData'
+    merge_directory 'KittopiaSpace', into: 'GameData'
+    merge_directory 'RealSolarSystem', into: 'GameData'
+    merge_directory 'TextureReplacer', into: 'GameData'
   end
 end
 
@@ -25,16 +20,11 @@ class BetterAtmospheresMediumDef < Kosmos::Package
   prerequisites 'environmental-visual-enhancements', 'texture-replacer', 'custom-asteroids'
 
   def install
-    merge_directory 'BoulderCo',
-      into: 'GameData'
-    merge_directory 'CustomAsteroids',
-      into: 'GameData'
-    merge_directory 'KittopiaSpace',
-      into: 'GameData'
-    merge_directory 'RealSolarSystem',
-      into: 'GameData'
-    merge_directory 'TextureReplacer',
-      into: 'GameData'
+    merge_directory 'BoulderCo',  into: 'GameData'
+    merge_directory 'CustomAsteroids', into: 'GameData'
+    merge_directory 'KittopiaSpace', into: 'GameData'
+    merge_directory 'RealSolarSystem', into: 'GameData'
+    merge_directory 'TextureReplacer', into: 'GameData'
   end
 end
 
@@ -45,15 +35,10 @@ class BetterAtmospheresHighDef < Kosmos::Package
   prerequisites 'environmental-visual-enhancements', 'texture-replacer', 'custom-asteroids'
 
   def install
-    merge_directory 'BoulderCo',
-      into: 'GameData'
-    merge_directory 'CustomAsteroids',
-      into: 'GameData'
-    merge_directory 'KittopiaSpace',
-      into: 'GameData'
-    merge_directory 'RealSolarSystem',
-      into: 'GameData'
-    merge_directory 'TextureReplacer',
-      into: 'GameData'
+    merge_directory 'BoulderCo',  into: 'GameData'
+    merge_directory 'CustomAsteroids', into: 'GameData'
+    merge_directory 'KittopiaSpace', into: 'GameData'
+    merge_directory 'RealSolarSystem', into: 'GameData'
+    merge_directory 'TextureReplacer', into: 'GameData'
   end
 end
