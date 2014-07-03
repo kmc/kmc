@@ -43,7 +43,12 @@ module Kosmos
     end
 
     def extract_dropbox_url
-      rendered_page.css('#default_content_download_button').first['href']
+      button = rendered_page.css('#default_content_download_button')
+      if button.first
+        button.first['href']
+      else
+        url
+      end
     end
 
     def extract_curseforge_url
