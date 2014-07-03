@@ -92,10 +92,11 @@ First, you have to point Kosmos to your Kerbal Space Program installation direct
 kosmos init "$KSP_PATH"
 ```
 `$KSP_PATH` varies with the operating system and game installation.
-For a Steam-installed game on OS X it should be:
-```
-kosmos init "~/Library/Application Support/Steam/SteamApps/common/Kerbal Space Program/"
-```
+For a Steam-installed game it should be:
+
+* on Windows: `kosmos init "C:\Program Files (x86)\Steam\steamapps\common\Kerbal Space Program"`
+* on Linux: `kosmos init "~/Steam/SteamApps/common/Kerbal Space Program/"`
+* on OS X: `kosmos init "~/Library/Application Support/Steam/SteamApps/common/Kerbal Space Program/"`
 
 Then, Kosmos will be ready to use.
 
