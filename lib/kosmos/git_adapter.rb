@@ -18,8 +18,8 @@ module Kosmos
 
       def commit_everything(repo_path, commit_message)
         Dir.chdir(repo_path) do
-          `git add -A -f`
-          `git commit --allow-empty -m #{commit_message.shellescape}`
+          `git add -A -f 2>&1`
+          `git commit --allow-empty -m #{commit_message.shellescape} 2>&1`
         end
       end
 
@@ -27,7 +27,7 @@ module Kosmos
         Dir.chdir(repo_path) do
           # Favor "ours" (which is always HEAD for our purposes) when git-revert
           # can handle that on its own.
-          `git revert --no-commit --strategy=merge --strategy-option=ours #{commit.sha}`
+          `git revert --no-commit --strategy=merge --strategy-option=ours #{commit.sha} 2>&1`
 
           # When files are being created or deleted, git will not do anything.
           # In this case, keep all files alive; better to accidentally pollute
