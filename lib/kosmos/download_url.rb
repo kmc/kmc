@@ -29,7 +29,7 @@ module Kosmos
     end
 
     def dropbox?
-      url =~ /dropbox/
+      url =~ /dropbox\.com/
     end
 
     def curseforge?
