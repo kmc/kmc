@@ -18,7 +18,9 @@ module Kosmos
       post '/' do
         Kosmos.configure do |config|
           config.output_method = Proc.new do |str|
-            settings.connection << "data: #{str}\n\n"
+            str.split("\n").each do |line|
+              settings.connection << "data: #{line}\n\n"
+            end
           end
         end
 
