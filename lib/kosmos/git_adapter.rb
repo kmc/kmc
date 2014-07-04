@@ -1,5 +1,3 @@
-require 'shellwords'
-
 module Kosmos
   module GitAdapter
     class << self
@@ -19,7 +17,7 @@ module Kosmos
       def commit_everything(repo_path, commit_message)
         Dir.chdir(repo_path) do
           `git add -A -f`
-          `git commit --allow-empty -m #{commit_message.shellescape}`
+          `git commit --allow-empty -m "#{commit_message}"`
         end
       end
 
