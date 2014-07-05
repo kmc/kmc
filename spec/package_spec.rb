@@ -85,6 +85,11 @@ describe Kosmos::Package do
       expect(Kosmos::Package.normalize_for_find('many words')).
         to eq 'many-words'
     end
+
+    it 'converts multiple spaces/dashes to one dash' do
+      expect(Kosmos::Package.normalize_for_find('hello - there')).
+        to eq 'hello-there'
+    end
   end
 
   describe '#find' do
