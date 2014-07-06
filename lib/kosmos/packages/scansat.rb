@@ -1,8 +1,18 @@
 class Scansat < Kosmos::Package
   title 'SCANSat'
-  url 'http://github.com/thatfool/SCAN/releases/download/build5/SCANsat_b5.zip'
+  url 'https://github.com/S-C-A-N/SCANsat/releases/download/v6.0/SCANsat_v6.0.zip'
 
   def install
     merge_directory 'SCANsat', into: 'GameData'
+  end
+end
+
+class ScanSatRpm < Kosmos::Package
+  title 'SCANSatRPM'
+  url 'https://github.com/S-C-A-N/SCANsat/releases/download/v6.0/SCANsat_v6.0.zip'
+  prerequisites 'scansat'
+
+  def install
+    merge_directory 'SCANsatRPM', into: 'GameData'
   end
 end
