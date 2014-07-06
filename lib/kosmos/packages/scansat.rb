@@ -8,7 +8,7 @@ class Scansat < Kosmos::Package
 end
 
 class ScanSatRpm < Kosmos::Package
-  title 'SCANSat RPM'
+  title 'SCANSatRPM'
   url 'https://github.com/S-C-A-N/SCANsat/releases/download/v6.0/SCANsat_v6.0.zip'
   prerequisites 'scansat'
 
