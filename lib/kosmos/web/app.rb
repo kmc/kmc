@@ -18,6 +18,10 @@ module Kosmos
       post '/' do
         Kosmos.configure do |config|
           config.output_method = Proc.new do |str|
+            # Send to STDOUT
+            puts str
+
+            # And to the in-browser UI
             str.split("\n").each do |line|
               settings.connection << "data: #{line}\n\n"
             end
