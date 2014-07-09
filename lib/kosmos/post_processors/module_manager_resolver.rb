@@ -2,10 +2,10 @@ module Kosmos
   module PostProcessors
     class ModuleManagerResolver
       def self.post_process(ksp_path)
-        game_data = File.join(ksp_path, 'GameData')
-
-        module_managers = Dir[File.join(game_data, '*')].select do |file|
-          File.basename(file).start_with?('ModuleManager')
+        module_managers = Dir.chdir(ksp_path) do
+          Dir["GameData/*"].select do |file|
+            File.basename(file).start_with?('ModuleManager')
+          end
         end
 
         most_recent_manager = module_managers.max_by do |file|
@@ -20,9 +20,11 @@ module Kosmos
         end
 
         (module_managers - [most_recent_manager]).each do |file|
-          Util.log "Detected and deleting outdated version of ModuleManager: #{file}"
+          file_name = File.basename(file)
+          Util.log "Detected and deleting outdated version of ModuleManager: " +
+              "#{file_name}"
 
-          File.delete(file)
+          File.delete(File.join(ksp_path, file))
         end
       end
     end
