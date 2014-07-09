@@ -2,6 +2,7 @@ class Cacteye < Kosmos::Package
   title 'CactEye Telescope'
   aliases 'cacteye'
   url 'https://app.box.com/s/89skim2e3simjwmuof4c'
+  postrequisite 'cacteye recompiled with latest hullcam vds'
 
   def install
     merge_directory 'GameData'
