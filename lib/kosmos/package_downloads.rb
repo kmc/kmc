@@ -5,10 +5,11 @@ module Kosmos
     # Pathname.
     def self.download_and_unzip_package(package, opts = {})
       download_file = download_package(package, opts)
+      output_path = Pathname.new(download_file.path).parent.to_s
+
+      return output_path if package.do_not_unzip
 
       Util.log "Unzipping ..."
-
-      output_path = Pathname.new(download_file.path).parent.to_s
 
       Zip::File.open(download_file.path) do |zip_file|
         zip_file.each do |entry|
