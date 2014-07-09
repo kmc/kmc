@@ -31,24 +31,27 @@ module Kosmos
     #
     # Returns the file downloaded, which is created in a temp directory.
     def self.download_package(package, opts = {})
-      cached_download = download_from_cache(package)
+      # TODO: Refactor this to make it less yucky.
+
+      cached_download, download_uri = download_from_cache(package)
       downloaded_file = if cached_download
         Util.log "Use a cached version of #{package.title} ..."
         cached_download
       else
         Util.log "The package is found at #{package.url}. "\
           "Finding the download URL ..."
-        download_url = DownloadUrl.new(package.url).resolve_download_url
+        download_uri = DownloadUrl.new(package.url).resolve_download_url
 
-        Util.log "Found it. Downloading from #{download_url} ..."
-        HTTParty.get(download_url)
+        Util.log "Found it. Downloading from #{download_uri} ..."
+        HTTParty.get(download_uri)
       end
 
       save_to_cache(package, downloaded_file) if opts[:cache_after_download]
 
       tmpdir = Dir.mktmpdir
 
-      download_file = File.new(File.join(tmpdir, 'download'), 'wb+')
+      download_file_name = File.basename(URI(download_uri).path)
+      download_file = File.new(File.join(tmpdir, download_file_name), 'wb+')
       download_file.write(downloaded_file)
       download_file.close
 
@@ -62,7 +65,9 @@ module Kosmos
       if cache_dir
         cached_download = File.join(cache_dir, "#{package.title}.zip")
 
-        File.read(cached_download) if File.file?(cached_download)
+        if File.file?(cached_download)
+          [File.read(cached_download), cached_download]
+        end
       end
     end
 
