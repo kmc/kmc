@@ -36,12 +36,18 @@ module Kosmos
     end
 
     class << self
+      attr_reader :do_not_unzip
+
       def unzip!
         PackageDownloads.download_and_unzip_package(self)
       end
 
       def download!
         PackageDownloads.download_package(self)
+      end
+
+      def do_not_unzip!
+        @do_not_unzip = true
       end
 
       # a callback for when a subclass of this class is created

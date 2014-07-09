@@ -1,79 +1,114 @@
 module Kosmos
   module PackageDownloads
-    # Downloads and unzips a package. This will call #download! on its own, and
-    # will return the location where the package was downloaded to as a
-    # Pathname.
-    def self.download_and_unzip_package(package, opts = {})
-      download_file = download_package(package, opts)
+    class << self
+      # Downloads and unzips a package. This will call #download! on its own, and
+      # will return the location where the package was downloaded to as a
+      # Pathname.
+      def download_and_unzip_package(package, opts = {})
+        download_file = download_package(package, opts)
+        output_path = Pathname.new(download_file.path).parent.to_s
 
-      Util.log "Unzipping ..."
+        return output_path if package.do_not_unzip
 
-      output_path = Pathname.new(download_file.path).parent.to_s
+        Util.log "Unzipping ..."
 
-      Zip::File.open(download_file.path) do |zip_file|
-        zip_file.each do |entry|
-          destination = File.join(output_path, entry.name)
-          parent_dir = File.expand_path('..', destination)
+        Zip::File.open(download_file.path) do |zip_file|
+          zip_file.each do |entry|
+            destination = File.join(output_path, entry.name)
+            parent_dir = File.expand_path('..', destination)
 
-          FileUtils.mkdir_p(parent_dir) unless File.exists?(parent_dir)
+            FileUtils.mkdir_p(parent_dir) unless File.exists?(parent_dir)
 
-          entry.extract(destination)
+            entry.extract(destination)
+          end
+        end
+
+        File.delete(File.absolute_path(download_file))
+
+        output_path
+      end
+
+      # Downloads the zipfile for a package using its URL, unless a cached version
+      # is found first. Uses DownloadUrl to intelligently resolve download URLs.
+      #
+      # Returns the file downloaded, which is created in a temp directory.
+      def download_package(package, opts = {})
+        download_uri, downloaded_file = fetch_package_file(package)
+
+        save_to_cache(package, downloaded_file) if opts[:cache_after_download]
+
+        download_to_tempdir(download_file_name(download_uri), downloaded_file)
+      end
+
+      private
+
+      # Given a package, returns a two-entry array.
+      #
+      # The first entry is a String uri pointing to where the file was fetched
+      # from (either the filesystem or a website), and the second entry is the
+      # contents of the download.
+      def fetch_package_file(package)
+        cache = cache_file(package)
+        if cache
+          Util.log "Using a cached version of #{package.title} ..."
+
+          [cache, File.read(cache)]
+        else
+          Util.log "The package is found at #{package.url}."
+          Util.log "Finding the download URL ..."
+
+          download_uri = resolve_download_url(package)
+
+          Util.log "Found it. Downloading from #{download_uri} ..."
+          [download_uri, HTTParty.get(download_uri)]
         end
       end
 
-      File.delete(File.absolute_path(download_file))
+      # Returns the location of the cached version of a package, or some falsy
+      # value if no such file exists.
+      def cache_file(package)
+        if Kosmos.cache_dir
+          cache_file = File.join(Kosmos.cache_dir, "#{package.title}.zip")
 
-      output_path
-    end
-
-    # Downloads the zipfile for a package using its URL, unless a cached version
-    # is found first. Uses DownloadUrl to intelligently resolve download URLs.
-    #
-    # Returns the file downloaded, which is created in a temp directory.
-    def self.download_package(package, opts = {})
-      cached_download = download_from_cache(package)
-      downloaded_file = if cached_download
-        Util.log "Use a cached version of #{package.title} ..."
-        cached_download
-      else
-        Util.log "The package is found at #{package.url}. "\
-          "Finding the download URL ..."
-        download_url = DownloadUrl.new(package.url).resolve_download_url
-
-        Util.log "Found it. Downloading from #{download_url} ..."
-        HTTParty.get(download_url)
+          File.file?(cache_file) && cache_file
+        end
       end
 
-      save_to_cache(package, downloaded_file) if opts[:cache_after_download]
-
-      tmpdir = Dir.mktmpdir
-
-      download_file = File.new(File.join(tmpdir, 'download'), 'wb+')
-      download_file.write(downloaded_file)
-      download_file.close
-
-      download_file
-    end
-
-    private
-
-    def self.download_from_cache(package)
-      cache_dir = Kosmos.cache_dir
-      if cache_dir
-        cached_download = File.join(cache_dir, "#{package.title}.zip")
-
-        File.read(cached_download) if File.file?(cached_download)
+      def resolve_download_url(package)
+        DownloadUrl.new(package.url).resolve_download_url
       end
-    end
 
-    def self.save_to_cache(package, downloaded_file)
-      Util.log "Saving #{package.title} to cache ..."
+      # Writes a downloaded package to the cache.
+      #
+      # This method assumes `Kosmos.cache_dir` already exists.
+      def save_to_cache(package, downloaded_file)
+        Util.log "Saving #{package.title} to cache ..."
 
-      cache_dir = Kosmos.cache_dir
-      if cache_dir
-        File.open(File.join(cache_dir, "#{package.title}.zip"), 'wb+') do |file|
+        cache_location = File.join(Kosmos.cache_dir, "#{package.title}.zip")
+        File.open(cache_location, 'wb+') do |file|
           file.write(downloaded_file)
         end
+      end
+
+      # Converts a string URI into the file name a downloaded file should be
+      # placed into.
+      def download_file_name(uri)
+        # Remove non-alphanumeric characters to ensure a valid URI.
+        clean_uri = uri.gsub(/[^[:alnum:]]/, '')
+
+        File.basename(URI(clean_uri).path)
+      end
+
+      # Places `file_contents` into a file called `file_name` in a temporary
+      # directory.
+      def download_to_tempdir(file_name, file_contents)
+        tmpdir = Dir.mktmpdir
+
+        file = File.new(File.join(tmpdir, file_name), 'wb+')
+        file.write(file_contents)
+        file.close
+
+        file
       end
     end
   end
