@@ -90,11 +90,14 @@ module Kosmos
         end
       end
 
+      VALID_CHARS = ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz" +
+          "0123456789-._~:/?#[]@!$&'()*+,;=").chars
+
       # Converts a string URI into the file name a downloaded file should be
       # placed into.
       def download_file_name(uri)
-        # Remove non-alphanumeric characters to ensure a valid URI.
-        clean_uri = uri.gsub(/[^[:alnum:]]/, '')
+        # Remove invalid characters to ensure a valid URI.
+        clean_uri = uri.chars.select { |char| VALID_CHARS.include?(char) }.join
 
         File.basename(URI(clean_uri).path)
       end
