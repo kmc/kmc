@@ -51,11 +51,7 @@ module Kosmos
         Util.log "Kosmos is about to install #{packages.count} package(s):"
         pretty_print_list(packages.map(&:title))
 
-        packages.each do |package|
-          Util.log "Installing package #{package.title} ..."
-          package.install!(ksp_path)
-          Util.log "Done!"
-        end
+        Package.install_packages!(ksp_path, packages)
       end
 
       def uninstall(args)

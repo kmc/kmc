@@ -15,13 +15,32 @@ module Kosmos
 
       attr_reader :ksp_path, :download_dir, :do_not_unzip
 
-      # Internal version of the `install` method, which handles procedures commong
-      # to all packages, such as saving work before and after installation, as
-      # well as downloading and unzipping packages and running post-processors.
-      def install!(ksp_path)
+      # Installs a list of packages, and outputs caveats when it's done.
+      def install_packages!(ksp_path, packages)
+        caveats = {}
+        packages.each { |package| package.install!(ksp_path, caveats) }
+        log_caveats(caveats)
+      end
+
+      # Internal version of the `install` method. Handles:
+      #   * Pre- and post-requisites
+      #   * Version control
+      #   * Post-processors
+      #   * Calling a package's #install method
+      #   * Building up caveats
+      #
+      # The caveats argument is expected to be a hash going from Packages to
+      # caveat messages and will be modified in-place.
+      def install!(ksp_path, caveats)
+        return if Versioner.installed_packages(ksp_path).include?(self.title)
+
+        Util.log "Installing package #{self.title}"
+
+        add_caveat_message!(caveats)
+
         @ksp_path = ksp_path
 
-        install_prerequisites!
+        install_prerequisites!(caveats)
 
         @download_dir = download_and_unzip!
 
@@ -36,7 +55,9 @@ module Kosmos
 
         Versioner.mark_postinstall(ksp_path, self)
 
-        install_postrequisites!
+        Util.log "Done!"
+
+        install_postrequisites!(caveats)
       end
 
       def download_and_unzip!
@@ -62,24 +83,40 @@ module Kosmos
 
       private
 
-      def install_prerequisites!
+      def add_caveat_message!(caveats)
+        if method_defined?(:caveats)
+          caveats.merge!(self => self.new.caveats)
+        end
+      end
+
+      def install_prerequisites!(caveats)
         resolve_prerequisites.each do |package|
           unless Versioner.installed_packages(ksp_path).include?(package.title)
             Util.log "#{title} has prerequisite #{package.title}."
-            package.new.install!(ksp_path)
+            package.install!(ksp_path, caveats)
           end
         end
       end
 
-      def install_postrequisites!
+      def install_postrequisites!(caveats)
         resolve_postrequisites.each do |package|
           unless Versioner.installed_packages(ksp_path).include?(package.title)
             Util.log "#{title} has postrequisite #{package.title}."
-            package.new.install!(ksp_path)
+            package.install!(ksp_path, caveats)
           end
         end
       end
 
+      def log_caveats(caveats)
+        if caveats.any?
+          Util.log "===> Caveats"
+          caveats.each do |package, message|
+            Util.log "Caveat from #{package.title}:"
+            Util.log message
+            Util.log ""
+          end
+        end
+      end
     end
 
     # Now, let's include all the known packages.
