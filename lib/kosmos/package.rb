@@ -35,14 +35,7 @@ module Kosmos
         return if Versioner.already_installed?(ksp_path, self)
 
         Util.log "Installing package #{self.title}"
-
-        add_caveat_message!(caveats)
-
-        @ksp_path = ksp_path
-
-        install_prerequisites!(caveats)
-
-        @download_dir = download_and_unzip!
+        prepare_for_install(ksp_path, caveats)
 
         Util.log "Saving your work before installing ..."
         Versioner.mark_preinstall(ksp_path, self)
@@ -82,6 +75,14 @@ module Kosmos
       end
 
       private
+
+      # Run steps that take place before installation.
+      def prepare_for_install(ksp_path, caveats)
+        add_caveat_message!(caveats)
+        @ksp_path = ksp_path
+        install_prerequisites!(caveats)
+        @download_dir = download_and_unzip!
+      end
 
       def add_caveat_message!(caveats)
         if method_defined?(:caveats)
