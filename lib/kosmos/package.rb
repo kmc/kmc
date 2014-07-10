@@ -110,10 +110,12 @@ module Kosmos
       def log_caveats(caveats)
         if caveats.any?
           Util.log "===> Caveats"
+
           caveats.each do |package, message|
-            Util.log "Caveat from #{package.title}:"
-            Util.log message
-            Util.log ""
+            Util.log <<-EOS.undent
+              Caveat from #{package.title}:
+              #{message}
+            EOS
           end
         end
       end
