@@ -171,16 +171,18 @@ module Kosmos
         packages.values
       end
 
-      def check_installed_packages(ksp_path, packages)
-        installed_titles = Kosmos::Versioner.installed_packages(ksp_path)
-        installed_packages = packages & installed_packages
+      def check_installed_packages(ksp_path, new_packages)
+        installed_packages = Kosmos::Versioner.installed_packages(ksp_path)
+        already_installed = new_packages & installed_packages
 
-        if installed_packages.any?
+        if already_installed.any?
           Util.log "Error: You have already installed the following packages using Kosmos:"
-          pretty_print_list(installed_packages.map(&:title))
-        end
+          pretty_print_list(already_installed.map(&:title))
 
-        installed_packages.empty?
+          false
+        else
+          true
+        end
       end
     end
   end
