@@ -51,11 +51,7 @@ module Kosmos
         Util.log "Kosmos is about to install #{packages.count} package(s):"
         pretty_print_list(packages.map(&:title))
 
-        packages.each do |package|
-          Util.log "Installing package #{package.title} ..."
-          package.new.install!(ksp_path)
-          Util.log "Done!"
-        end
+        Package.install_packages!(ksp_path, packages)
       end
 
       def uninstall(args)
@@ -102,7 +98,7 @@ module Kosmos
 
         packages = Kosmos::Versioner.installed_packages(ksp_path)
         Util.log "You have installed #{packages.length} mod(s) using Kosmos:"
-        pretty_print_list(packages)
+        pretty_print_list(packages.map(&:title))
       end
 
       def server(args)
@@ -175,19 +171,18 @@ module Kosmos
         packages.values
       end
 
-      def check_installed_packages(ksp_path, packages)
-        installed_titles = Kosmos::Versioner.installed_packages(ksp_path)
+      def check_installed_packages(ksp_path, new_packages)
+        installed_packages = Kosmos::Versioner.installed_packages(ksp_path)
+        already_installed = new_packages & installed_packages
 
-        installed_packages = packages.select do |package|
-          installed_titles.include?(package.title)
-        end
-
-        if installed_packages.any?
+        if already_installed.any?
           Util.log "Error: You have already installed the following packages using Kosmos:"
-          pretty_print_list(installed_packages.map(&:title))
-        end
+          pretty_print_list(already_installed.map(&:title))
 
-        installed_packages.empty?
+          false
+        else
+          true
+        end
       end
     end
   end

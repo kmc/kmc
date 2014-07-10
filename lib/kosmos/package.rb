@@ -4,41 +4,56 @@ require 'zip'
 require 'tmpdir'
 require 'damerau-levenshtein'
 
+require_relative 'package_utils'
+
 module Kosmos
   class Package
     include PackageDsl
-    include PackageAttrs
-
-    attr_reader :ksp_path, :download_dir
-
-    # Internal version of the `install` method, which handles procedures commong
-    # to all packages, such as saving work before and after installation, as
-    # well as downloading and unzipping packages and running post-processors.
-    def install!(ksp_path)
-      @ksp_path = ksp_path
-
-      install_prerequisites!
-
-      @download_dir = self.class.unzip!
-
-      Util.log "Saving your work before installing ..."
-      Versioner.mark_preinstall(ksp_path, self)
-
-      Util.log "Installing #{title} ..."
-      install
-
-      Util.log "Cleaning up ..."
-      Util.run_post_processors!(ksp_path)
-
-      Versioner.mark_postinstall(ksp_path, self)
-
-      install_postrequisites!
-    end
 
     class << self
-      attr_reader :do_not_unzip
+      include PackageAttrs, PackageUtils
 
-      def unzip!
+      attr_reader :ksp_path, :download_dir, :do_not_unzip
+
+      # Installs a list of packages, and outputs caveats when it's done.
+      def install_packages!(ksp_path, packages)
+        caveats = {}
+        packages.each { |package| package.install!(ksp_path, caveats) }
+        log_caveats(caveats)
+      end
+
+      # Internal version of the `install` method. Handles:
+      #   * Pre- and post-requisites
+      #   * Version control
+      #   * Post-processors
+      #   * Calling a package's #install method
+      #   * Building up caveats
+      #
+      # The caveats argument is expected to be a hash going from Packages to
+      # caveat messages and will be modified in-place.
+      def install!(ksp_path, caveats)
+        return if Versioner.already_installed?(ksp_path, self)
+
+        Util.log "Installing package #{self.title}"
+        prepare_for_install(ksp_path, caveats)
+
+        Util.log "Saving your work before installing ..."
+        Versioner.mark_preinstall(ksp_path, self)
+
+        Util.log "Installing #{title} ..."
+        self.new.install
+
+        Util.log "Cleaning up ..."
+        Util.run_post_processors!(ksp_path)
+
+        Versioner.mark_postinstall(ksp_path, self)
+
+        Util.log "Done!"
+
+        install_postrequisites!(caveats)
+      end
+
+      def download_and_unzip!
         PackageDownloads.download_and_unzip_package(self)
       end
 
@@ -55,49 +70,54 @@ module Kosmos
         (@@packages ||= []) << package
       end
 
-      # Lowercases and hyphenates a package name; this is the format packages
-      # are expected to be supplied as when passed from the user.
-      def normalize_for_find(name)
-        name.downcase.gsub(/[ \-]+/, "-")
+      def packages
+        @@packages
       end
 
-      def normalized_title
-        normalize_for_find(title)
+      private
+
+      # Run steps that take place before installation.
+      def prepare_for_install(ksp_path, caveats)
+        add_caveat_message!(caveats)
+        @ksp_path = ksp_path
+        install_prerequisites!(caveats)
+        @download_dir = download_and_unzip!
       end
 
-      def find(name)
-        @@packages.find do |package|
-          package.names.any? do |candidate_name|
-            normalize_for_find(candidate_name) == normalize_for_find(name)
+      def add_caveat_message!(caveats)
+        if method_defined?(:caveats)
+          caveats.merge!(self => self.new.caveats)
+        end
+      end
+
+      def install_prerequisites!(caveats)
+        resolve_prerequisites.each do |package|
+          unless Versioner.already_installed?(ksp_path, package)
+            Util.log "#{title} has prerequisite #{package.title}."
+            package.install!(ksp_path, caveats)
           end
         end
       end
 
-      def search(name)
-        @@packages.min_by do |package|
-          package.names.map do |candidate_name|
-            DamerauLevenshtein.distance(name, candidate_name)
-          end.min
+      def install_postrequisites!(caveats)
+        resolve_postrequisites.each do |package|
+          unless Versioner.already_installed?(ksp_path, package)
+            Util.log "#{title} has postrequisite #{package.title}."
+            package.install!(ksp_path, caveats)
+          end
         end
       end
-    end
 
-    private
+      def log_caveats(caveats)
+        if caveats.any?
+          Util.log "===> Caveats"
 
-    def install_prerequisites!
-      resolve_prerequisites.each do |package|
-        unless Versioner.installed_packages(ksp_path).include?(package.title)
-          Util.log "#{title} has prerequisite #{package.title}."
-          package.new.install!(ksp_path)
-        end
-      end
-    end
-
-    def install_postrequisites!
-      resolve_postrequisites.each do |package|
-        unless Versioner.installed_packages(ksp_path).include?(package.title)
-          Util.log "#{title} has postrequisite #{package.title}."
-          package.new.install!(ksp_path)
+          caveats.each do |package, message|
+            Util.log <<-EOS.undent
+              Caveat from #{package.title}:
+              #{message}
+            EOS
+          end
         end
       end
     end

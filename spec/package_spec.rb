@@ -24,7 +24,6 @@ describe Kosmos::Package do
 
   it 'has a full name' do
     expect(subject.title).to eq 'Example'
-    expect(subject.new.title).to eq 'Example'
   end
 
   it 'resolves requisites' do
@@ -65,7 +64,7 @@ describe Kosmos::Package do
 
     it 'unzips the contents' do
       Zip::File.should_receive(:open)
-      subject.unzip!
+      subject.download_and_unzip!
     end
 
     it 'falls back to http if no scheme specified' do

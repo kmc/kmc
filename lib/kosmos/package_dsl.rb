@@ -3,8 +3,8 @@ module Kosmos
     def merge_directory(from, opts = {})
       destination = opts[:into] || '.'
 
-      FileUtils.cp_r(File.join(@download_dir, from),
-        File.join(@ksp_path, destination))
+      FileUtils.cp_r(File.join(self.class.download_dir, from),
+        File.join(self.class.ksp_path, destination))
     end
   end
 end
