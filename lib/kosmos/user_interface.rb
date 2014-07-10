@@ -53,7 +53,7 @@ module Kosmos
 
         packages.each do |package|
           Util.log "Installing package #{package.title} ..."
-          package.new.install!(ksp_path)
+          package.install!(ksp_path)
           Util.log "Done!"
         end
       end

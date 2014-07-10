@@ -8,8 +8,10 @@ require_relative 'package_utils'
 
 module Kosmos
   class Package
+    include PackageDsl
+
     class << self
-      include PackageDsl, PackageAttrs, PackageUtils
+      include PackageAttrs, PackageUtils
 
       attr_reader :ksp_path, :download_dir, :do_not_unzip
 
@@ -21,13 +23,13 @@ module Kosmos
 
         install_prerequisites!
 
-        @download_dir = self.class.unzip!
+        @download_dir = download_and_unzip!
 
         Util.log "Saving your work before installing ..."
         Versioner.mark_preinstall(ksp_path, self)
 
         Util.log "Installing #{title} ..."
-        install
+        self.new.install
 
         Util.log "Cleaning up ..."
         Util.run_post_processors!(ksp_path)
@@ -37,7 +39,7 @@ module Kosmos
         install_postrequisites!
       end
 
-      def unzip!
+      def download_and_unzip!
         PackageDownloads.download_and_unzip_package(self)
       end
 
