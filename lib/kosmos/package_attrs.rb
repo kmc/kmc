@@ -1,18 +1,5 @@
 module Kosmos
   module PackageAttrs
-    private
-
-    def self.included(base)
-      base.extend(Methods)
-
-      Methods.public_instance_methods.each do |method_name|
-        base.send(:define_method, method_name, Proc.new do |*args|
-          self.class.send(method_name, *args)
-        end)
-      end
-    end
-
-    module Methods
       def title(title = nil)
         if title
           @title = title
@@ -53,7 +40,7 @@ module Kosmos
         end
       end
 
-      alias_method :prerequiste, :prerequisites
+      alias_method :prerequisite, :prerequisites
       alias_method :pre_requisite, :prerequisites
       alias_method :pre_requisites, :prerequisites
 
@@ -67,7 +54,7 @@ module Kosmos
         end
       end
 
-      alias_method :postrequiste, :postrequisites
+      alias_method :postrequisite, :postrequisites
       alias_method :post_requisite, :postrequisites
       alias_method :post_requisites, :postrequisites
 
@@ -78,7 +65,5 @@ module Kosmos
       def resolve_postrequisites
         postrequisites.map { |package_name| find(package_name) }
       end
-
-    end
   end
 end
