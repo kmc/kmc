@@ -64,7 +64,7 @@ describe Kosmos::Package do
 
     it 'unzips the contents' do
       Zip::File.should_receive(:open)
-      subject.unzip!
+      subject.download_and_unzip!
     end
 
     it 'falls back to http if no scheme specified' do

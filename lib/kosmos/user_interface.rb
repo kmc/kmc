@@ -98,7 +98,7 @@ module Kosmos
 
         packages = Kosmos::Versioner.installed_packages(ksp_path)
         Util.log "You have installed #{packages.length} mod(s) using Kosmos:"
-        pretty_print_list(packages)
+        pretty_print_list(packages.map(&:title))
       end
 
       def server(args)
@@ -173,10 +173,7 @@ module Kosmos
 
       def check_installed_packages(ksp_path, packages)
         installed_titles = Kosmos::Versioner.installed_packages(ksp_path)
-
-        installed_packages = packages.select do |package|
-          installed_titles.include?(package.title)
-        end
+        installed_packages = packages & installed_packages
 
         if installed_packages.any?
           Util.log "Error: You have already installed the following packages using Kosmos:"

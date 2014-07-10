@@ -54,15 +54,16 @@ describe Kosmos::Versioner do
       Kosmos::Versioner.init_repo(ksp_dir)
 
       %w(a b c).each do |title|
-        package = OpenStruct.new(title: title)
+        package = Class.new(Kosmos::Package) { title(title) }
         Kosmos::Versioner.mark_preinstall(ksp_dir, package)
         Kosmos::Versioner.mark_postinstall(ksp_dir, package)
       end
 
-      package = OpenStruct.new(title: 'd')
+      package = Class.new(Kosmos::Package) { title('d') }
       Kosmos::Versioner.mark_preinstall(ksp_dir, package)
 
-      expect(Kosmos::Versioner.installed_packages(ksp_dir)).to eq %w(c b a)
+      installed_packages = Kosmos::Versioner.installed_packages(ksp_dir)
+      expect(installed_packages.map(&:title)).to eq %w(c b a)
     end
   end
 end

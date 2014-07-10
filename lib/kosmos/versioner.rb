@@ -34,7 +34,12 @@ module Kosmos
           postinstalls.delete_at(postinstalls.index(package))
         end
 
-        postinstalls
+        postinstalls.map { |package_title| Package.find(package_title) }
+      end
+
+      # Has this package already been installed?
+      def already_installed?(path, package)
+        installed_packages(path).include?(package)
       end
 
       def uninstall_package(path, package)

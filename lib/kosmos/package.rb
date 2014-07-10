@@ -32,7 +32,7 @@ module Kosmos
       # The caveats argument is expected to be a hash going from Packages to
       # caveat messages and will be modified in-place.
       def install!(ksp_path, caveats)
-        return if Versioner.installed_packages(ksp_path).include?(self.title)
+        return if Versioner.already_installed?(ksp_path, self)
 
         Util.log "Installing package #{self.title}"
 
@@ -91,7 +91,7 @@ module Kosmos
 
       def install_prerequisites!(caveats)
         resolve_prerequisites.each do |package|
-          unless Versioner.installed_packages(ksp_path).include?(package.title)
+          unless Versioner.already_installed?(ksp_path, package)
             Util.log "#{title} has prerequisite #{package.title}."
             package.install!(ksp_path, caveats)
           end
@@ -100,7 +100,7 @@ module Kosmos
 
       def install_postrequisites!(caveats)
         resolve_postrequisites.each do |package|
-          unless Versioner.installed_packages(ksp_path).include?(package.title)
+          unless Versioner.already_installed?(ksp_path, package)
             Util.log "#{title} has postrequisite #{package.title}."
             package.install!(ksp_path, caveats)
           end
