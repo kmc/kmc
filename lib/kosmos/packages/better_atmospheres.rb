@@ -10,6 +10,7 @@ class BetterAtmospheresLowDef < Kosmos::Package
     merge_directory 'KittopiaSpace', into: 'GameData'
     merge_directory 'RealSolarSystem', into: 'GameData'
     merge_directory 'TextureReplacer', into: 'GameData'
+    remove_filepath 'GameData/BoulderCo/Clouds/cloudLayers.cfg'
   end
 end
 
@@ -25,6 +26,7 @@ class BetterAtmospheresMediumDef < Kosmos::Package
     merge_directory 'KittopiaSpace', into: 'GameData'
     merge_directory 'RealSolarSystem', into: 'GameData'
     merge_directory 'TextureReplacer', into: 'GameData'
+    remove_filepath 'GameData/BoulderCo/Clouds/cloudLayers.cfg'
   end
 end
 
@@ -40,5 +42,6 @@ class BetterAtmospheresHighDef < Kosmos::Package
     merge_directory 'KittopiaSpace', into: 'GameData'
     merge_directory 'RealSolarSystem', into: 'GameData'
     merge_directory 'TextureReplacer', into: 'GameData'
+    remove_filepath 'GameData/BoulderCo/Clouds/cloudLayers.cfg'
   end
 end
