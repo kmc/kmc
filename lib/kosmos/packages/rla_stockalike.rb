@@ -1,5 +1,7 @@
 class RLAStockalike < Kosmos::Package
   title 'RLA Stockalike'
+  aliases 'RLA'
+  
   url 'http://kerbal.curseforge.com/ksp-mods/220907-rla-stockalike-archive-mirror'
 
   def install
