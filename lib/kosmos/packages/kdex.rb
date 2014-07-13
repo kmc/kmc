@@ -4,6 +4,6 @@ class KerbalDustExperiment < Kosmos::Package
   url 'http://kerbal.curseforge.com/ksp-mods/222059-kdex'
 
   def install
-    merge_directory 'GameData'
+    merge_directory 'masTerTorch', into: 'GameData'
   end
 end
