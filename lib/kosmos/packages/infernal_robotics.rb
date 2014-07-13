@@ -1,5 +1,7 @@
 class InfernalRobotics < Kosmos::Package
   title 'Infernal Robotics'
+  aliases 'IR'
+  
   url 'http://www.mediafire.com/download/s2dt1etqquxti17/InfernalRobotics0.15d.zip'
 
   def install
