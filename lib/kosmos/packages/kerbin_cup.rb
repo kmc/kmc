@@ -4,6 +4,6 @@ class KerbinCup < Kosmos::Package
   url 'http://kerbal.curseforge.com/ksp-mods/221319-kerbin-cup'
 
   def install
-    merge_directory 'Kerbin Cup', into: 'GameData'
+    merge_directory 'WorldCup2014', into: 'GameData'
   end
 end
