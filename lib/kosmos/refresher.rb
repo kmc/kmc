@@ -9,11 +9,7 @@ module Kosmos
         kosmos_packages_path = Kosmos::Configuration.packages_path
         output_path = File.join(kosmos_packages_path, '..')
 
-        Dir["#{kosmos_packages_path}/*.rb"].each do |file|
-          p file
-          File.delete(file)
-        end
-
+        remove_old_packages(kosmos_packages_path)
         FileUtils.cp_r(new_packages_dir, output_path)
       end
 
@@ -28,6 +24,12 @@ module Kosmos
         PackageDownloads.unzip_file(tmp_zip.path, output_path)
 
         output_path
+      end
+
+      def remove_old_packages(kosmos_packages_path)
+        Dir["#{kosmos_packages_path}/*.rb"].each do |file|
+          File.delete(file)
+        end
       end
     end
   end
