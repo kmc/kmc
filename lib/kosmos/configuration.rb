@@ -1,12 +1,13 @@
 module Kosmos
   module Configuration
     class Configurator
-      attr_accessor :verbose, :post_processors, :output_method
+      attr_accessor :verbose, :post_processors, :output_method, :packages_url
 
       def initialize
         @verbose = false
         @post_processors = [Kosmos::PostProcessors::ModuleManagerResolver]
         @output_method = Proc.new { |str| puts str }
+        @packages_url = "https://github.com/kmc/packages/archive/master.zip"
       end
     end
 
@@ -21,6 +22,10 @@ module Kosmos
 
       def cache_dir
         read_config[:cache_dir]
+      end
+
+      def packages_path
+        File.join(kosmos_path, 'packages', 'packages')
       end
 
       private

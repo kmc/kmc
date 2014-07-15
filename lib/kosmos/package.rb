@@ -74,6 +74,13 @@ module Kosmos
         @@packages
       end
 
+      def load_packages!
+        Dir[File.join(Configuration.packages_path, '*.rb')].each do |file|
+          require file
+        end
+      end
+
+
       private
 
       # Run steps that take place before installation.
@@ -118,12 +125,6 @@ module Kosmos
               #{message}
             EOS
           end
-        end
-      end
-
-      def load_packages!
-        Dir[File.join(Configuration.packages_path, '*.rb')].each do |file|
-          require file
         end
       end
 

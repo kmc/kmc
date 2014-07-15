@@ -101,6 +101,12 @@ module Kosmos
         pretty_print_list(packages.map(&:title))
       end
 
+      def refresh(args)
+        Util.log "Getting the most up-to-date packages for Kosmos ..."
+        Kosmos::Refresher.update_packages!
+        Util.log "Done. The Kosmos packages you have are all up-to-date."
+      end
+
       def server(args)
         Web::App.start!
       end
