@@ -1,23 +1,23 @@
 require 'spec_helper'
 
-class ExamplePackage < Kosmos::Package
+class ExamplePackage < Kmc::Package
   title 'Example'
   aliases 'specimen', 'illustration'
 
   url 'http://www.example.com/releases/release-0-1.zip'
 end
 
-class AnotherExample < Kosmos::Package
+class AnotherExample < Kmc::Package
   title 'Another Example'
   prerequisites 'example'
   postrequisites 'yet another'
 end
 
-class YetAnotherExample < Kosmos::Package
+class YetAnotherExample < Kmc::Package
   title 'Yet Another'
 end
 
-describe Kosmos::Package do
+describe Kmc::Package do
   let(:example_url) { 'http://www.example.com/releases/release-0-1.zip' }
 
   subject { ExamplePackage }
@@ -35,7 +35,7 @@ describe Kosmos::Package do
     before do
       FakeFS.activate!
 
-      File.open(File.join(Dir.home, '.kosmos'), 'w') do |file|
+      File.open(File.join(Dir.home, '.kmc'), 'w') do |file|
         file.write '{}'
       end
     end
@@ -77,37 +77,37 @@ describe Kosmos::Package do
 
   describe '#normalize_for_find' do
     it 'converts all to lowercase' do
-      expect(Kosmos::Package.normalize_for_find('eXaMpLe')).to eq 'example'
+      expect(Kmc::Package.normalize_for_find('eXaMpLe')).to eq 'example'
     end
 
     it 'converts spaces to dashes' do
-      expect(Kosmos::Package.normalize_for_find('many words')).
+      expect(Kmc::Package.normalize_for_find('many words')).
         to eq 'many-words'
     end
 
     it 'converts multiple spaces/dashes to one dash' do
-      expect(Kosmos::Package.normalize_for_find('hello - there')).
+      expect(Kmc::Package.normalize_for_find('hello - there')).
         to eq 'hello-there'
     end
   end
 
   describe '#find' do
     it 'finds a package by name' do
-      expect(Kosmos::Package.find('Example')).to eq ExamplePackage
+      expect(Kmc::Package.find('Example')).to eq ExamplePackage
     end
 
     it 'finds a package by alias' do
-      expect(Kosmos::Package.find('specimen')).to eq ExamplePackage
+      expect(Kmc::Package.find('specimen')).to eq ExamplePackage
     end
   end
 
   describe '#search' do
     it 'finds packages with a similar name' do
-      class PackageA < Kosmos::Package; title 'Package A'; end
-      class PackageB < Kosmos::Package; title 'Package B'; aliases 'thing b'; end
+      class PackageA < Kmc::Package; title 'Package A'; end
+      class PackageB < Kmc::Package; title 'Package B'; aliases 'thing b'; end
 
-      expect(Kosmos::Package.search('pakcage a')).to eq PackageA
-      expect(Kosmos::Package.search('thign b')).to eq PackageB
+      expect(Kmc::Package.search('pakcage a')).to eq PackageA
+      expect(Kmc::Package.search('thign b')).to eq PackageB
     end
   end
 end

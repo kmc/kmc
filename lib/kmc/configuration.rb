@@ -1,11 +1,11 @@
-module Kosmos
+module Kmc
   module Configuration
     class Configurator
       attr_accessor :verbose, :post_processors, :output_method, :packages_url
 
       def initialize
         @verbose = false
-        @post_processors = [Kosmos::PostProcessors::ModuleManagerResolver]
+        @post_processors = [Kmc::PostProcessors::ModuleManagerResolver]
         @output_method = Proc.new { |str| puts str }
         @packages_url = "https://github.com/kmc/packages/archive/master.zip"
       end
@@ -25,7 +25,7 @@ module Kosmos
       end
 
       def packages_path
-        File.join(kosmos_path, 'packages', 'packages')
+        File.join(kmc_path, 'packages', 'packages')
       end
 
       private
@@ -51,16 +51,16 @@ module Kosmos
       end
 
       def ensure_config_exists!
-        FileUtils.mkdir_p(kosmos_path)
+        FileUtils.mkdir_p(kmc_path)
         FileUtils.touch(config_path)
       end
 
       def config_path
-        File.join(kosmos_path, 'config.json')
+        File.join(kmc_path, 'config.json')
       end
 
-      def kosmos_path
-        File.join(Dir.home, ".kosmos")
+      def kmc_path
+        File.join(Dir.home, ".kmc")
       end
     end
   end

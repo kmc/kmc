@@ -1,4 +1,4 @@
-module Kosmos
+module Kmc
   module PackageDsl
     def merge_directory(from, opts = {})
       destination = opts[:into] || '.'

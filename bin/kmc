@@ -1,20 +1,20 @@
 #!/usr/bin/env ruby
 
-require 'kosmos'
+require 'kmc'
 
-Kosmos.configure do |config|
+Kmc.configure do |config|
   config.verbose = true
 end
 
 case ARGV.shift
 when 'init'
-  Kosmos::UserInterface.init(ARGV)
+  Kmc::UserInterface.init(ARGV)
 when 'install'
-  Kosmos::UserInterface.install(ARGV)
+  Kmc::UserInterface.install(ARGV)
 when 'uninstall'
-  Kosmos::UserInterface.uninstall(ARGV)
+  Kmc::UserInterface.uninstall(ARGV)
 when 'list'
-  Kosmos::UserInterface.list(ARGV)
+  Kmc::UserInterface.list(ARGV)
 when 'server'
-  Kosmos::UserInterface.server(ARGV)
+  Kmc::UserInterface.server(ARGV)
 end

@@ -1,6 +1,6 @@
 require 'nokogiri'
 
-module Kosmos
+module Kmc
   class DownloadUrl < Struct.new(:url)
     def resolve_download_url
       if mediafire?

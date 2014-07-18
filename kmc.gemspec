@@ -5,7 +5,7 @@ require 'kmc/version'
 
 Gem::Specification.new do |spec|
   spec.name          = "kmc"
-  spec.version       = Kosmos::VERSION
+  spec.version       = Kmc::VERSION
   spec.authors       = ["Ulysse Carion"]
   spec.email         = ["ulyssecarion@gmail.com"]
   spec.summary       = %q{The simple package manager for Kerbal Space Program.}

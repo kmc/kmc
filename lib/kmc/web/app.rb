@@ -1,6 +1,6 @@
 require 'sinatra'
 
-module Kosmos
+module Kmc
   module Web
     class App < Sinatra::Application
       set server: 'thin', connection: nil
@@ -16,7 +16,7 @@ module Kosmos
       end
 
       post '/' do
-        Kosmos.configure do |config|
+        Kmc.configure do |config|
           config.output_method = Proc.new do |str|
             # Send to STDOUT
             puts str
@@ -28,12 +28,12 @@ module Kosmos
           end
         end
 
-        kosmos_params = params[:params].split(' ')
-        kosmos_command = %w(init install uninstall list).find do |command|
+        kmc_params = params[:params].split(' ')
+        kmc_command = %w(init install uninstall list).find do |command|
           command == params[:command]
         end
 
-        UserInterface.send(kosmos_command, kosmos_params)
+        UserInterface.send(kmc_command, kmc_params)
 
         204
       end

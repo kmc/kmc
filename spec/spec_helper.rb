@@ -1,7 +1,7 @@
 require 'bundler/setup'
 Bundler.setup
 
-require 'kosmos'
+require 'kmc'
 
 require 'webmock/rspec'
 require 'fileutils'

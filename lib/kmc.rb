@@ -1,20 +1,20 @@
-require 'kosmos/configuration'
-require 'kosmos/package_dsl'
-require 'kosmos/package_attrs'
-require 'kosmos/package_downloads'
-require 'kosmos/package'
-require 'kosmos/versioner'
-require 'kosmos/git_adapter'
-require 'kosmos/download_url'
-require 'kosmos/user_interface'
-require 'kosmos/refresher'
-require 'kosmos/web/app'
-require 'kosmos/util'
-require 'kosmos/version'
+require 'kmc/configuration'
+require 'kmc/package_dsl'
+require 'kmc/package_attrs'
+require 'kmc/package_downloads'
+require 'kmc/package'
+require 'kmc/versioner'
+require 'kmc/git_adapter'
+require 'kmc/download_url'
+require 'kmc/user_interface'
+require 'kmc/refresher'
+require 'kmc/web/app'
+require 'kmc/util'
+require 'kmc/version'
 
 require 'json'
 
-module Kosmos
+module Kmc
   class << self
     def config
       @config ||= Configuration::Configurator.new

@@ -1,4 +1,4 @@
-module Kosmos
+module Kmc
   module PackageDownloads
     class << self
       # Downloads and unzips a package. This will call #download! on its own, and
@@ -82,8 +82,8 @@ module Kosmos
       # Returns the location of the cached version of a package, or some falsy
       # value if no such file exists.
       def cache_file(package)
-        if Kosmos::Configuration.cache_dir
-          cache_file = File.join(Kosmos::Configuration.cache_dir,
+        if Kmc::Configuration.cache_dir
+          cache_file = File.join(Kmc::Configuration.cache_dir,
             "#{package.title}.zip")
 
           File.file?(cache_file) && cache_file
@@ -96,11 +96,11 @@ module Kosmos
 
       # Writes a downloaded package to the cache.
       #
-      # This method assumes `Kosmos.cache_dir` already exists.
+      # This method assumes `Kmc.cache_dir` already exists.
       def save_to_cache(package, downloaded_file)
         Util.log "Saving #{package.title} to cache ..."
 
-        cache_location = File.join(Kosmos.cache_dir, "#{package.title}.zip")
+        cache_location = File.join(Kmc.cache_dir, "#{package.title}.zip")
         File.open(cache_location, 'wb+') do |file|
           file.write(downloaded_file)
         end

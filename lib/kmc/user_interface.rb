@@ -4,7 +4,7 @@ class String
   end
 end
 
-module Kosmos
+module Kmc
   module UserInterface
     class << self
       def init(args)
@@ -16,7 +16,7 @@ module Kosmos
 
             Before doing anything else, please execute the command:
 
-              kosmos init ksp-folder
+              kmc init ksp-folder
 
             Where "ksp-folder" is the name of the folder where you keep KSP.
           EOS
@@ -24,31 +24,31 @@ module Kosmos
           return
         end
 
-        Util.log "Initializing Kosmos into #{ksp_path} (This will take a sec) ..."
+        Util.log "Initializing KMC into #{ksp_path} (This will take a sec) ..."
 
-        Kosmos::Versioner.init_repo(ksp_path)
-        Kosmos::Configuration.save_ksp_path(ksp_path)
+        Kmc::Versioner.init_repo(ksp_path)
+        Kmc::Configuration.save_ksp_path(ksp_path)
 
         Util.log <<-EOS.undent
           Done! You're ready to begin installing mods.
 
           Install your first mod by running the command:
 
-              kosmos install [name-of-the-mod]
+              kmc install [name-of-the-mod]
         EOS
       end
 
       def install(args)
         return unless check_initialized!
 
-        ksp_path = Kosmos::Configuration.load_ksp_path
+        ksp_path = Kmc::Configuration.load_ksp_path
 
         packages = load_packages(args)
         return unless packages
 
         return unless check_installed_packages(ksp_path, packages)
 
-        Util.log "Kosmos is about to install #{packages.count} package(s):"
+        Util.log "KMC is about to install #{packages.count} package(s):"
         pretty_print_list(packages.map(&:title))
 
         Package.install_packages!(ksp_path, packages)
@@ -57,23 +57,23 @@ module Kosmos
       def uninstall(args)
         return unless check_initialized!
 
-        ksp_path = Kosmos::Configuration.load_ksp_path
+        ksp_path = Kmc::Configuration.load_ksp_path
 
         package_name = args.shift
         unless package_name
           Util.log <<-EOS.undent
             Error: You need to specify what package to uninstall. Example:
-                kosmos uninstall name-of-the-mod"
+                kmc uninstall name-of-the-mod"
           EOS
 
           return
         end
 
-        package = Kosmos::Package.find(package_name)
-        installed_packages = Kosmos::Versioner.installed_packages(ksp_path)
+        package = Kmc::Package.find(package_name)
+        installed_packages = Kmc::Versioner.installed_packages(ksp_path)
 
         if !package
-          Util.log "Error: Kosmos couldn't find any packages with the name #{package_name.inspect}."
+          Util.log "Error: KMC couldn't find any packages with the name #{package_name.inspect}."
         elsif !installed_packages.include?(package.title)
           Util.log <<-EOS.undent
             Error: #{package.title} is not currently installed.
@@ -82,11 +82,11 @@ module Kosmos
 
               1. You have already uninstalled #{package.title}.
               2. You have never previously installed #{package.title}.
-              3. You did not use Kosmos to install #{package.title}.
+              3. You did not use KMC to install #{package.title}.
           EOS
         else
           Util.log "Preparing to uninstall #{package.title} ..."
-          Kosmos::Versioner.uninstall_package(ksp_path, package)
+          Kmc::Versioner.uninstall_package(ksp_path, package)
           Util.log "Done! Just uninstalled: #{package.title}."
         end
       end
@@ -94,17 +94,17 @@ module Kosmos
       def list(args)
         return unless check_initialized!
 
-        ksp_path = Kosmos::Configuration.load_ksp_path
+        ksp_path = Kmc::Configuration.load_ksp_path
 
-        packages = Kosmos::Versioner.installed_packages(ksp_path)
-        Util.log "You have installed #{packages.length} mod(s) using Kosmos:"
+        packages = Kmc::Versioner.installed_packages(ksp_path)
+        Util.log "You have installed #{packages.length} mod(s) using KMC:"
         pretty_print_list(packages.map(&:title))
       end
 
       def refresh(args)
-        Util.log "Getting the most up-to-date packages for Kosmos ..."
-        Kosmos::Refresher.update_packages!
-        Util.log "Done. The Kosmos packages you have are all up-to-date."
+        Util.log "Getting the most up-to-date packages for KMC ..."
+        Kmc::Refresher.update_packages!
+        Util.log "Done. The KMC packages you have are all up-to-date."
       end
 
       def server(args)
@@ -137,15 +137,15 @@ module Kosmos
       end
 
       def check_initialized!
-        if Kosmos::Configuration.load_ksp_path
+        if Kmc::Configuration.load_ksp_path
           true
         else
           Util.log <<-EOS.undent
-            Error: You have not yet initialized Kosmos.
+            Error: You have not yet initialized KMC.
 
             Before doing anything else, please execute the command:
 
-              kosmos init ksp-folder
+              kmc init ksp-folder
 
             Where "ksp-folder" is the name of the folder where you keep KSP.
           EOS
@@ -158,17 +158,17 @@ module Kosmos
 
       def load_packages(package_names)
         packages = Hash[package_names.map do |name|
-          [name, Kosmos::Package.find(name)]
+          [name, Kmc::Package.find(name)]
         end]
 
         unknown_packages = packages.select { |_, package| package.nil? }
         package_suggestions = unknown_packages.map do |name, _|
-          best_guess = Kosmos::Package.search(name).normalized_title
+          best_guess = Kmc::Package.search(name).normalized_title
           "#{name} (Maybe you meant: #{best_guess.inspect}?)"
         end
 
         if unknown_packages.any?
-          Util.log "Error: Kosmos couldn't find any packages with the following names:"
+          Util.log "Error: KMC couldn't find any packages with the following names:"
           pretty_print_list(package_suggestions)
 
           return false
@@ -178,11 +178,11 @@ module Kosmos
       end
 
       def check_installed_packages(ksp_path, new_packages)
-        installed_packages = Kosmos::Versioner.installed_packages(ksp_path)
+        installed_packages = Kmc::Versioner.installed_packages(ksp_path)
         already_installed = new_packages & installed_packages
 
         if already_installed.any?
-          Util.log "Error: You have already installed the following packages using Kosmos:"
+          Util.log "Error: You have already installed the following packages using KMC:"
           pretty_print_list(already_installed.map(&:title))
 
           false
