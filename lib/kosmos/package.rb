@@ -74,6 +74,13 @@ module Kosmos
         @@packages
       end
 
+      def load_packages!
+        Dir[File.join(Configuration.packages_path, '*.rb')].each do |file|
+          require file
+        end
+      end
+
+
       private
 
       # Run steps that take place before installation.
@@ -120,16 +127,16 @@ module Kosmos
           end
         end
       end
+
+      def load_post_processors!
+        processors_path = File.join(File.dirname(__FILE__), 'post_processors')
+        Dir["#{processors_path}/*.rb"].each do |file|
+          require file
+        end
+      end
     end
 
-    # Now, let's include all the known packages.
-    Dir[File.join(File.dirname(__FILE__), 'packages', '*.rb')].each do |file|
-      require file
-    end
-
-    # ... and the post-processors too.
-    Dir[File.join(File.dirname(__FILE__), 'post_processors', '*.rb')].each do |file|
-      require file
-    end
+    load_packages!
+    load_post_processors!
   end
 end

@@ -11,17 +11,7 @@ module Kosmos
         return output_path if package.do_not_unzip
 
         Util.log "Unzipping ..."
-
-        Zip::File.open(download_file.path) do |zip_file|
-          zip_file.each do |entry|
-            destination = File.join(output_path, entry.name)
-            parent_dir = File.expand_path('..', destination)
-
-            FileUtils.mkdir_p(parent_dir) unless File.exists?(parent_dir)
-
-            entry.extract(destination)
-          end
-        end
+        unzip_file(download_file.path, output_path)
 
         File.delete(File.absolute_path(download_file))
 
@@ -38,6 +28,31 @@ module Kosmos
         save_to_cache(package, downloaded_file) if opts[:cache_after_download]
 
         download_to_tempdir(download_file_name(download_uri), downloaded_file)
+      end
+
+      def unzip_file(zipfile_path, output_path)
+        Zip::File.open(zipfile_path) do |zip_file|
+          zip_file.each do |entry|
+            destination = File.join(output_path, entry.name)
+            parent_dir = File.expand_path('..', destination)
+
+            FileUtils.mkdir_p(parent_dir) unless File.exists?(parent_dir)
+
+            entry.extract(destination)
+          end
+        end
+      end
+
+      # Places `file_contents` into a file called `file_name` in a temporary
+      # directory.
+      def download_to_tempdir(file_name, file_contents)
+        tmpdir = Dir.mktmpdir
+
+        file = File.new(File.join(tmpdir, file_name), 'wb+')
+        file.write(file_contents)
+        file.close
+
+        file
       end
 
       private
@@ -67,8 +82,9 @@ module Kosmos
       # Returns the location of the cached version of a package, or some falsy
       # value if no such file exists.
       def cache_file(package)
-        if Kosmos.cache_dir
-          cache_file = File.join(Kosmos.cache_dir, "#{package.title}.zip")
+        if Kosmos::Configuration.cache_dir
+          cache_file = File.join(Kosmos::Configuration.cache_dir,
+            "#{package.title}.zip")
 
           File.file?(cache_file) && cache_file
         end
@@ -100,18 +116,6 @@ module Kosmos
         clean_uri = uri.chars.select { |char| VALID_CHARS.include?(char) }.join
 
         File.basename(URI(clean_uri).path)
-      end
-
-      # Places `file_contents` into a file called `file_name` in a temporary
-      # directory.
-      def download_to_tempdir(file_name, file_contents)
-        tmpdir = Dir.mktmpdir
-
-        file = File.new(File.join(tmpdir, file_name), 'wb+')
-        file.write(file_contents)
-        file.close
-
-        file
       end
     end
   end

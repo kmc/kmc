@@ -27,7 +27,7 @@ module Kosmos
         Util.log "Initializing Kosmos into #{ksp_path} (This will take a sec) ..."
 
         Kosmos::Versioner.init_repo(ksp_path)
-        Kosmos.save_ksp_path(ksp_path)
+        Kosmos::Configuration.save_ksp_path(ksp_path)
 
         Util.log <<-EOS.undent
           Done! You're ready to begin installing mods.
@@ -41,7 +41,7 @@ module Kosmos
       def install(args)
         return unless check_initialized!
 
-        ksp_path = Kosmos.load_ksp_path
+        ksp_path = Kosmos::Configuration.load_ksp_path
 
         packages = load_packages(args)
         return unless packages
@@ -57,7 +57,7 @@ module Kosmos
       def uninstall(args)
         return unless check_initialized!
 
-        ksp_path = Kosmos.load_ksp_path
+        ksp_path = Kosmos::Configuration.load_ksp_path
 
         package_name = args.shift
         unless package_name
@@ -94,11 +94,17 @@ module Kosmos
       def list(args)
         return unless check_initialized!
 
-        ksp_path = Kosmos.load_ksp_path
+        ksp_path = Kosmos::Configuration.load_ksp_path
 
         packages = Kosmos::Versioner.installed_packages(ksp_path)
         Util.log "You have installed #{packages.length} mod(s) using Kosmos:"
         pretty_print_list(packages.map(&:title))
+      end
+
+      def refresh(args)
+        Util.log "Getting the most up-to-date packages for Kosmos ..."
+        Kosmos::Refresher.update_packages!
+        Util.log "Done. The Kosmos packages you have are all up-to-date."
       end
 
       def server(args)
@@ -131,7 +137,7 @@ module Kosmos
       end
 
       def check_initialized!
-        if Kosmos.load_ksp_path
+        if Kosmos::Configuration.load_ksp_path
           true
         else
           Util.log <<-EOS.undent
