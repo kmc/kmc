@@ -1,23 +1,23 @@
-# Kosmos
+# KMC
 
 A simple package manager for Kerbal Space Program. Install any mod by simply
-saying `kosmos install name-of-mod`. For example, install Mechjeb by issuing the
+saying `kmc install name-of-mod`. For example, install Mechjeb by issuing the
 command:
 
 ```
-kosmos install mechjeb
+kmc install mechjeb
 ```
 
-*Note:* Kosmos is still in active development, and is not meant for serious use
+*Note:* KMC is still in active development, and is not meant for serious use
 unless you're brave or stupid.
 
 ## Installation
 
-*Note:* Kosmos is indeed not super easy to install if you're not used to
-installing things by hand. When Kosmos is ready for "production" use, one-click
+*Note:* KMC is indeed not super easy to install if you're not used to
+installing things by hand. When KMC is ready for "production" use, one-click
 installers will be added.
 
-Kosmos has three dependencies, all of which are currently expected to be on your
+KMC has three dependencies, all of which are currently expected to be on your
 `PATH`. They are:
 
 * Ruby version 2.0+,
@@ -26,7 +26,7 @@ Kosmos has three dependencies, all of which are currently expected to be on your
 
 ### Installing Ruby
 
-Kosmos has been tested on Ruby 2.0.0, and it is recommended that you use Ruby
+KMC has been tested on Ruby 2.0.0, and it is recommended that you use Ruby
 2.0.0 or greater. Check your version of Ruby using:
 
 ```sh
@@ -72,12 +72,12 @@ manually. Verify that PhantomJS is installed properly by running:
 phantomjs --version
 ```
 
-### Installing Kosmos itself
+### Installing KMC itself
 
 Just run:
 
 ```sh
-gem install kosmos
+gem install kmc
 ```
 
 And it'll be ready to go.
@@ -86,53 +86,54 @@ And it'll be ready to go.
 
 ### First run
 
-First, you have to point Kosmos to your Kerbal Space Program installation directory:
+First, you have to point KMC to your Kerbal Space Program installation directory:
 
 ```
-kosmos init "your-ksp-path"
+kmc init "your-ksp-path"
 ```
-`your-ksp-path` varies with the operating system and game installation.
-For a Steam-installed game it should be:
 
-* on OS X: `kosmos init "~/Library/Application Support/Steam/SteamApps/common/Kerbal Space Program/"`
-* on Windows: `kosmos init "C:\Program Files (x86)\Steam\steamapps\common\Kerbal Space Program"`
-* on Linux: `kosmos init "~/Steam/SteamApps/common/Kerbal Space Program/"`
+`your-ksp-path` varies with the operating system and game installation. For a
+Steam-installed game it should be:
 
-Then, Kosmos will be ready to use.
+* on OS X: `kmc init "~/Library/Application Support/Steam/SteamApps/common/Kerbal Space Program/"`
+* on Windows: `kmc init "C:\Program Files (x86)\Steam\steamapps\common\Kerbal Space Program"`
+* on Linux: `kmc init "~/Steam/SteamApps/common/Kerbal Space Program/"`
+
+Then, KMC will be ready to use.
 
 ### Mod management
 
 Install any command by running:
 
 ```
-kosmos install name-of-the-mod-goes-here
+kmc install name-of-the-mod-goes-here
 ```
 
 Uninstall any mod by running:
 
 ```
-kosmos uninstall name-of-the-mod-goes-here
+kmc uninstall name-of-the-mod-goes-here
 ```
 
 You can install multiple mods by separating the names by spaces:
 
 ```
-kosmos install mod-a mod-b mod-c
+kmc install mod-a mod-b mod-c
 ```
 
-You can ask Kosmos what mods it's installed by running:
+You can ask KMC what mods it's installed by running:
 
 ```
-kosmos list
+kmc list
 ```
 
 ### A complete example
 
 Almost all of the mods Scott Manley uses in Interstellar Quest are available
-through Kosmos. You can install them all by running:
+through KMC. You can install them all by running:
 
 ```
-kosmos install active-texture-management b9 kerbal-alarm-clock kw-rocketry ksp-interstellar ferram deadly-reentry kethane infernal-robotics distant-object-enhancement better-atmospheres remote-tech-2 tac-life-support enhanced-navball kerbal-joint-reinforcement docking-port-alignment-indicator safe-chute kerbal-attachment-system real-chute tac-fuel-balancer
+kmc install active-texture-management b9 kerbal-alarm-clock kw-rocketry ksp-interstellar ferram deadly-reentry kethane infernal-robotics distant-object-enhancement better-atmospheres remote-tech-2 tac-life-support enhanced-navball kerbal-joint-reinforcement docking-port-alignment-indicator safe-chute kerbal-attachment-system real-chute tac-fuel-balancer
 ```
 
 [mac-git]: http://sourceforge.net/projects/git-osx-installer/
