@@ -1,11 +1,11 @@
-module Kosmos
+module Kmc
   module GitAdapter
     class << self
       def init_repo(path)
         Dir.chdir(path) do
           `git init`
-          `git config user.name Kosmos`
-          `git config user.email kosmos@kosmos.kosmos`
+          `git config user.name KMC`
+          `git config user.email kmc@kmc.kmc`
           `git config core.autocrlf false`
 
           File.open('.gitignore', 'w') do |file|

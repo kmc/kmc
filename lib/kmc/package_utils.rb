@@ -1,4 +1,4 @@
-module Kosmos
+module Kmc
   module PackageUtils
     # Lowercases and hyphenates a package name; this is the format packages
     # are expected to be supplied as when passed from the user.

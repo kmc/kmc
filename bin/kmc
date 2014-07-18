@@ -1,0 +1,20 @@
+#!/usr/bin/env ruby
+
+require 'kmc'
+
+Kmc.configure do |config|
+  config.verbose = true
+end
+
+case ARGV.shift
+when 'init'
+  Kmc::UserInterface.init(ARGV)
+when 'install'
+  Kmc::UserInterface.install(ARGV)
+when 'uninstall'
+  Kmc::UserInterface.uninstall(ARGV)
+when 'list'
+  Kmc::UserInterface.list(ARGV)
+when 'server'
+  Kmc::UserInterface.server(ARGV)
+end

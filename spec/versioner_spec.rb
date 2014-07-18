@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Kosmos::Versioner do
+describe Kmc::Versioner do
   let(:sandbox_dir) { 'spec/sandbox' }
   let(:ksp_dir) { File.absolute_path(File.join(sandbox_dir, 'ksp')) }
 
@@ -9,7 +9,7 @@ describe Kosmos::Versioner do
 
   describe '#init_repo' do
     it 'creates a bare git repo and commits the tree' do
-      Kosmos::Versioner.init_repo(ksp_dir)
+      Kmc::Versioner.init_repo(ksp_dir)
 
       Dir.chdir(ksp_dir) do
         expect(`git ls-files --modified`).to be_empty
@@ -19,13 +19,13 @@ describe Kosmos::Versioner do
 
   describe '#mark_preinstall' do
     it 'adds everything and commits' do
-      Kosmos::Versioner.init_repo(ksp_dir)
+      Kmc::Versioner.init_repo(ksp_dir)
 
       Dir.chdir(ksp_dir) do
         package = OpenStruct.new(title: "Example")
 
         `touch hello.txt`
-        Kosmos::Versioner.mark_preinstall(ksp_dir, package)
+        Kmc::Versioner.mark_preinstall(ksp_dir, package)
 
         expect(`git ls-files --others`).to be_empty
         expect(`git log -1 --pretty=%B`.strip).to eq "PRE: Example"
@@ -35,13 +35,13 @@ describe Kosmos::Versioner do
 
   describe '#mark-postinstall' do
     it 'adds everything and commits' do
-      Kosmos::Versioner.init_repo(ksp_dir)
+      Kmc::Versioner.init_repo(ksp_dir)
 
       Dir.chdir(ksp_dir) do
         package = OpenStruct.new(title: "Example")
 
         `touch hello.txt`
-        Kosmos::Versioner.mark_postinstall(ksp_dir, package)
+        Kmc::Versioner.mark_postinstall(ksp_dir, package)
 
         expect(`git ls-files --others`).to be_empty
         expect(`git log -1 --pretty=%B`.strip).to eq "POST: Example"
@@ -51,18 +51,18 @@ describe Kosmos::Versioner do
 
   describe '#installed-packages' do
     it 'gets all those with a post-install, but ignores just pre-installs' do
-      Kosmos::Versioner.init_repo(ksp_dir)
+      Kmc::Versioner.init_repo(ksp_dir)
 
       %w(a b c).each do |title|
-        package = Class.new(Kosmos::Package) { title(title) }
-        Kosmos::Versioner.mark_preinstall(ksp_dir, package)
-        Kosmos::Versioner.mark_postinstall(ksp_dir, package)
+        package = Class.new(Kmc::Package) { title(title) }
+        Kmc::Versioner.mark_preinstall(ksp_dir, package)
+        Kmc::Versioner.mark_postinstall(ksp_dir, package)
       end
 
-      package = Class.new(Kosmos::Package) { title('d') }
-      Kosmos::Versioner.mark_preinstall(ksp_dir, package)
+      package = Class.new(Kmc::Package) { title('d') }
+      Kmc::Versioner.mark_preinstall(ksp_dir, package)
 
-      installed_packages = Kosmos::Versioner.installed_packages(ksp_dir)
+      installed_packages = Kmc::Versioner.installed_packages(ksp_dir)
       expect(installed_packages.map(&:title)).to eq %w(c b a)
     end
   end

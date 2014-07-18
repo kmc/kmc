@@ -6,7 +6,7 @@ require 'damerau-levenshtein'
 
 require_relative 'package_utils'
 
-module Kosmos
+module Kmc
   class Package
     include PackageDsl
 

@@ -1,4 +1,4 @@
-module Kosmos
+module Kmc
   module PackageAttrs
       def title(title = nil)
         if title

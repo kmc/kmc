@@ -1,7 +1,7 @@
-module Kosmos
+module Kmc
   class Versioner
     class << self
-      INIT_COMMIT_MESSAGE = "INIT: Initialize Kosmos"
+      INIT_COMMIT_MESSAGE = "INIT: Initialize KMC"
 
       def init_repo(path)
         GitAdapter.init_repo(path)

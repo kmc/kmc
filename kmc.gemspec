@@ -1,11 +1,11 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'kosmos/version'
+require 'kmc/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "kosmos"
-  spec.version       = Kosmos::VERSION
+  spec.name          = "kmc"
+  spec.version       = Kmc::VERSION
   spec.authors       = ["Ulysse Carion"]
   spec.email         = ["ulyssecarion@gmail.com"]
   spec.summary       = %q{The simple package manager for Kerbal Space Program.}

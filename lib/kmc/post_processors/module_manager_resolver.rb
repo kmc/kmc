@@ -1,4 +1,4 @@
-module Kosmos
+module Kmc
   module PostProcessors
     class ModuleManagerResolver
       def self.post_process(ksp_path)
