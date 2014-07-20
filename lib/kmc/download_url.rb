@@ -39,7 +39,14 @@ module Kmc
     private
 
     def extract_mediafire_url
+      return url if direct_mediafire_url?
+
       rendered_page.css('.download_link a').first['href']
+    end
+
+    def direct_mediafire_url?
+      headers = HTTParty.head(url, maintain_method_across_redirects: true)
+      headers.content_type.include?('zip')
     end
 
     def extract_dropbox_url
