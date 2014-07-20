@@ -13,6 +13,18 @@ describe Kmc::DownloadUrl do
     expect(Kmc::DownloadUrl.new(url).resolve_download_url).to eq target_url
   end
 
+  it 'correctly resolves direct mediafire urls' do
+    url = 'http://www.mediafire.com/download/foo/bar.zip'
+    direct_download = 'http://download.mediafire.com/asdf.zip'
+
+    stub_request(:head, url).to_return(
+      status: 301, headers: { 'Location' => direct_download})
+    stub_request(:head, direct_download).to_return(
+      status: 200, headers: { 'content-type' => 'application/zip'})
+
+    expect(Kmc::DownloadUrl.new(url).resolve_download_url).to eq url
+  end
+
   it 'detects box links' do
     url = 'https://app.box.com/s/89skim2e3simjwmuof4c'
     expect(Kmc::DownloadUrl.new(url)).to be_box
