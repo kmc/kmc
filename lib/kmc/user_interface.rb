@@ -74,7 +74,7 @@ module Kmc
 
         if !package
           Util.log "Error: KMC couldn't find any packages with the name #{package_name.inspect}."
-        elsif !installed_packages.include?(package.title)
+        elsif !installed_packages.include?(package)
           Util.log <<-EOS.undent
             Error: #{package.title} is not currently installed.
 
