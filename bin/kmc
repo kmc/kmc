@@ -17,4 +17,6 @@ when 'list'
   Kmc::UserInterface.list(ARGV)
 when 'server'
   Kmc::UserInterface.server(ARGV)
+when 'refresh'
+  Kmc::UserInterface.refresh(ARGV)
 end
