@@ -8,6 +8,7 @@ module Kmc
 
         kmc_packages_path = Kmc::Configuration.packages_path
         output_path = File.join(kmc_packages_path, '..')
+        FileUtils::mkdir_p output_path
 
         remove_old_packages(kmc_packages_path)
         FileUtils.cp_r(new_packages_dir, output_path)
