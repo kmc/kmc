@@ -7,7 +7,7 @@ module Kmc
         @verbose = false
         @post_processors = [Kmc::PostProcessors::ModuleManagerResolver]
         @output_method = Proc.new { |str| puts str }
-        @packages_url = "https://github.com/kmc/packages/archive/master.zip"
+        @packages_url = "https://github.com/kmc/packages.git"
       end
     end
 

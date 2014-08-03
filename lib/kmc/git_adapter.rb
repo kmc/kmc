@@ -42,6 +42,19 @@ module Kmc
           end
         end
       end
+
+      def clone(repo_path, repo_url)
+        Dir.chdir(repo_path) do
+          `git clone #{repo_url} .`
+        end
+      end
+
+      def pull(repo_path)
+        Dir.chdir(repo_path) do
+          `git pull`
+        end
+      end
+
     end
 
     class Commit < Struct.new(:message, :sha)
