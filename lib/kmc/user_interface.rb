@@ -110,13 +110,16 @@ module Kmc
       end
 
       def about(args)
-        Util.log "Kerbal Mod Controller #{Kmc::VERSION}\n
-Usage:\tkmc init ksp_path\t\t- Point KMC to your Kerbal Space Program installation directory.
-\tkmc refresh\t\t\t- Refresh mod packages availables from the repository.
-\tkmc install mod1 [mod2 ...]\t- Install a mod.
-\tkmc uninstall mod1 [mod2 ...]\t- Uninstall a mod.
-\tkmc list\t\t\t- List what mods it's already installed.
-"
+        Util.log <<-EOS.undent
+          Kerbal Mod Controller #{Kmc::VERSION}
+
+          Usage:
+            kmc init ksp_path             - Point KMC to your Kerbal Space Program installation directory.
+            kmc refresh                   - Refresh mod packages availables from the repository.
+            kmc install mod1 [mod2 ...]   - Install a mod.
+            kmc uninstall mod1 [mod2 ...] - Uninstall a mod.
+            kmc list                      - List what mods it's already installed.
+        EOS
       end
 
       def server(args)
