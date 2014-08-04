@@ -1,3 +1,5 @@
+require 'version'
+
 class String
   def undent
     gsub(/^.{#{slice(/^ +/).length}}/, '')
@@ -105,6 +107,16 @@ module Kmc
         Util.log "Getting the most up-to-date packages for KMC ..."
         Kmc::Refresher.update_packages!
         Util.log "Done. The KMC packages you have are all up-to-date."
+      end
+
+      def about(args)
+        Util.log "Kerbal Mod Controller #{Kmc::VERSION}\n
+Usage:\tkmc init ksp_path\t\t- Point KMC to your Kerbal Space Program installation directory.
+\tkmc refresh\t\t\t- Refresh mod packages availables from the repository.
+\tkmc install mod1 [mod2 ...]\t- Install a mod.
+\tkmc uninstall mod1 [mod2 ...]\t- Uninstall a mod.
+\tkmc list\t\t\t- List what mods it's already installed.
+"
       end
 
       def server(args)
