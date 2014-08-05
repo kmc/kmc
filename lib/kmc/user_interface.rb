@@ -31,6 +31,8 @@ module Kmc
         Kmc::Versioner.init_repo(ksp_path)
         Kmc::Configuration.save_ksp_path(ksp_path)
 
+        refresh(args)
+
         Util.log <<-EOS.undent
           Done! You're ready to begin installing mods.
 
