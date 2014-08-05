@@ -19,6 +19,8 @@ when 'server'
   Kmc::UserInterface.server(ARGV)
 when 'refresh'
   Kmc::UserInterface.refresh(ARGV)
+when 'search'
+  Kmc::UserInterface.search(ARGV)
 else
   Kmc::UserInterface.about(ARGV)
 end

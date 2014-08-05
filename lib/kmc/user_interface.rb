@@ -105,6 +105,20 @@ module Kmc
         pretty_print_list(packages.map(&:title))
       end
 
+      def search(args)
+        packages = []
+        if args.any?
+          packages = [args.map do |name|
+            [Kmc::Package.search(name)]
+          end]
+        else
+          Kmc::Package.load_packages!
+          packages = Kmc::Package.packages.sort_by {|package| package.title}
+        end
+        Util.log packages
+        #pretty_print_list(packages.map(&:title))
+      end
+
       def refresh(args)
         Util.log "Getting the most up-to-date packages for KMC ..."
         Kmc::Refresher.update_packages!
@@ -121,6 +135,7 @@ module Kmc
             kmc install mod1 [mod2 ...]   - Install a mod.
             kmc uninstall mod1 [mod2 ...] - Uninstall a mod.
             kmc list                      - List what mods it's already installed.
+            kmc search [mod]              - Search a mod from packages availables.
         EOS
       end
 
