@@ -63,8 +63,8 @@ module Kmc
 
         ksp_path = Kmc::Configuration.load_ksp_path
 
-        package_name = args.shift
-        unless package_name
+        packages = load_packages(args)
+        unless packages && packages.any?
           Util.log <<-EOS.undent
             Error: You need to specify what package to uninstall. Example:
                 kmc uninstall name-of-the-mod"
@@ -73,25 +73,26 @@ module Kmc
           return
         end
 
-        package = Kmc::Package.find(package_name)
-        installed_packages = Kmc::Versioner.installed_packages(ksp_path)
+        packages.each do |package|
+          installed_packages = Kmc::Versioner.installed_packages(ksp_path)
 
-        if !package
-          Util.log "Error: KMC couldn't find any packages with the name #{package_name.inspect}."
-        elsif !installed_packages.include?(package)
-          Util.log <<-EOS.undent
-            Error: #{package.title} is not currently installed.
+          if !package
+            Util.log "Error: KMC couldn't find any packages with the name #{package.title}."
+          elsif !installed_packages.include?(package)
+            Util.log <<-EOS.undent
+              Error: #{package.title} is not currently installed.
 
-            There are three reasons you may get this error:
+              There are three reasons you may get this error:
 
-              1. You have already uninstalled #{package.title}.
-              2. You have never previously installed #{package.title}.
-              3. You did not use KMC to install #{package.title}.
-          EOS
-        else
-          Util.log "Preparing to uninstall #{package.title} ..."
-          Kmc::Versioner.uninstall_package(ksp_path, package)
-          Util.log "Done! Just uninstalled: #{package.title}."
+                1. You have already uninstalled #{package.title}.
+                2. You have never previously installed #{package.title}.
+                3. You did not use KMC to install #{package.title}.
+            EOS
+          else
+            Util.log "Preparing to uninstall #{package.title} ..."
+            Kmc::Versioner.uninstall_package(ksp_path, package)
+            Util.log "Done! Just uninstalled: #{package.title}."
+          end
         end
       end
 
