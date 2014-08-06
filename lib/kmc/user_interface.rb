@@ -31,7 +31,7 @@ module Kmc
         Kmc::Versioner.init_repo(ksp_path)
         Kmc::Configuration.save_ksp_path(ksp_path)
 
-        refresh(args)
+        refresh(args) unless Kmc::Package.is_ready_the_package_repository?
 
         Util.log <<-EOS.undent
           Done! You're ready to begin installing mods.
@@ -126,11 +126,10 @@ module Kmc
       end
 
       def changelog(args)
-        gitdir = File.join(Configuration.packages_path, "..", ".git")
-        if !File.directory?(gitdir)
+        if !Kmc::Package.is_ready_the_package_repository?
           Util.log "Error: Package repository need to be initialized. Please execute 'kmc refresh'."
         else
-          Util.log "Last refresh: #{File.mtime(gitdir)}"
+          Util.log "Last refresh: #{Kmc::Package.last_refresh_datetime}"
           Util.log GitAdapter.changelog(Configuration.packages_path, args)
         end
       end

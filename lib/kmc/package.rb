@@ -80,6 +80,15 @@ module Kmc
         end
       end
 
+      def is_ready_the_package_repository?
+        gitdir = File.join(Configuration.packages_path, "..", ".git")
+        return File.directory?(gitdir)
+      end
+
+      def last_refresh_datetime
+        gitdir = File.join(Configuration.packages_path, "..", ".git")
+        return File.mtime(gitdir) unless !is_ready_the_package_repository?
+      end
 
       private
 
