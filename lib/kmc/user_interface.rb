@@ -146,7 +146,7 @@ module Kmc
             kmc uninstall mod1 [mod2 ...] - Uninstall a mod.
             kmc list                      - List what mods it's already installed.
             kmc search [mod]              - Search a mod from packages availables.
-            kmc changelog [git log args]  - Show the packages repository changelog.
+            kmc changelog [git-log args]  - Show the packages repository changelog.
         EOS
       end
 
