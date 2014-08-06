@@ -55,6 +55,12 @@ module Kmc
         end
       end
 
+      def changelog(repo_path, args = {})
+        Dir.chdir(repo_path) do
+          `git log --pretty=format:'%ai%  %s' -n10 #{args.join(" ")}`
+        end
+      end
+
     end
 
     class Commit < Struct.new(:message, :sha)

@@ -125,6 +125,16 @@ module Kmc
         Util.log "Done. The KMC packages you have are all up-to-date."
       end
 
+      def changelog(args)
+        gitdir = File.join(Configuration.packages_path, "..", ".git")
+        if !File.directory?(gitdir)
+          Util.log "Error: Package repository need to be initialized. Please execute 'kmc refresh'."
+        else
+          Util.log "Last refresh: #{File.mtime(gitdir)}"
+          Util.log GitAdapter.changelog(Configuration.packages_path, args)
+        end
+      end
+
       def about(args)
         Util.log <<-EOS.undent
           Kerbal Mod Controller #{Kmc::VERSION}
@@ -136,6 +146,7 @@ module Kmc
             kmc uninstall mod1 [mod2 ...] - Uninstall a mod.
             kmc list                      - List what mods it's already installed.
             kmc search [mod]              - Search a mod from packages availables.
+            kmc changelog [git log args]  - Show the packages repository changelog.
         EOS
       end
 
