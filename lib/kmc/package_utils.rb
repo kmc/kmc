@@ -3,7 +3,7 @@ module Kmc
     # Lowercases and hyphenates a package name; this is the format packages
     # are expected to be supplied as when passed from the user.
     def normalize_for_find(name)
-      name.downcase.gsub(/[ \-]+/, "-")
+      name.downcase.strip.gsub(/[ \-]+/, '-').gsub(/[^\w-]/, '')
     end
 
     def normalized_title
