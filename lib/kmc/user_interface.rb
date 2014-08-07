@@ -146,7 +146,7 @@ module Kmc
           Kerbal Mod Controller #{Kmc::VERSION}
 
           Usage:
-            kmc init ksp_path             - Point KMC to your Kerbal Space Program installation directory.
+            kmc init path-to-gamedata     - Point KMC to your Kerbal Space Program GameData directory.
             kmc refresh                   - Refresh mod packages availables from the repository.
             kmc install mod1 [mod2 ...]   - Install a mod.
             kmc uninstall mod1 [mod2 ...] - Uninstall a mod.
@@ -180,7 +180,21 @@ module Kmc
           if path.empty?
             nil
           else
-            path
+            path = File.expand_path(path)
+            unless File.basename(path) == "GameData"
+              if Dir.exists?(File.join(path,"GameData"))
+                path = File.join(path, "GameData")
+              else
+                Util.log <<-EOS.undent
+                  The specified path is not a GameData directory and does not contain a GameData directory.
+
+                  For example, a path for KSP via Steam would be "~/Library/Application Support/Steam/SteamApps/common/Kerbal Space Program/GameData/"
+                EOS
+                return nil
+              end
+            else
+              path
+            end
           end
         end
       end
