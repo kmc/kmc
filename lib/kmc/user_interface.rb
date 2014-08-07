@@ -174,7 +174,21 @@ module Kmc
           if path.empty?
             nil
           else
-            path
+            path = File.expand_path(path)
+            unless File.basename(path) == "GameData"
+              if Dir.exists?(File.join(path,"GameData"))
+                path = File.join(path, "GameData")
+              else
+                Util.log <<-EOS.undent
+                  The specified path is not a GameData directory and does not contain a GameData directory.
+
+                  For example, a path for KSP via Steam would be "~/Library/Application Support/Steam/SteamApps/common/Kerbal Space Program/GameData/"
+                EOS
+                return nil
+              end
+            else
+              path
+            end
           end
         end
       end
