@@ -14,19 +14,21 @@ module Kmc
 
         unless ksp_path
           Util.log <<-EOS.undent
-            Error: You did not specify what folder you keep KSP in.
+            Error: We couldn't find your KSP installation folder.
 
-            Before doing anything else, please execute the command:
+            Please execute the command:
 
-              kmc init ksp-folder
+              kmc init path-to-ksp
 
-            Where "ksp-folder" is the name of the folder where you keep KSP.
+            Where "path-to-ksp" is the path to your KSP install directory.
+
+            Typical KSP installation locations are:
+              #{Kmc.config.default_ksp_paths.join("\n              ")}
           EOS
-
           return
         end
 
-        Util.log "Initializing KMC into #{ksp_path} (This will take a sec) ..."
+        Util.log "Initializing KMC into \"#{ksp_path}\" (This will take a sec) ..."
 
         Kmc::Versioner.init_repo(ksp_path)
         Kmc::Configuration.save_ksp_path(ksp_path)
@@ -140,7 +142,7 @@ module Kmc
           Kerbal Mod Controller #{Kmc::VERSION}
 
           Usage:
-            kmc init ksp_path             - Point KMC to your Kerbal Space Program installation directory.
+            kmc init [path-to-ksp]        - Point KMC to your Kerbal Space Program installation directory.
             kmc refresh                   - Refresh mod packages availables from the repository.
             kmc install mod1 [mod2 ...]   - Install a mod.
             kmc uninstall mod1 [mod2 ...] - Uninstall a mod.
@@ -163,6 +165,8 @@ module Kmc
       # If, however, the user passed arguments from the server, then these
       # arguments will still be separated by spaces. This method will then re-
       # join them.
+      #
+      # If a path is not passed in, the default paths are tried until one exists.
       def extract_ksp_path_from_args(args)
         if args
           path = args.join(' ')
@@ -172,7 +176,14 @@ module Kmc
           path = path[0..-2] if path.end_with?('"')
 
           if path.empty?
-            nil
+            # Try each of the default paths until we find one that exists
+            begin
+              path = File.expand_path(Kmc.config.default_ksp_paths.select do |default_path|
+                Dir.exists?(File.expand_path(default_path))
+              end.first)
+            rescue
+              nil
+            end
           else
             path
           end
@@ -188,9 +199,9 @@ module Kmc
 
             Before doing anything else, please execute the command:
 
-              kmc init ksp-folder
+              kmc init [path-to-ksp]
 
-            Where "ksp-folder" is the name of the folder where you keep KSP.
+            We'll take our best guess at finding the KSP folder, but you may have to specify it.
           EOS
         end
       end

@@ -1,13 +1,17 @@
 module Kmc
   module Configuration
     class Configurator
-      attr_accessor :verbose, :post_processors, :output_method, :packages_url
+      attr_accessor :verbose, :post_processors, :output_method, :packages_url, :default_ksp_paths
 
       def initialize
         @verbose = false
         @post_processors = [Kmc::PostProcessors::ModuleManagerResolver]
         @output_method = Proc.new { |str| puts str }
         @packages_url = "https://github.com/kmc/packages.git"
+        @default_ksp_paths = ["~/Library/Application Support/Steam/SteamApps/common/Kerbal Space Program/",
+                              "C:/Program Files (x86)/Steam/steamapps/common/Kerbal Space Program/",
+                              "C:/Program Files/Steam/steamapps/common/Kerbal Space Program/",
+                              "~/.local/share/Steam/steamapps/common/Kerbal Space Program/"]
       end
     end
 
