@@ -140,7 +140,7 @@ module Kmc
           Kerbal Mod Controller #{Kmc::VERSION}
 
           Usage:
-            kmc init ksp_path             - Point KMC to your Kerbal Space Program installation directory.
+            kmc init path-to-gamedata     - Point KMC to your Kerbal Space Program GameData directory.
             kmc refresh                   - Refresh mod packages availables from the repository.
             kmc install mod1 [mod2 ...]   - Install a mod.
             kmc uninstall mod1 [mod2 ...] - Uninstall a mod.
