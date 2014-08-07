@@ -105,6 +105,12 @@ module Kmc
         Util.log "You have installed #{packages.length} mod(s) using KMC:"
         pretty_print_list(packages.map(&:title))
       end
+      def _listallpackages(args)
+        return unless check_initialized!
+        Util.log Kmc::Package.packages.map(&:normalized_title).sort().flatten()
+      end
+
+      
 
       def search(args)
         packages = []
