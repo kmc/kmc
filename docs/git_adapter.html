@@ -2,7 +2,7 @@
 
 <html>
 <head>
-  <title>client.js</title>
+  <title>git_adapter.js</title>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
   <link rel="stylesheet" media="all" href="docco.css" />
@@ -51,7 +51,7 @@
         
           <li id="title">
               <div class="annotation">
-                  <h1>client.js</h1>
+                  <h1>git_adapter.js</h1>
               </div>
           </li>
         
@@ -63,19 +63,11 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-1">&#182;</a>
               </div>
-              <p>Creates a client with parameters for getting / updating the KSP path,
-packages path, and logger.</p>
-<p><code>updateKspPath</code>, if provided, should expect a single argument representing
-the new KSP path.</p>
+              <p>Handles dealing with git.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Client</span><span class="hljs-params">(params)</span> </span>{
-  <span class="hljs-keyword">this</span>.getKspPath = params.getKspPath;
-  <span class="hljs-keyword">this</span>.updateKspPath = params.updateKspPath
-  <span class="hljs-keyword">this</span>.getPackagesPath = params.getPackagesPath;
-  <span class="hljs-keyword">this</span>.logger = params.logger;
-}</pre></div></div>
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">var</span> GitAdapter = {};</pre></div></div>
             
         </li>
         
@@ -86,14 +78,11 @@ the new KSP path.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-2">&#182;</a>
               </div>
-              <p>Attempts to install a list of packages.</p>
-<p><code>params</code> should have a <code>packageNames</code> key containing the names of the
-packages to be installed.</p>
-<p><code>callback</code> should expect arguments <code>err</code> and <code>installedPackages</code>.</p>
+              <p>Initializes a git repo at <code>path</code>.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>Client.prototype.installPackage(params, callback) {
+            <div class="content"><div class='highlight'><pre>GitAdapter.initRepo = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(path)</span> </span>{
 
 }</pre></div></div>
             
@@ -106,14 +95,11 @@ packages to be installed.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-3">&#182;</a>
               </div>
-              <p>Attempts to uninstall a list of packages.</p>
-<p><code>params</code> should have a <code>packageNames</code> key containing the names of the
-packages to be uninstalled.</p>
-<p><code>callback</code> should expect arguments <code>err</code> and <code>installedPackages</code>.</p>
+              <p>Adds all changes in <code>path</code> and commits them with the message <code>commitMessage</code>.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>Client.prototype.uninstallPackage(params, callback) {
+            <div class="content"><div class='highlight'><pre>GitAdapter.commitEverything = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(path, commitMessage)</span> </span>{
 
 }</pre></div></div>
             
@@ -126,13 +112,13 @@ packages to be uninstalled.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-4">&#182;</a>
               </div>
-              <p>Returns a list of package objects already installed.</p>
-<p><code>params</code> is ignored for this action.</p>
-<p><code>callback</code> should expect arguments <code>err</code> and <code>packages</code>.</p>
+              <p>Reverts a commit. This does not create a commit — it merely changes the
+index to undo changes by a commit.</p>
+<p>The <code>commit</code> param must be an object that has a <code>sha</code> key.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>Client.prototype.listPackages(params, callback) {
+            <div class="content"><div class='highlight'><pre>GitAdapter.revertCommit = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(path, commit)</span> </span>{
 
 }</pre></div></div>
             
@@ -145,16 +131,11 @@ packages to be uninstalled.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-5">&#182;</a>
               </div>
-              <p>Initializes KMC into a KSP directory. This will cause the client’s
-<code>updateKspPath</code> callback to be called. Be sure your <code>getKspPath</code> will be
-updated accordingly if you wish to use this action.</p>
-<p><code>params</code> should have a <code>kspPath</code> key pointing to where KMC should initialize
-into.</p>
-<p><code>callback</code> should expect one argument: <code>err</code>.</p>
+              <p>Returns a list of commits for a repo at <code>path</code>.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>Client.prototype.initRepo(params, callback) {
+            <div class="content"><div class='highlight'><pre>GitAdapter.listCommits = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(path)</span> </span>{
 
 }</pre></div></div>
             
@@ -167,13 +148,11 @@ into.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-6">&#182;</a>
               </div>
-              <p>Updates KMC’s known packages.</p>
-<p><code>params</code> is ignored for this action.</p>
-<p><code>callback</code> should expect one argument: <code>err</code>.</p>
+              <p>Clones a git repo at <code>remoteUrl</code> into <code>localPath</code>.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>Client.prototype.refreshPackages(params, callback) {
+            <div class="content"><div class='highlight'><pre>GitAdapter.cloneRepo = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(localPath, remoteUrl)</span> </span>{
 
 }</pre></div></div>
             
@@ -186,17 +165,13 @@ into.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-7">&#182;</a>
               </div>
-              <p>Searches for packages with a name related to the one passed.</p>
-<p><code>params</code> should have a <code>query</code> key.</p>
-<p><code>callback</code> should expect arguments <code>err</code> and <code>foundPackages</code>.</p>
+              <p>Pulls from a pre-configured git repo found locally at <code>path</code>.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>Client.prototype.searchPackages(params, callback) {
+            <div class="content"><div class='highlight'><pre>GitAdapter.pullRepo = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(path)</span> </span>{
 
-}
-
-<span class="hljs-built_in">module</span>.exports = Client;</pre></div></div>
+}</pre></div></div>
             
         </li>
         

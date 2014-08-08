@@ -24,6 +24,21 @@
               </a>
             
               
+              <a class="source" href="commit.html">
+                commit.js
+              </a>
+            
+              
+              <a class="source" href="download_url_resolver.html">
+                download_url_resolver.js
+              </a>
+            
+              
+              <a class="source" href="git_adapter.html">
+                git_adapter.js
+              </a>
+            
+              
               <a class="source" href="package.html">
                 package.js
               </a>
@@ -93,6 +108,7 @@ parameters are optional and default to the empty list.</p>
   <span class="hljs-keyword">this</span>.postrequisites = params.postrequisites || [];
   <span class="hljs-keyword">this</span>.decompressionMethod  params.decompressionMethod || <span class="hljs-string">"zip"</span>;
   <span class="hljs-keyword">this</span>.installProcedure = params.installProcedure;
+  <span class="hljs-keyword">this</span>.caveats = params.caveats;
 }</pre></div></div>
             
         </li>
@@ -104,14 +120,13 @@ parameters are optional and default to the empty list.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-3">&#182;</a>
               </div>
-              <p>Normalizes a name for searching:</p>
-<pre><code><span class="hljs-string">"Mechjeb"</span> -&gt; <span class="hljs-string">"mechjeb"</span>
-<span class="hljs-string">"ferram aerospace research"</span> -&gt; <span class="hljs-string">"ferram-aerospace-research"</span>
-<span class="hljs-string">"foo-bar baz"</span> -&gt; <span class="hljs-string">"foo-bar-baz"</span>
-</code></pre>
+              <p>Loads all packages and returns them in a list.</p>
+<p>The parameter <code>client</code> is necessary to determine where to load packages from.</p>
+
             </div>
             
-            <div class="content"><div class='highlight'><pre>Package.normalizeName = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{</pre></div></div>
+            <div class="content"><div class='highlight'><pre>Package.loadPackages = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(client)</span> </span>{
+}</pre></div></div>
             
         </li>
         
@@ -122,11 +137,15 @@ parameters are optional and default to the empty list.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-4">&#182;</a>
               </div>
-              <p>TODO</p>
-
+              <p>Normalizes a name for searching:</p>
+<pre><code><span class="hljs-string">"Mechjeb"</span> -&gt; <span class="hljs-string">"mechjeb"</span>
+<span class="hljs-string">"ferram aerospace research"</span> -&gt; <span class="hljs-string">"ferram-aerospace-research"</span>
+<span class="hljs-string">"foo-bar baz"</span> -&gt; <span class="hljs-string">"foo-bar-baz"</span>
+</code></pre>
             </div>
             
-            <div class="content"><div class='highlight'><pre>}</pre></div></div>
+            <div class="content"><div class='highlight'><pre>Package.normalizeName = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+}</pre></div></div>
             
         </li>
         
@@ -145,22 +164,8 @@ already downloaded and decompressed package contents can be found.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>Package.prototype.performInstallProcedure = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(tempDir)</span> </span>{</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-6">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-6">&#182;</a>
-              </div>
-              <p>TODO</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>}</pre></div></div>
+            <div class="content"><div class='highlight'><pre>Package.prototype.performInstallProcedure = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(tempDir)</span> </span>{
+}</pre></div></div>
             
         </li>
         
