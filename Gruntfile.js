@@ -9,8 +9,20 @@ module.exports = function(grunt) {
           output: 'docs/'
         }
       }
+    },
+
+    mochaTest: {
+      test: {
+        options: {
+          reporter: 'spec'
+        },
+        src: ['test/**/*.js']
+      }
     }
   });
 
   grunt.loadNpmTasks('grunt-docco');
+  grunt.loadNpmTasks('grunt-mocha-test');
+
+  grunt.registerTask('default', 'mochaTest');
 }
