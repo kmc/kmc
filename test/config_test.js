@@ -28,4 +28,24 @@ describe('Config', function() {
       });
     });
   });
+
+  describe('#saveKspPath', function() {
+    it('updates a JSON file at ~/.kmc/config.json', function(done) {
+      var newFs = {};
+      newFs[configPath] = '{ "kspPath": "/old/path/to/kmc" }';
+
+      mock(newFs);
+
+      Config.saveKspPath('/new/path/to/kmc', function(err) {
+        if (err) { throw err; }
+
+        Config.loadKspPath(function(err, result) {
+          if (err) { throw err; }
+
+          result.should.eql('/new/path/to/kmc');
+          done();
+        });
+      });
+    });
+  });
 });
