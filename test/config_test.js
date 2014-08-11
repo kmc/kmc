@@ -13,7 +13,7 @@ describe('Config', function() {
   var home = process.env.HOME || process.env.USERPROFILE;
   var configPath = home + '/.kmc/config.json';
 
-  describe('#readKspPath', function() {
+  describe('#loadKspPath', function() {
     it('reads from a JSON file at ~/.kmc/config.json', function(done) {
       var newFs = {};
       newFs[configPath] = '{ "kspPath": "/path/to/kmc" }';
