@@ -29,6 +29,22 @@ describe('Config', function() {
     });
   });
 
+  describe('#loadCacheDirPath', function() {
+    it('reads from a JSON file at ~/.kmc/config.json', function(done) {
+      var newFs = {};
+      newFs[configPath] = '{ "cacheDir": "/path/to/cache" }';
+
+      mock(newFs);
+
+      Config.loadCacheDirPath(function(err, result) {
+        if (err) { throw err; }
+
+        result.should.eql('/path/to/cache');
+        done();
+      });
+    });
+  });
+
   describe('#saveKspPath', function() {
     it('updates a JSON file at ~/.kmc/config.json', function(done) {
       var newFs = {};
