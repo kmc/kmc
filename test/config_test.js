@@ -55,5 +55,16 @@ describe('Config', function() {
         done();
       });
     });
+
+    it('sets the KSP path even if no config.json exists', function(done) {
+      mock({});
+
+      Config.saveKspPath('/path/to/kmc').then(function() {
+        return Config.loadKspPath();
+      }).then(function(result) {
+        result.should.eql('/path/to/kmc');
+        done();
+      });
+    });
   });
 });
