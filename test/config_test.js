@@ -20,9 +20,7 @@ describe('Config', function() {
 
       mock(newFs);
 
-      Config.loadKspPath(function(err, result) {
-        if (err) { throw err; }
-
+      Config.loadKspPath().then(function(result) {
         result.should.eql('/path/to/kmc');
         done();
       });
@@ -36,9 +34,7 @@ describe('Config', function() {
 
       mock(newFs);
 
-      Config.loadCacheDirPath(function(err, result) {
-        if (err) { throw err; }
-
+      Config.loadCacheDirPath().then(function(result) {
         result.should.eql('/path/to/cache');
         done();
       });
@@ -52,15 +48,11 @@ describe('Config', function() {
 
       mock(newFs);
 
-      Config.saveKspPath('/new/path/to/kmc', function(err) {
-        if (err) { throw err; }
-
-        Config.loadKspPath(function(err, result) {
-          if (err) { throw err; }
-
-          result.should.eql('/new/path/to/kmc');
-          done();
-        });
+      Config.saveKspPath('/new/path/to/kmc').then(function() {
+        return Config.loadKspPath();
+      }).then(function(result) {
+        result.should.eql('/new/path/to/kmc');
+        done();
       });
     });
   });
