@@ -7,5 +7,8 @@
     "grunt-mocha-test": "~0.11.0",
     "should": "~4.0.4",
     "mock-fs": "~2.3.1"
+  },
+  "dependencies": {
+    "bluebird": "~2.2.2"
   }
 }
