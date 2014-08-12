@@ -29,14 +29,16 @@ describe('GitAdapter', function() {
 
   describe('#initRepo', function() {
     it('creates a repo at the path passed', function(done) {
-      initAndChdir.then(function(tempDir) {
-        var inGitDir = 'git rev-parse --is-inside-work-tree';
+      var tempDir;
 
-        execInPath(tempDir, inGitDir).then(function(stdout, stderr) {
-          stdout.join('').should.eql('true\n');
+      initAndChdir.then(function(kspTempDir) {
+        tempDir = kspTempDir;
 
-          done();
-        });
+        return execInPath(tempDir, 'git rev-parse --is-inside-work-tree');
+      }).then(function(stdout, stderr) {
+        stdout.join('').should.eql('true\n');
+
+        done();
       });
     });
   });
