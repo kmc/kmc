@@ -8,6 +8,10 @@ var ChildProcess = Promise.promisifyAll(require('child_process'));
 var GitAdapter = require('../lib/git_adapter');
 
 describe('GitAdapter', function() {
+  var execInPath = function(path, cmd) {
+    return ChildProcess.execAsync('cd ' + path + ';' + cmd);
+  }
+
   describe('#initRepo', function() {
     // A promise to set up the KSP directory for testing. Make sure this promise
     // returns the temporary directory created.
@@ -31,6 +35,29 @@ describe('GitAdapter', function() {
 
           ChildProcess.execAsync(inGitDir, function(stderr, stdout) {
             stdout.should.eql('true\n');
+
+            done();
+          });
+        });
+      });
+    });
+
+    it('commits everything into an initial commit', function(done) {
+      initAndChdir.then(function(tempDir) {
+        var execInTempDir = function(cmd) {
+          return execInPath(tempDir, cmd);
+        }
+
+        var numCommits = 'git log --oneline | wc -l';
+        var lastCommitMsg = 'git log -1 --pretty=%B';
+
+        execInTempDir(numCommits).then(function(stdout, stderr) {
+          parseInt(stdout.join()).should.eql(1);
+        }).then(function() {
+          // TODO: Why can't I nest this as:
+          //  .then(execInTempDir(lastCommitMessage)).then( ... )
+          execInTempDir(lastCommitMsg).then(function(stdout, stderr) {
+            stdout.join().should.startWith('INIT');
 
             done();
           });
