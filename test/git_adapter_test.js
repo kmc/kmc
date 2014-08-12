@@ -54,6 +54,11 @@ describe('GitAdapter', function() {
         return execInPath(tempDir, 'git rev-list HEAD --count');
       }).then(function(stdout, stderr) {
         parseInt(stdout).should.eql(1);
+      }).then(function() {
+        return execInPath(tempDir, 'git log -1 --pretty="%an"');
+      }).then(function(stdout, stderr) {
+        stdout.join('').should.eql('KMC\n');
+
         done();
       });
     });
