@@ -8,6 +8,10 @@ var ChildProcess = Promise.promisifyAll(require('child_process'));
 var GitAdapter = require('../lib/git_adapter');
 
 describe('GitAdapter', function() {
+  var execInPath = function(path, cmd) {
+    return ChildProcess.execAsync('cd ' + path + ';' + cmd);
+  }
+
   describe('#initRepo', function() {
     // A promise to set up the KSP directory for testing. Make sure this promise
     // returns the temporary directory created.
@@ -26,14 +30,12 @@ describe('GitAdapter', function() {
 
     it('creates a repo at the path passed', function(done) {
       initAndChdir.then(function(tempDir) {
-        chdir(tempDir, function() {
-          var inGitDir = 'git rev-parse --is-inside-work-tree';
+        var inGitDir = 'git rev-parse --is-inside-work-tree';
 
-          ChildProcess.execAsync(inGitDir, function(stderr, stdout) {
-            stdout.should.eql('true\n');
+        execInPath(tempDir, inGitDir).then(function(stdout, stderr) {
+          stdout.join('').should.eql('true\n');
 
-            done();
-          });
+          done();
         });
       });
     });
