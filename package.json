@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "bluebird": "~2.2.2",
-    "fs-extra": "~0.11.0"
+    "fs-extra": "~0.11.0",
+    "chdir": "0.0.0",
+    "temp": "~0.8.1"
   }
 }
