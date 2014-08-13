@@ -127,4 +127,14 @@ describe('DownloadUrlResolver', function() {
       });
     });
   });
+
+  it('returns the URL if no built-in tools are available', function(done) {
+    var url = 'https://github.com/rbray89/ActiveTextureManagement/releases/download/3-1-basic/ActiveTextureManagement-Basic-3-1.zip';
+
+    DownloadUrlResolver.resolve(url).then(function(downloadUrl) {
+      url.should.eql(downloadUrl);
+
+      done();
+    });
+  });
 });
