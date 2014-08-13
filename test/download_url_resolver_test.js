@@ -9,6 +9,19 @@ describe('DownloadUrlResolver', function() {
 
       (new DownloadUrlResolver(url)).isMediafire().should.be.true;
     });
+
+    it('resolves mediafire links', function(done) {
+      this.timeout(0);
+
+      var url = 'file://' + __dirname + '/fixtures/mediafire.com.html';
+      var targetUrl = 'http://download1690.mediafire.com/qny71y9k6kvg/o6cbe03iitggj1p/B9+Aerospace+Pack+R4.0c.zip';
+
+      (new DownloadUrlResolver(url)).resolve().then(function(url) {
+        url.should.eql(targetUrl);
+
+        done();
+      });
+    });
   });
 
   describe('Dropbox', function() {
