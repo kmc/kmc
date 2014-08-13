@@ -24,6 +24,33 @@ describe('DownloadUrlResolver', function() {
     //     done();
     //   });
     // });
+
+    it('resolves direct mediafire links', function(done) {
+      var url = 'http://www.mediafire.com/download/foo/bar.zip';
+      var directDownload = 'http://download.mediafire.com/asdf.zip';
+
+      nock('http://www.mediafire.com')
+        .head('/download/foo/bar.zip')
+        .reply(301, '', {
+          location: directDownload,
+          'content-type': 'application/asdfasdfasdf'
+        });
+
+      nock('http://download.mediafire.com')
+        .head('/asdf.zip')
+        .reply(200, '', {
+          'content-type': 'application/zip'
+        });
+
+
+      (new DownloadUrlResolver(url)).resolve().then(function(downloadUrl) {
+        // with a direct download URL, the original URL can be downloaded from
+        // directly.
+        downloadUrl.should.eql(url);
+
+        done();
+      });
+    });
   });
 
   describe('Dropbox', function() {
