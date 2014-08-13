@@ -86,6 +86,22 @@ describe('DownloadUrlResolver', function() {
 
       DownloadUrlResolver.isCurseforge(url).should.be.true;
     });
+
+    // This spec is commented out because PhantomJS is slow and it can take
+    // multiple seconds to get this to run.
+    //
+    // it('resolves curseforge links', function(done) {
+    //   this.timeout(0);
+
+    //   var url = 'http://kerbal.curseforge.com/plugins/220207-hotrockets-particle-fx-replacement';
+    //   var targetUrl = 'http://addons.cursecdn.com/files/2210%5C344/hotrockets_7.24_nazari_launchsmoke.zip';
+
+    //   DownloadUrlResolver.resolve(url).then(function(url) {
+    //     url.should.eql(targetUrl);
+
+    //     done();
+    //   });
+    // });
   });
 
   describe('Box', function() {
