@@ -87,7 +87,7 @@ describe('GitAdapter', function() {
         return GitAdapter.listCommits(tempDir);
       }).then(function(commits) {
         _.map(commits, function(commit) {
-          return commit.split(' ')[1];
+          return commit.message;
         }).should.eql(['hola', 'bonjour', 'hello']);
 
         done();
