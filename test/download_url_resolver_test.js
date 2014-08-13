@@ -30,6 +30,19 @@ describe('DownloadUrlResolver', function() {
 
       (new DownloadUrlResolver(url)).isDropbox().should.be.true;
     });
+
+    it('resolves dropbox links', function(done) {
+      this.timeout(0);
+
+      var url = 'file://' + __dirname + '/fixtures/dropbox.com.html';
+      var targetUrl = 'https://dl.dropboxusercontent.com/s/od4kickxt92jpo2/BetterAtmosphereV4%5BREL%5D.zip?dl=1&token_hash=AAFn5emxuVXLw_RfjDgQs0Hn7-YZ-vejn3m8zLgOj2tTFA&expiry=1401095304';
+
+      (new DownloadUrlResolver(url)).resolve().then(function(url) {
+        url.should.eql(targetUrl);
+
+        done();
+      });
+    });
   });
 
   describe('Curseforge', function() {
