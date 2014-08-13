@@ -71,6 +71,37 @@ describe('GitAdapter', function() {
     });
   });
 
+  describe('#revertCommit', function() {
+    it('undoes the changes made by a commit', function(done) {
+      var tempDir;
+
+      initAndChdir().then(function(kspTempDir) {
+        tempDir = kspTempDir;
+
+        return GitAdapter.commitEverything(tempDir, 'Initial commit');
+      }).then(function() {
+        fs.writeFileAsync(tempDir + '/b.txt', 'example text');
+      }).then(function() {
+        // We need to create another commit because the initial commit is a
+        // special case where the repo is completely empty if we revert it.
+        return GitAdapter.commitEverything(tempDir, 'Another commit');
+      }).then(function() {
+        // Gets last commit's SHA
+        return execInPath(tempDir, 'git log -1 --pretty="%h"');
+      }).then(function(stdout) {
+        return stdout[0].trim();
+      }).then(function(sha) {
+        return GitAdapter.revertCommit(tempDir, sha);
+      }).then(function() {
+        return execInPath(tempDir, 'ls -1');
+      }).then(function(stdout) {
+        stdout.join('').trim().should.eql('a.txt');
+
+        done();
+      });
+    });
+  });
+
   describe('#listCommits', function() {
     it('returns a list of commit messages and shas', function(done) {
       var tempDir;
