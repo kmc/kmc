@@ -2,7 +2,7 @@
 
 <html>
 <head>
-  <title>client.js</title>
+  <title>versioner.js</title>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
   <link rel="stylesheet" media="all" href="docco.css" />
@@ -61,7 +61,7 @@
         
           <li id="title">
               <div class="annotation">
-                  <h1>client.js</h1>
+                  <h1>versioner.js</h1>
               </div>
           </li>
         
@@ -73,19 +73,12 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-1">&#182;</a>
               </div>
-              <p>Creates a client with parameters for getting / updating the KSP path,
-packages path, and logger.</p>
-<p><code>updateKspPath</code>, if provided, should expect a single argument representing
-the new KSP path.</p>
+              <p>A thin interface above <code>GitAdapter</code>, this module provides a simple API for
+working with version control for KMC’s purposes.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Client</span><span class="hljs-params">(params)</span> </span>{
-  <span class="hljs-keyword">this</span>.getKspPath = params.getKspPath;
-  <span class="hljs-keyword">this</span>.updateKspPath = params.updateKspPath
-  <span class="hljs-keyword">this</span>.getPackagesPath = params.getPackagesPath;
-  <span class="hljs-keyword">this</span>.logger = params.logger;
-}</pre></div></div>
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">var</span> Versioner = {}</pre></div></div>
             
         </li>
         
@@ -96,14 +89,12 @@ the new KSP path.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-2">&#182;</a>
               </div>
-              <p>Attempts to install a list of packages.</p>
-<p><code>params</code> should have a <code>packageNames</code> key containing the names of the
-packages to be installed.</p>
-<p><code>callback</code> should expect arguments <code>err</code> and <code>installedPackages</code>.</p>
+              <p>Sets up a repo at <code>kspPath</code> by creating the git repo and committing everything
+into an initial commit.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>Client.prototype.installPackage(params, callback) {
+            <div class="content"><div class='highlight'><pre>Versioner.setUpRepo = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(kspPath)</span> </span>{
 
 }</pre></div></div>
             
@@ -116,14 +107,12 @@ packages to be installed.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-3">&#182;</a>
               </div>
-              <p>Attempts to uninstall a list of packages.</p>
-<p><code>params</code> should have a <code>packageNames</code> key containing the names of the
-packages to be uninstalled.</p>
-<p><code>callback</code> should expect arguments <code>err</code> and <code>installedPackages</code>.</p>
+              <p>Marks the pre-install step for installing <code>package</code> into a KSP located at
+<code>kspPath</code>.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>Client.prototype.uninstallPackage(params, callback) {
+            <div class="content"><div class='highlight'><pre>Versioner.markPreinstall = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(kspPath, package)</span> </span>{
 
 }</pre></div></div>
             
@@ -136,13 +125,12 @@ packages to be uninstalled.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-4">&#182;</a>
               </div>
-              <p>Returns a list of package objects already installed.</p>
-<p><code>params</code> is ignored for this action.</p>
-<p><code>callback</code> should expect arguments <code>err</code> and <code>packages</code>.</p>
+              <p>Marks the post-install step for installing <code>package</code> into a KSP located at
+<code>kspPath</code>.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>Client.prototype.listPackages(params, callback) {
+            <div class="content"><div class='highlight'><pre>Versioner.markPostinstall = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(kspPath, package)</span> </span>{
 
 }</pre></div></div>
             
@@ -155,16 +143,11 @@ packages to be uninstalled.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-5">&#182;</a>
               </div>
-              <p>Initializes KMC into a KSP directory. This will cause the client’s
-<code>updateKspPath</code> callback to be called. Be sure your <code>getKspPath</code> will be
-updated accordingly if you wish to use this action.</p>
-<p><code>params</code> should have a <code>kspPath</code> key pointing to where KMC should initialize
-into.</p>
-<p><code>callback</code> should expect one argument: <code>err</code>.</p>
+              <p>Uninstalls <code>package</code> from a KSP located at <code>kspPath</code>.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>Client.prototype.initRepo(params, callback) {
+            <div class="content"><div class='highlight'><pre>Versioner.uninstallPackage = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(kspPath, package)</span> </span>{
 
 }</pre></div></div>
             
@@ -177,36 +160,13 @@ into.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-6">&#182;</a>
               </div>
-              <p>Updates KMC’s known packages.</p>
-<p><code>params</code> is ignored for this action.</p>
-<p><code>callback</code> should expect one argument: <code>err</code>.</p>
+              <p>Gets the installed packages found at <code>kspPath</code>.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>Client.prototype.refreshPackages(params, callback) {
+            <div class="content"><div class='highlight'><pre>Versioner.installedPackages = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(kspPath)</span> </span>{
 
 }</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-7">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-7">&#182;</a>
-              </div>
-              <p>Searches for packages with a name related to the one passed.</p>
-<p><code>params</code> should have a <code>query</code> key.</p>
-<p><code>callback</code> should expect arguments <code>err</code> and <code>foundPackages</code>.</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>Client.prototype.searchPackages(params, callback) {
-
-}
-
-<span class="hljs-built_in">module</span>.exports = Client;</pre></div></div>
             
         </li>
         

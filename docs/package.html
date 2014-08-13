@@ -29,6 +29,11 @@
               </a>
             
               
+              <a class="source" href="config.html">
+                config.js
+              </a>
+            
+              
               <a class="source" href="download_url_resolver.html">
                 download_url_resolver.js
               </a>
@@ -41,6 +46,11 @@
               
               <a class="source" href="package.html">
                 package.js
+              </a>
+            
+              
+              <a class="source" href="versioner.html">
+                versioner.js
               </a>
             
           </div>
@@ -106,7 +116,7 @@ parameters are optional and default to the empty list.</p>
   <span class="hljs-keyword">this</span>.aliases = params.aliases || [];
   <span class="hljs-keyword">this</span>.prerequisites = params.prerequisites || [];
   <span class="hljs-keyword">this</span>.postrequisites = params.postrequisites || [];
-  <span class="hljs-keyword">this</span>.decompressionMethod  params.decompressionMethod || <span class="hljs-string">"zip"</span>;
+  <span class="hljs-keyword">this</span>.decompressionMethod = params.decompressionMethod || <span class="hljs-string">"zip"</span>;
   <span class="hljs-keyword">this</span>.installProcedure = params.installProcedure;
   <span class="hljs-keyword">this</span>.caveats = params.caveats;
 }</pre></div></div>
@@ -144,7 +154,8 @@ parameters are optional and default to the empty list.</p>
 </code></pre>
             </div>
             
-            <div class="content"><div class='highlight'><pre>Package.normalizeName = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+            <div class="content"><div class='highlight'><pre>Package.normalizeName = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(name)</span> </span>{
+  <span class="hljs-keyword">return</span> name.toLowerCase().replace(<span class="hljs-regexp">/[ \-]+/g</span>, <span class="hljs-string">'-'</span>);
 }</pre></div></div>
             
         </li>
@@ -165,7 +176,9 @@ already downloaded and decompressed package contents can be found.</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>Package.prototype.performInstallProcedure = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(tempDir)</span> </span>{
-}</pre></div></div>
+}
+
+<span class="hljs-built_in">module</span>.exports = Package;</pre></div></div>
             
         </li>
         

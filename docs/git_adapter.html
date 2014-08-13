@@ -29,6 +29,11 @@
               </a>
             
               
+              <a class="source" href="config.html">
+                config.js
+              </a>
+            
+              
               <a class="source" href="download_url_resolver.html">
                 download_url_resolver.js
               </a>
@@ -41,6 +46,11 @@
               
               <a class="source" href="package.html">
                 package.js
+              </a>
+            
+              
+              <a class="source" href="versioner.html">
+                versioner.js
               </a>
             
           </div>
@@ -67,7 +77,12 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">var</span> GitAdapter = {};</pre></div></div>
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">var</span> GitAdapter = {};
+
+<span class="hljs-keyword">var</span> Promise = <span class="hljs-built_in">require</span>(<span class="hljs-string">'bluebird'</span>);
+<span class="hljs-keyword">var</span> ChildProcess = Promise.promisifyAll(<span class="hljs-built_in">require</span>(<span class="hljs-string">'child_process'</span>));
+<span class="hljs-keyword">var</span> chdir = <span class="hljs-built_in">require</span>(<span class="hljs-string">'chdir'</span>);
+<span class="hljs-keyword">var</span> _ = <span class="hljs-built_in">require</span>(<span class="hljs-string">'lodash'</span>);</pre></div></div>
             
         </li>
         
@@ -83,7 +98,14 @@
             </div>
             
             <div class="content"><div class='highlight'><pre>GitAdapter.initRepo = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(path)</span> </span>{
+  <span class="hljs-keyword">var</span> cmd = [
+    <span class="hljs-string">'git init'</span>,
+    <span class="hljs-string">'git config user.name KMC'</span>,
+    <span class="hljs-string">'git config user.email kmc@kmc.kmc'</span>,
+    <span class="hljs-string">'git config core.autocrlf false'</span>
+  ].join(<span class="hljs-string">' ; '</span>);
 
+  <span class="hljs-keyword">return</span> execInPath(path, cmd);
 }</pre></div></div>
             
         </li>
@@ -100,7 +122,12 @@
             </div>
             
             <div class="content"><div class='highlight'><pre>GitAdapter.commitEverything = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(path, commitMessage)</span> </span>{
+  <span class="hljs-keyword">var</span> cmd = [
+    <span class="hljs-string">'git add -A -f'</span>,
+    <span class="hljs-string">'git commit --allow-empty -m "'</span> + commitMessage + <span class="hljs-string">'"'</span>
+  ].join(<span class="hljs-string">' ; '</span>);
 
+  <span class="hljs-keyword">return</span> execInPath(path, cmd);
 }</pre></div></div>
             
         </li>
@@ -114,13 +141,12 @@
               </div>
               <p>Reverts a commit. This does not create a commit — it merely changes the
 index to undo changes by a commit.</p>
-<p>The <code>commit</code> param must be an object that has a <code>sha</code> key.</p>
+<p>The <code>commit</code> param must be a commit SHA.</p>
 
             </div>
             
             <div class="content"><div class='highlight'><pre>GitAdapter.revertCommit = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(path, commit)</span> </span>{
-
-}</pre></div></div>
+  <span class="hljs-keyword">var</span> cmd = [</pre></div></div>
             
         </li>
         
@@ -131,13 +157,11 @@ index to undo changes by a commit.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-5">&#182;</a>
               </div>
-              <p>Returns a list of commits for a repo at <code>path</code>.</p>
+              <p>Favor “our” (HEAD’s) files.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>GitAdapter.listCommits = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(path)</span> </span>{
-
-}</pre></div></div>
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-string">'git revert --no-commit --strategy=merge --strategy-option=ours '</span> + commit,</pre></div></div>
             
         </li>
         
@@ -148,12 +172,15 @@ index to undo changes by a commit.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-6">&#182;</a>
               </div>
-              <p>Clones a git repo at <code>remoteUrl</code> into <code>localPath</code>.</p>
+              <p>If there was a merge conflict or something, simply favor keeping files
+around rather than deleting them.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>GitAdapter.cloneRepo = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(localPath, remoteUrl)</span> </span>{
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-string">'git add *'</span>
+  ].join(<span class="hljs-string">' ; '</span>);
 
+  <span class="hljs-keyword">return</span> execInPath(path, cmd);
 }</pre></div></div>
             
         </li>
@@ -165,13 +192,87 @@ index to undo changes by a commit.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-7">&#182;</a>
               </div>
+              <p>Returns a list of commits for a repo at <code>path</code>.</p>
+<p>The ‘commits’ returned are objects with keys <code>sha</code> and <code>message</code>.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>GitAdapter.listCommits = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(path)</span> </span>{
+  <span class="hljs-keyword">return</span> execInPath(path, <span class="hljs-string">'git log --oneline'</span>).then(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(stdout)</span> </span>{
+    <span class="hljs-keyword">var</span> lines = stdout.join(<span class="hljs-string">''</span>).split(<span class="hljs-string">'\n'</span>);
+
+    <span class="hljs-keyword">return</span> _.chain(lines).filter(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(line)</span> </span>{
+      <span class="hljs-keyword">return</span> line.length &gt; <span class="hljs-number">0</span>;
+    }).map(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(line)</span> </span>{
+      <span class="hljs-keyword">var</span> splitAt = line.indexOf(<span class="hljs-string">' '</span>);
+
+      <span class="hljs-keyword">return</span> {
+        sha: line.slice(<span class="hljs-number">0</span>, splitAt),
+        message: line.slice(splitAt + <span class="hljs-number">1</span>)
+      };
+    }).value();
+  });
+}</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p>TODO: Add specs for #cloneRepo and #pullRepo where these actions can be
+mocked?</p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <p>Clones a git repo at <code>remoteUrl</code> into <code>localPath</code>.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>GitAdapter.cloneRepo = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(localPath, remoteUrl)</span> </span>{
+  <span class="hljs-keyword">return</span> execInPath(localPath, <span class="hljs-string">'git clone '</span> + remoteUrl + <span class="hljs-string">' .'</span>);
+}</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-10">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-10">&#182;</a>
+              </div>
               <p>Pulls from a pre-configured git repo found locally at <code>path</code>.</p>
 
             </div>
             
             <div class="content"><div class='highlight'><pre>GitAdapter.pullRepo = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(path)</span> </span>{
+  <span class="hljs-keyword">return</span> execInPath(path, <span class="hljs-string">'git pull'</span>);
+}
 
-}</pre></div></div>
+<span class="hljs-keyword">var</span> execInPath = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(path, cmd)</span> </span>{
+  <span class="hljs-keyword">var</span> promise;
+
+  chdir(path, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+    promise = ChildProcess.execAsync(cmd);
+  });
+
+  <span class="hljs-keyword">return</span> promise;
+}
+
+<span class="hljs-built_in">module</span>.exports = GitAdapter;</pre></div></div>
             
         </li>
         
