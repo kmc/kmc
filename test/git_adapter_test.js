@@ -59,12 +59,12 @@ describe('GitAdapter', function() {
       }).then(function() {
         // Count how many commits have been made.
         return execInPath(tempDir, 'git rev-list HEAD --count');
-      }).then(function(stdout, stderr) {
-        parseInt(stdout).should.eql(1);
+      }).then(function(output) {
+        parseInt(output[0]).should.eql(1);
       }).then(function() {
         return execInPath(tempDir, 'git log -1 --pretty="%an"');
-      }).then(function(stdout, stderr) {
-        stdout.join('').should.eql('KMC\n');
+      }).then(function(output) {
+        output[0].should.eql('KMC\n');
 
         done();
       });
@@ -88,14 +88,14 @@ describe('GitAdapter', function() {
       }).then(function() {
         // Gets last commit's SHA
         return execInPath(tempDir, 'git log -1 --pretty="%h"');
-      }).then(function(stdout) {
-        return stdout[0].trim();
+      }).then(function(output) {
+        return output[0].trim();
       }).then(function(sha) {
         return GitAdapter.revertCommit(tempDir, sha);
       }).then(function() {
         return execInPath(tempDir, 'ls -1');
-      }).then(function(stdout) {
-        stdout.join('').trim().should.eql('a.txt');
+      }).then(function(output) {
+        output[0].trim().should.eql('a.txt');
 
         done();
       });
