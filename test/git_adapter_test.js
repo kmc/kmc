@@ -6,6 +6,7 @@ var fs = Promise.promisifyAll(require('fs'));
 var ChildProcess = Promise.promisifyAll(require('child_process'));
 
 var GitAdapter = require('../lib/git_adapter');
+var Commit = require('../lib/commit');
 
 describe('GitAdapter', function() {
   var execInPath = function(path, cmd) {
@@ -116,6 +117,8 @@ describe('GitAdapter', function() {
       }).then(function() {
         return GitAdapter.listCommits(tempDir);
       }).then(function(commits) {
+        commits[0].should.be.an.instanceOf(Commit);
+
         _.map(commits, function(commit) {
           return commit.message;
         }).should.eql(['hola', 'bonjour', 'hello']);
