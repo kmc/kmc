@@ -1,6 +1,5 @@
 var Promise = require('bluebird');
 var should = require('should');
-var chdir = require('chdir');
 var _ = require('lodash');
 var temp = Promise.promisifyAll(require('temp').track());
 var fs = Promise.promisifyAll(require('fs'));
