@@ -42,7 +42,10 @@ describe('GitAdapter', function() {
         return execInPath(tempDir, 'git rev-parse --is-inside-work-tree');
       }).then(function(stdout, stderr) {
         stdout.join('').should.eql('true\n');
-
+      }).then(function() {
+        return fs.readFileAsync(tempDir + '/.gitignore', 'utf8');
+      }).then(function(contents) {
+        contents.should.eql("!*\n");
         done();
       });
     });
