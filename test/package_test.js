@@ -33,7 +33,7 @@ describe('Package', function() {
 
   describe('#loadFromYaml', function() {
     it('reads in a YAML file', function() {
-      yaml = [
+      var yaml = [
         '- name: Name',
         '  aliases: [alias]',
         '  prerequisites: [prereq]',
@@ -46,7 +46,7 @@ describe('Package', function() {
         '    Caveat message'
       ].join('\n');
 
-      packages = Package.loadFromYaml(yaml);
+      var packages = Package.loadFromYaml(yaml);
 
       packages.length.should.eql(1);
 
