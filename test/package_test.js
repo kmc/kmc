@@ -1,8 +1,36 @@
 var should = require('should');
+var mock = require('mock-fs');
 
+var Client = require('../lib/client');
 var Package = require('../lib/package');
 
 describe('Package', function() {
+  describe('#loadPackages', function() {
+    afterEach(mock.restore);
+
+    it('deserializes all packages in a directory', function(done) {
+      mock({
+        '/kmc-packages/a.yml': '- name: Package1',
+        '/kmc-packages/b.yml': '- name: Package2',
+        '/kmc-packages/c.yml': '- name: Package3\n- name: Package4',
+      });
+
+      var clientMethodCalled = false;
+
+      var client = new Client({getKspPath: function() {
+        clientMethodCalled = true;
+        return '/kmc-packages';
+      }});
+
+      Package.loadPackages(client).then(function(packages) {
+        clientMethodCalled.should.be.true;
+        packages.length.should.eql(4);
+
+        done();
+      });
+    })
+  });
+
   describe('#loadFromYaml', function() {
     it('reads in a YAML file', function() {
       yaml = [
