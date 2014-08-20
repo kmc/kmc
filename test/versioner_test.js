@@ -6,6 +6,7 @@ var fs = Promise.promisifyAll(require('fs'));
 var ChildProcess = Promise.promisifyAll(require('child_process'));
 
 var Versioner = require('../lib/versioner');
+var Package = require('../lib/package');
 
 describe('Versioner', function() {
   var execInPath = function(path, cmd) {
@@ -40,6 +41,47 @@ describe('Versioner', function() {
         return execInPath(tempDir, 'git ls-files --others --modified | wc -l');
       }).then(function(output) {
         parseInt(output[0]).should.eql(0);
+
+        done();
+      });
+    });
+  });
+
+  describe('#installedPackages', function() {
+    it('returns a list of package objects from a git history', function(done) {
+      var package1 = new Package({name: 'Package 1'});
+      var package2 = new Package({name: 'Package 2'});
+      var package3 = new Package({name: 'Package 3'});
+      var knownPackages = [package1, package2, package3];
+
+      var tempDir;
+
+      setUpKspPath().then(function(kspTempDir) {
+        tempDir = kspTempDir;
+
+        return Versioner.setUpRepo(tempDir);
+      }).then(function() {
+        return Versioner.markPostinstall(tempDir, package1);
+      }).then(function() {
+        return Versioner.markPostinstall(tempDir, package2);
+      }).then(function() {
+        return Versioner.markPostinstall(tempDir, package3);
+      }).then(function() {
+        return Versioner.installedPackages(tempDir, knownPackages);
+      }).then(function(packages) {
+        packages.should.eql([package3, package2, package1]);
+      }).then(function() {
+        return Versioner.uninstallPackage(tempDir, package2);
+      }).then(function() {
+        return Versioner.installedPackages(tempDir, knownPackages);
+      }).then(function(packages) {
+        packages.should.eql([package3, package1]);
+      }).then(function() {
+        return Versioner.markPostinstall(tempDir, package2);
+      }).then(function() {
+        return Versioner.installedPackages(tempDir, knownPackages);
+      }).then(function(packages) {
+        packages.should.eql([package3, package2, package1]);
 
         done();
       });
