@@ -78,4 +78,15 @@ describe('Package', function() {
       Package.normalizeName('foo - bar').should.eql('foo-bar');
     });
   });
+
+  describe('#names', function() {
+    it('normalizes titles and aliases', function() {
+      var examplePackage = new Package({
+        name: 'Title',
+        aliases: ['alias 1', 'alias 2']
+      });
+
+      examplePackage.getNames().should.eql(['title', 'alias-1', 'alias-2']);
+    });
+  });
 });
