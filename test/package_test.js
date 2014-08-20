@@ -79,6 +79,18 @@ describe('Package', function() {
     });
   });
 
+  describe('#findPackage', function() {
+    it('finds a package from a name', function() {
+      var packages = [
+        new Package({name: 'a'}),
+        new Package({name: 'b'}),
+        new Package({name: 'c'})
+      ];
+
+      Package.findPackage('b', packages).should.eql(packages[1]);
+    });
+  });
+
   describe('#getNames', function() {
     it('normalizes titles and aliases', function() {
       var examplePackage = new Package({
