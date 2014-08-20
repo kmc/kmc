@@ -79,7 +79,7 @@ describe('Package', function() {
     });
   });
 
-  describe('#names', function() {
+  describe('#getNames', function() {
     it('normalizes titles and aliases', function() {
       var examplePackage = new Package({
         name: 'Title',
