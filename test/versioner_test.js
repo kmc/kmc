@@ -45,4 +45,28 @@ describe('Versioner', function() {
       });
     });
   });
+
+  describe('#preinstallMessage', function() {
+    it('takes the form "PRE: Title"', function() {
+      var message = Versioner.preinstallMessage({name: 'Example'});
+
+      message.should.eql("PRE: Example");
+    });
+  });
+
+  describe('#postinstallMessage', function() {
+    it('takes the form "POST: Title"', function() {
+      var message = Versioner.postinstallMessage({name: 'Example'});
+
+      message.should.eql("POST: Example");
+    });
+  });
+
+  describe('#uninstallMessage', function() {
+    it('takes the form "UNINSTALL: Title"', function() {
+      var message = Versioner.uninstallMessage({name: 'Example'});
+
+      message.should.eql("UNINSTALL: Example");
+    });
+  });
 });
