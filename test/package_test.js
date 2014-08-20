@@ -17,7 +17,7 @@ describe('Package', function() {
 
       var clientMethodCalled = false;
 
-      var client = new Client({getKspPath: function() {
+      var client = new Client({getPackagesPath: function() {
         clientMethodCalled = true;
         return '/kmc-packages';
       }});
