@@ -101,4 +101,19 @@ describe('Package', function() {
       examplePackage.getNames().should.eql(['title', 'alias-1', 'alias-2']);
     });
   });
+
+  describe('#get{Pre, Post}requisites', function() {
+    it('loads requisites as objects', function() {
+      var package1 = new Package({name: 'Package 1'});
+      var knownPackages = [package1];
+
+      var examplePackage = new Package({
+        prerequisites: ['package 1'],
+        postrequisites: ['package 1']
+      });
+
+      examplePackage.getPrerequisites(knownPackages).should.eql(knownPackages);
+      examplePackage.getPostrequisites(knownPackages).should.eql(knownPackages);
+    });
+  });
 });
