@@ -126,24 +126,42 @@ describe('Package', function() {
         // The temporary directory where a package was installed
         '/tmp': {
           'foo.txt': '',
-          'bar.txt': ''
+          'bar.txt': '',
+          'toto': {
+            'a.txt': '',
+            'b.txt': '',
+            'c.txt': ''
+          }
         },
 
         // The KSP directory
         '/ksp': {
-          'baz': {}
+          'baz': {},
+          'toto': {
+            'd.txt': ''
+          }
         }
       });
 
       var examplePackage = new Package({
         installProcedure: [
           {merge_directory: ['foo.txt']},
-          {merge_directory: ['bar.txt', 'baz']}
+          {merge_directory: ['bar.txt', 'baz']},
+          {merge_directory: ['toto']}
         ]
       });
 
       examplePackage.performInstallProcedure('/tmp', '/ksp').then(function() {
-        ['/ksp/foo.txt', '/ksp/baz/bar.txt'].forEach(function(file) {
+        var files = [
+          '/ksp/foo.txt',
+          '/ksp/baz/bar.txt',
+          '/ksp/toto/a.txt',
+          '/ksp/toto/b.txt',
+          '/ksp/toto/c.txt',
+          '/ksp/toto/d.txt'
+        ];
+
+        files.forEach(function(file) {
           fs.existsSync(file).should.be.true;
         });
 
