@@ -124,13 +124,15 @@ describe('Package', function() {
     it('merges directories', function(done) {
       mock({
         // The temporary directory where a package was installed
-        '/tmp': {
+        '/tmpdir': {
           'foo.txt': '',
           'bar.txt': '',
           'toto': {
             'a.txt': '',
             'b.txt': '',
-            'c.txt': ''
+            'c.txt': '',
+            '000_Toolbar': {},
+            'ModuleManager.1.2.3.dll': ''
           }
         },
 
@@ -151,7 +153,7 @@ describe('Package', function() {
         ]
       });
 
-      examplePackage.performInstallProcedure('/tmp', '/ksp').then(function() {
+      examplePackage.performInstallProcedure('/tmpdir', '/ksp').then(function() {
         var files = [
           '/ksp/foo.txt',
           '/ksp/baz/bar.txt',
@@ -164,6 +166,9 @@ describe('Package', function() {
         files.forEach(function(file) {
           fs.existsSync(file).should.be.true;
         });
+
+        fs.existsSync('/ksp/toto/000_Toolbar').should.be.false;
+        fs.existsSync('/ksp/toto/ModuleManager.1.2.3.dll').should.be.false;
 
         done();
       });
