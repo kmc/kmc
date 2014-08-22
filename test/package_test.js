@@ -1,5 +1,6 @@
 var should = require('should');
 var mock = require('mock-fs');
+var fs = require('fs');
 
 var Client = require('../lib/client');
 var Package = require('../lib/package');
@@ -114,6 +115,40 @@ describe('Package', function() {
 
       examplePackage.getPrerequisites(knownPackages).should.eql(knownPackages);
       examplePackage.getPostrequisites(knownPackages).should.eql(knownPackages);
+    });
+  });
+
+  describe('#performInstallProcedure', function() {
+    afterEach(mock.restore);
+
+    it('merges directories', function(done) {
+      mock({
+        // The temporary directory where a package was installed
+        '/tmp': {
+          'foo.txt': '',
+          'bar.txt': ''
+        },
+
+        // The KSP directory
+        '/ksp': {
+          'baz': {}
+        }
+      });
+
+      var examplePackage = new Package({
+        installProcedure: [
+          {merge_directory: ['foo.txt']},
+          {merge_directory: ['bar.txt', 'baz']}
+        ]
+      });
+
+      examplePackage.performInstallProcedure('/tmp', '/ksp').then(function() {
+        ['/ksp/foo.txt', '/ksp/baz/bar.txt'].forEach(function(file) {
+          fs.existsSync(file).should.be.true;
+        });
+
+        done();
+      });
     });
   });
 });
