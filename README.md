@@ -1,4 +1,5 @@
 # KMC
+[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/kmc/kmc?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 A simple package manager for Kerbal Space Program. Install any mod by simply
 saying `kmc install name-of-mod`. For example, install Mechjeb by issuing the
