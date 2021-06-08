@@ -1,3 +1,6 @@
+# Archived
+This repository is archived. Fork it if you want to actively develop!
+
 # KMC
 
 A simple package manager for Kerbal Space Program. Install any mod by simply
